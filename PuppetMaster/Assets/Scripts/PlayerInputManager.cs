@@ -31,7 +31,10 @@ namespace Player.Input
 
             // Setup the action button controls
             inputControls.InWorld.Fire1.performed += Fire1_performed;
+            inputControls.InWorld.Fire1.canceled += Fire1_canceled;
+
             inputControls.InWorld.Fire2.performed += Fire2_performed;
+            inputControls.InWorld.Fire2.canceled += Fire2_canceled;
 
             // Enable the input system
             SetPlayerControlEnabled(true);
@@ -45,11 +48,27 @@ namespace Player.Input
             }
         }
 
+        private void Fire1_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+        {
+            foreach (var item in actionInputRecievers)
+            {
+                item.OnFire1Up();
+            }
+        }
+
         private void Fire2_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
             foreach (var item in actionInputRecievers)
             {
                 item.OnFire2();
+            }
+        }
+
+        private void Fire2_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+        {
+            foreach (var item in actionInputRecievers)
+            {
+                item.OnFire2Up();
             }
         }
 

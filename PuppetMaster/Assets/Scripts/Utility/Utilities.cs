@@ -33,6 +33,28 @@ namespace Convienience
 
         private static Mouse _mouse;
 
+        public static T[] AddToArray<T>(T[] array, T item)
+        {
+            if (array == null)
+            {
+                return new T[] { item };
+            }
+            else
+            {
+                var old = array;
+                array = new T[old.Length + 1];
+
+                for (int i = 0; i < old.Length; i++)
+                {
+                    array[i] = old[i];
+                }
+
+                array[old.Length] = item;
+
+                return array;
+            }
+        }
+
         /// <summary>
         /// Get the screen offset for an object
         /// </summary>
