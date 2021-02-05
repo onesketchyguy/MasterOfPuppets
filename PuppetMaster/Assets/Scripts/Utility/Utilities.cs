@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Convienience
+namespace Utility
 {
     /// <summary>
     /// A tool bag to help speed things up a bit.

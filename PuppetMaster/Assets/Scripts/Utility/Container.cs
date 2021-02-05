@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Convienience
+namespace Utility
 {
     /// <summary>
     /// Holds a value for the user.

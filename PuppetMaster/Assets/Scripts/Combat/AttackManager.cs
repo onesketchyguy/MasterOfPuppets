@@ -37,7 +37,7 @@ namespace PuppetMaster
 
         private void LookAtCursor()
         {
-            lookDirection = Convienience.Utilities.GetMouseOffsetFromObject(_transform, 1.1f);
+            lookDirection = Utility.Utilities.GetMouseOffsetFromObject(_transform, 1.1f);
 
             UpdateLookRotation();
         }
@@ -59,7 +59,7 @@ namespace PuppetMaster
             // Started attack input
 
             // Stop any existing fire routines
-            StopCoroutine(FireWeapon());
+            StopAllCoroutines();
 
             // Start a new fire routine
             StartCoroutine(FireWeapon());
@@ -70,7 +70,7 @@ namespace PuppetMaster
             // Ended attack input
 
             // Stop any existing fire routines
-            StopCoroutine(FireWeapon());
+            StopAllCoroutines();
         }
 
         public void OnFire2()
@@ -89,7 +89,7 @@ namespace PuppetMaster
 
                 // Instantiate a projectile and sent it in a direction
                 // TO BE MOVE TO WEAPON SCRIPT
-                var obj = Convienience.ObjectPool.Get(bulletPrefab, transform.position + transform.forward, transform.rotation);
+                var obj = Utility.ObjectPool.Get(bulletPrefab, transform.position + transform.forward, transform.rotation);
 
                 yield return new WaitForEndOfFrame();
             }
