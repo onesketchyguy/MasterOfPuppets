@@ -7,6 +7,8 @@ namespace PuppetMaster
         [SerializeField] private float shotForce = 100;
         [SerializeField] private Rigidbody rigidBody;
 
+        [SerializeField] private TrailRenderer trailRenderer;
+
         private float timeAlive = 0;
 
         private void OnEnable()
@@ -23,7 +25,7 @@ namespace PuppetMaster
             {
                 gameObject.SetActive(false);
             }
-            else timeAlive -= Time.deltaTime;
+            else timeAlive += Time.deltaTime;
         }
 
         private void OnDisable()
@@ -31,6 +33,9 @@ namespace PuppetMaster
             // Stop everything!
             rigidBody.velocity = Vector3.zero;
             transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+
+            trailRenderer.Clear();
         }
     }
 }

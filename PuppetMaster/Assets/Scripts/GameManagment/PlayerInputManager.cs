@@ -1,14 +1,10 @@
 using UnityEngine;
+using PuppetMaster;
 
 namespace Player.Input
 {
     public class PlayerInputManager : MonoBehaviour
     {
-        // An array of objects than can recieve input from this
-        private IMoveInputReciever[] moveInputRecievers;
-
-        private IActionInputReciever[] actionInputRecievers;
-
         private InputControls inputControls;
 
         /// <summary>
@@ -16,11 +12,6 @@ namespace Player.Input
         /// </summary>
         private void Start()
         {
-            // Retrieve all the input recievers on start
-            // NOTE: This could become rather performance intensive if not kept under check
-            moveInputRecievers = GetComponents<IMoveInputReciever>();
-            actionInputRecievers = GetComponents<IActionInputReciever>();
-
             // Generate the input system
             inputControls = new InputControls();
             inputControls.Enable();
@@ -42,44 +33,34 @@ namespace Player.Input
 
         private void Fire1_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            foreach (var item in actionInputRecievers)
-            {
-                item.OnFire1();
-            }
+            if (CharacterInputController.playerControlled != null)
+                CharacterInputController.playerControlled.Fire1_performed();
         }
 
         private void Fire1_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            foreach (var item in actionInputRecievers)
-            {
-                item.OnFire1Up();
-            }
+            if (CharacterInputController.playerControlled != null)
+                CharacterInputController.playerControlled.Fire1_canceled();
         }
 
         private void Fire2_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            foreach (var item in actionInputRecievers)
-            {
-                item.OnFire2();
-            }
+            if (CharacterInputController.playerControlled != null)
+                CharacterInputController.playerControlled.Fire2_performed();
         }
 
         private void Fire2_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            foreach (var item in actionInputRecievers)
-            {
-                item.OnFire2Up();
-            }
+            if (CharacterInputController.playerControlled != null)
+                CharacterInputController.playerControlled.Fire2_canceled();
         }
 
         private void HandleMovement(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            var move = obj.ReadValue<Vector2>();
-
-            foreach (var item in moveInputRecievers)
+            if (CharacterInputController.playerControlled != null)
             {
-                item.HorizontalInput = move.x;
-                item.VerticalInput = move.y;
+                var move = obj.ReadValue<Vector2>();
+                CharacterInputController.playerControlled.HandleMovement(move);
             }
         }
 
