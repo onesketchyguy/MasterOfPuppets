@@ -11,7 +11,7 @@ namespace AdvancedCustomizableSystem
         GUIStyle label2Style;
         GUIStyle linkStyle;
         GUIStyle defaultText;
-        [MenuItem("APPack 2.2/Help")]
+        [MenuItem("Tools/APPack 2.2/Help")]
         public static void ShowWindow()
         {
             var window = GetWindow<EditorHelpMenu>(true, "Advanced People Pack 2.2", true);

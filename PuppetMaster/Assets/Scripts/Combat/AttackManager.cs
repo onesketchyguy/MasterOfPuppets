@@ -14,6 +14,8 @@ namespace PuppetMaster
 
         private Vector3 lookDirection;
 
+        [SerializeField] private Transform lookTargetObject;
+
         /// <summary>
         /// TO BE MOVED TO WEAPON SCRIPT!
         /// </summary>
@@ -38,6 +40,8 @@ namespace PuppetMaster
         private void LookAtCursor()
         {
             lookDirection = Utility.Utilities.GetMouseOffsetFromObject(_transform, 1.1f);
+
+            lookTargetObject.position = lookDirection;
 
             UpdateLookRotation();
         }
