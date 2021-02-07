@@ -1882,6 +1882,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BaseCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 722108464565729117, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
+      propertyPath: weapon
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 722108464565729117, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
+      propertyPath: startWeapon
+      value: 
+      objectReference: {fileID: 7943594026457017777, guid: b6ffc1c5d75fcaa449766341f6929797, type: 3}
     - target: {fileID: 722108464565729119, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
       propertyPath: m_RootOrder
       value: 9

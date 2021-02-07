@@ -9,6 +9,22 @@ namespace PuppetMaster
 
         [SerializeField] private TrailRenderer trailRenderer;
 
+        [SerializeField] private float lifeTime = 3;
+
+        private int damageOnHit = 0;
+
+        private Transform sender;
+
+        public void SetSender(Transform sender)
+        {
+            this.sender = sender;
+        }
+
+        public void SetDamage(int damage)
+        {
+            damageOnHit = damage;
+        }
+
         private float timeAlive = 0;
 
         private void OnEnable()
@@ -21,11 +37,23 @@ namespace PuppetMaster
 
         private void Update()
         {
-            if (timeAlive > 3)
+            if (timeAlive > lifeTime)
             {
                 gameObject.SetActive(false);
             }
             else timeAlive += Time.deltaTime;
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            var health = collision.gameObject.GetComponent<Player.Stats.IDamagable>();
+
+            if (health != null)
+            {
+                health.TakeDamage(damageOnHit, sender);
+            }
+
+            gameObject.SetActive(false);
         }
 
         private void OnDisable()

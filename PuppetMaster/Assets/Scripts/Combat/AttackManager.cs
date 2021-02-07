@@ -7,14 +7,22 @@ namespace PuppetMaster
 {
     public class AttackManager : MonoBehaviour, IActionInputReciever
     {
-        public new Rigidbody rigidbody;
+        [SerializeField] private Rigidbody rigidBody;
         private Transform _transform;
 
-        public float turnSpeed = 30;
+        [SerializeField] private float turnSpeed = 30;
 
         private Vector3 lookDirection;
 
+        public BaseWeapon startWeapon;
+
+        private BaseWeapon weapon;
+
+        [SerializeField] private Transform weaponParentObject;
+
         [SerializeField] private Transform lookTargetObject;
+
+        private Vector3 upOffset;
 
         /// <summary>
         /// TO BE MOVED TO WEAPON SCRIPT!
@@ -24,8 +32,13 @@ namespace PuppetMaster
         private void Start()
         {
             // Cache some values
-            if (rigidbody == null) rigidbody = GetComponent<Rigidbody>();
+            if (rigidBody == null) rigidBody = GetComponent<Rigidbody>();
             _transform = transform;
+
+            upOffset = Vector3.up * 0.25f;
+
+            // Equip the starter weapon if one exists
+            if (startWeapon != null) SwapWeapon(startWeapon);
         }
 
         private void FixedUpdate()
@@ -37,11 +50,29 @@ namespace PuppetMaster
             }
         }
 
+        public void SwapWeapon(BaseWeapon weaponObject)
+        {
+            // Destroy any existing children
+            var items = weaponParentObject.GetComponentsInChildren<BaseWeapon>();
+
+            if (items != null && items.Length > 0)
+            {
+                for (int i = items.Length - 1; i >= 0; i--)
+                    Destroy(items[i].gameObject);
+            }
+
+            // Add the weapon to the slot
+            var go = Instantiate(weaponObject.gameObject, weaponParentObject);
+            go.name = weaponObject.gameObject.name;
+
+            weapon = go.GetComponent<BaseWeapon>();
+        }
+
         private void LookAtCursor()
         {
             lookDirection = Utility.Utilities.GetMouseOffsetFromObject(_transform, 1.1f);
 
-            lookTargetObject.position = lookDirection;
+            lookTargetObject.position = _transform.position + lookDirection + upOffset;
 
             UpdateLookRotation();
         }
@@ -55,7 +86,7 @@ namespace PuppetMaster
 
             var eulerAngleVelocity = new Vector3(0, angle, 0);
             var deltaRotation = Quaternion.Euler(eulerAngleVelocity * turnSpeed * Time.fixedDeltaTime);
-            rigidbody.MoveRotation(rigidbody.rotation * deltaRotation);
+            rigidBody.MoveRotation(rigidBody.rotation * deltaRotation);
         }
 
         public void OnFire1()
@@ -66,7 +97,7 @@ namespace PuppetMaster
             StopAllCoroutines();
 
             // Start a new fire routine
-            StartCoroutine(FireWeapon());
+            StartCoroutine(UseWeapon());
         }
 
         public void OnFire1Up()
@@ -85,18 +116,19 @@ namespace PuppetMaster
         {
         }
 
-        private IEnumerator FireWeapon()
+        private IEnumerator UseWeapon()
         {
             while (true)
             {
-                // Fire off weapon
+                if (weapon == null) break;
 
-                // Instantiate a projectile and sent it in a direction
-                // TO BE MOVE TO WEAPON SCRIPT
-                var obj = Utility.ObjectPool.Get(bulletPrefab, transform.position + transform.forward, transform.rotation);
+                // Use this weapon
+                weapon.Use();
 
                 yield return new WaitForEndOfFrame();
             }
+
+            yield return new WaitForEndOfFrame();
         }
     }
 }
