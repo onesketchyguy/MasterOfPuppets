@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace PuppetMaster
 {
-    public class CharacterInputController : MonoBehaviour
+    public class CharacterInput : MonoBehaviour
     {
         // An array of objects than can recieve input from this
         private IMoveInputReciever[] moveInputRecievers;
 
         private IActionInputReciever[] actionInputRecievers;
 
-        public static CharacterInputController playerControlled;
+        public static CharacterInput playerControlled;
 
         public bool isPlayer
         {

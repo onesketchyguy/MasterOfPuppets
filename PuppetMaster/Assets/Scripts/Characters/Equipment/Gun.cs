@@ -14,7 +14,7 @@ namespace PuppetMaster
 
         private void Start()
         {
-            holder = GetComponentInParent<CharacterInputController>().transform;
+            holder = GetComponentInParent<CharacterInput>().transform;
         }
 
         public override void Use()

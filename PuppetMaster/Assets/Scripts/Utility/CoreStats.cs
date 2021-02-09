@@ -36,7 +36,15 @@
         public void InitializeStats()
         {
             var array = System.Enum.GetNames(typeof(StatType));
-            stats = new Stat[array.Length];
+
+            if (stats.Length != array.Length)
+            {
+                stats = new Stat[array.Length];
+                for (int i = 0; i < stats.Length; i++)
+                {
+                    stats[i].baseValue = 1;
+                }
+            }
         }
 
         public Stat GetStat(StatType statToGet)

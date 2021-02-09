@@ -33,34 +33,34 @@ namespace Player.Input
 
         private void Fire1_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            if (CharacterInputController.playerControlled != null)
-                CharacterInputController.playerControlled.Fire1_performed();
+            if (CharacterInput.playerControlled != null)
+                CharacterInput.playerControlled.Fire1_performed();
         }
 
         private void Fire1_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            if (CharacterInputController.playerControlled != null)
-                CharacterInputController.playerControlled.Fire1_canceled();
+            if (CharacterInput.playerControlled != null)
+                CharacterInput.playerControlled.Fire1_canceled();
         }
 
         private void Fire2_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            if (CharacterInputController.playerControlled != null)
-                CharacterInputController.playerControlled.Fire2_performed();
+            if (CharacterInput.playerControlled != null)
+                CharacterInput.playerControlled.Fire2_performed();
         }
 
         private void Fire2_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            if (CharacterInputController.playerControlled != null)
-                CharacterInputController.playerControlled.Fire2_canceled();
+            if (CharacterInput.playerControlled != null)
+                CharacterInput.playerControlled.Fire2_canceled();
         }
 
         private void HandleMovement(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            if (CharacterInputController.playerControlled != null)
+            if (CharacterInput.playerControlled != null)
             {
                 var move = obj.ReadValue<Vector2>();
-                CharacterInputController.playerControlled.HandleMovement(move);
+                CharacterInput.playerControlled.HandleMovement(move);
             }
         }
 
