@@ -18,7 +18,7 @@ namespace PuppetMaster
             _transform = transform;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             var dist = (Vector3.Distance(_transform.position, objectToFollow.position)) * distanceWeight;
             _transform.position = Vector3.Slerp(_transform.position, objectToFollow.position, (dist + baseSpeed) * Time.deltaTime);

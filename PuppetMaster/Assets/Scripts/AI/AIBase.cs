@@ -1,4 +1,3 @@
-using Player.Stats;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -85,7 +84,7 @@ namespace PuppetMaster.AI
                 if (agent.enabled == false)
                     agent.enabled = true;
 
-                HandleState();
+                HandleStateMachine();
                 HandleMovement();
             }
             else
@@ -103,6 +102,11 @@ namespace PuppetMaster.AI
             if (inputManager.isPlayer == false)
                 // Add score
                 scoreManager.ModifyScore(scoreToGiveOnDeath);
+        }
+
+        public void SwapState(AI_State state)
+        {
+            this.state = state;
         }
 
         public void SetTarget(Transform target)
@@ -133,7 +137,7 @@ namespace PuppetMaster.AI
             }
         }
 
-        private void HandleState()
+        private void HandleStateMachine()
         {
             switch (state)
             {
@@ -167,10 +171,12 @@ namespace PuppetMaster.AI
                 {
                     // Find a new wonder pos
                     // FIXME: pick a random position within range that is on the navmesh
+
                     var wanderPoint = Random.insideUnitSphere; // this wont work yo
+                    var moveTo = _trans.position + wanderPoint;
 
                     // Store the calculated path and move following that path
-                    agent.CalculatePath(wanderPoint, movementPath);
+                    agent.CalculatePath(moveTo, movementPath);
                     timeInPosition = 0;
                 }
                 else
@@ -183,11 +189,57 @@ namespace PuppetMaster.AI
         private void HandleScaredState()
         {
             // Find a point farthest away from the attacker and run there
+
+            if (target == null)
+            {
+                SwapState(AI_State.idle);
+            }
+            else
+            {
+                var runDist = Random.Range(10, 30);
+
+                if (Vector3.Distance(_trans.position, target.position) < runDist)
+                {
+                    var distance = Random.insideUnitCircle * runDist;
+                    var moveTo = _trans.position + new Vector3(distance.x, 0, distance.y);
+
+                    // Store the calculated path and move following that path
+                    agent.CalculatePath(moveTo, movementPath);
+                    timeInPosition = 0;
+                }
+            }
         }
 
         private void HandleFightingState()
         {
             // Stand within attacking distance and attack the target
+            if (target == null)
+            {
+                SwapState(AI_State.idle);
+            }
+            else
+            {
+                // Check if we can even see the target
+                var targetVisable = CanSeeObject(target);
+
+                if (targetVisable)
+                {
+                    // If the target is visable we should attack them
+                    inputManager.Fire1_performed();
+                }
+                else
+                {
+                    // If the target is not visable we should move
+                    // FIXME: Implement some sort of move to within range
+                }
+            }
+        }
+
+        public bool CanSeeObject(Transform obj)
+        {
+            // FIXME: launch a ray out and check if it hits the target object
+
+            return false;
         }
     }
 }

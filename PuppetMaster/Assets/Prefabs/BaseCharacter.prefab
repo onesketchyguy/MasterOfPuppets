@@ -307,8 +307,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f0272528a4dcc428333b36aa047678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreToGiveOnDeath: 100
   agent: {fileID: 3033490562498374084}
   inputManager: {fileID: 722108464565729112}
+  stats: {fileID: 2630392775425583656}
   state: 0
   movementFrequency: 3
 --- !u!114 &2630392775425583656
@@ -320,15 +322,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 722108464565729115}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 779c6ec8d50d90d488980fff35ffad9d, type: 3}
+  m_Script: {fileID: 11500000, guid: 14b0004c601ea094bb8f096bad357f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health:
+    MaxValue: 100
+  armor:
     MaxValue: 0
-  damage:
-    baseValue: 1
-  Armor:
-    baseValue: 1
 --- !u!1 &722108465233637550
 GameObject:
   m_ObjectHideFlags: 0
