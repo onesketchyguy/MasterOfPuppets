@@ -17,10 +17,13 @@ namespace PuppetMaster.AI
         [SerializeField] private int scoreToGiveOnDeath = 100;
 
         [Space]
-        [SerializeField] private NavMeshAgent agent;
+        [SerializeField] private NavMeshAgent agent = null;
 
-        [SerializeField] private CharacterInput inputManager;
-        [SerializeField] private CharacterStats stats;
+        [SerializeField] private CharacterInput inputManager = null;
+        [SerializeField] private CharacterStats stats = null;
+
+        // TO BE REMOVED BY A CHECK FOR IF WE ARE ARMED
+        public bool isArmed = false;
 
         public AI_State state;
 
@@ -38,6 +41,12 @@ namespace PuppetMaster.AI
 
         [Tooltip("How long to wait in seconds before moving again.")]
         [SerializeField] private float movementFrequency = 3;
+
+        [SerializeField] private float walkRadius = 5;
+
+        [SerializeField] private AudioClipPlayer audioSource = null;
+
+        [SerializeField] private float visabilityRange = 10;
 
         private void OnValidate()
         {
@@ -78,6 +87,8 @@ namespace PuppetMaster.AI
             // Updating every frame
             if (Time.frameCount % UPDATE_FRAME_LIMIT != updateFrame) return;
 
+            if (isArmed) SwapState(AI_State.fighting);
+
             if (inputManager.isPlayer == false)
             {
                 // Do AI stuff
@@ -102,6 +113,8 @@ namespace PuppetMaster.AI
             if (inputManager.isPlayer == false)
                 // Add score
                 scoreManager.ModifyScore(scoreToGiveOnDeath);
+
+            audioSource.PlayClip();
         }
 
         public void SwapState(AI_State state)
@@ -170,10 +183,20 @@ namespace PuppetMaster.AI
                 if (timeInPosition > movementFrequency)
                 {
                     // Find a new wonder pos
-                    // FIXME: pick a random position within range that is on the navmesh
 
-                    var wanderPoint = Random.insideUnitSphere; // this wont work yo
-                    var moveTo = _trans.position + wanderPoint;
+                    // pick a random position within range that is on the navmesh
+                    Vector3 moveTo;
+
+                    do
+                    {
+                        var wanderDirection = Random.insideUnitSphere * walkRadius;
+
+                        wanderDirection += _trans.position;
+                        wanderDirection.y = _trans.position.y;
+
+                        moveTo = GetNavMeshPosition(wanderDirection);
+                    }
+                    while (moveTo == Vector3.zero);
 
                     // Store the calculated path and move following that path
                     agent.CalculatePath(moveTo, movementPath);
@@ -200,8 +223,11 @@ namespace PuppetMaster.AI
 
                 if (Vector3.Distance(_trans.position, target.position) < runDist)
                 {
-                    var distance = Random.insideUnitCircle * runDist;
-                    var moveTo = _trans.position + new Vector3(distance.x, 0, distance.y);
+                    var direction = Random.insideUnitSphere * runDist;
+                    direction.y = _trans.position.y;
+                    direction += _trans.position;
+
+                    var moveTo = GetNavMeshPosition(direction);
 
                     // Store the calculated path and move following that path
                     agent.CalculatePath(moveTo, movementPath);
@@ -230,16 +256,59 @@ namespace PuppetMaster.AI
                 else
                 {
                     // If the target is not visable we should move
-                    // FIXME: Implement some sort of move to within range
+                    var point = target.position;
+
+                    // Clamp the position to our range
+                    point.x = Mathf.Clamp(_trans.position.x, point.x - visabilityRange, point.x + visabilityRange);
+                    point.z = Mathf.Clamp(_trans.position.z, point.z - visabilityRange, point.z + visabilityRange);
+
+                    var moveTo = GetNavMeshPosition(point);
+
+                    // Store the calculated path and move following that path
+                    agent.CalculatePath(moveTo, movementPath);
+                    timeInPosition = 0;
                 }
             }
         }
 
         public bool CanSeeObject(Transform obj)
         {
-            // FIXME: launch a ray out and check if it hits the target object
+            // Check if the object is even within visability range
+            if (Vector3.Distance(_trans.position, obj.position) > visabilityRange)
+            {
+                return false;
+            }
+            else
+            {
+                // launch a ray out and check if it hits the target object
+                RaycastHit hit;
 
-            return false;
+                // Does the ray intersect any objects
+                if (Physics.Raycast(_trans.position,
+                    _trans.TransformDirection(Vector3.forward),
+                    out hit, visabilityRange, obj.gameObject.layer))
+                {
+                    Debug.DrawRay(_trans.position,
+                        _trans.TransformDirection(Vector3.forward) * hit.distance,
+                        Color.yellow);
+                    return true;
+                }
+                else
+                {
+                    Debug.DrawRay(transform.position,
+                        _trans.TransformDirection(Vector3.forward) * 1000,
+                        Color.white);
+                    return false;
+                }
+            }
+        }
+
+        private Vector3 GetNavMeshPosition(Vector3 position)
+        {
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, walkRadius, 1);
+
+            return hit.position;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace PuppetMaster
 
         private Transform holder;
 
+        [SerializeField] private AudioClipPlayer audioSource;
+
         private void Start()
         {
             holder = GetComponentInParent<CharacterInput>().transform;
@@ -33,6 +35,8 @@ namespace PuppetMaster
             var projectile = obj.GetComponent<Projectile>();
             projectile.SetSender(holder);
             projectile.SetDamage(info.weaponDamage);
+
+            audioSource.PlayClip();
         }
 
         public override IEnumerator OnReload()

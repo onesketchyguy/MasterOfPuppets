@@ -52,14 +52,8 @@ namespace PuppetMaster
 
         public void SwapWeapon(BaseWeapon weaponObject)
         {
-            // Destroy any existing children
-            var items = weaponParentObject.GetComponentsInChildren<BaseWeapon>();
-
-            if (items != null && items.Length > 0)
-            {
-                for (int i = items.Length - 1; i >= 0; i--)
-                    Destroy(items[i].gameObject);
-            }
+            // Remove any existing children
+            // FIXME: Drop the weapon
 
             // Add the weapon to the slot
             var go = Instantiate(weaponObject.gameObject, weaponParentObject);
