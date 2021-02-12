@@ -14,14 +14,16 @@ namespace PuppetMaster
 
         [SerializeField] private AudioClipPlayer audioSource;
 
-        private void Start()
+        private void VerifySetup()
         {
-            holder = GetComponentInParent<CharacterInput>().transform;
+            if (holder)
+                holder = GetComponentInParent<CharacterInput>().transform;
         }
 
         public override void Use()
         {
             base.Use();
+            VerifySetup();
 
             var time = Time.timeSinceLevelLoad;
             if (lastUse > time) return;

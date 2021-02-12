@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Player.Input;
-using Player.Stats;
+using System.Collections.Generic;
 
 namespace PuppetMaster
 {
-    public class AttackManager : MonoBehaviour, IActionInputReciever
+    public class CombatManager : MonoBehaviour, IActionInputReciever
     {
         [SerializeField] private Rigidbody rigidBody;
         private Transform _transform;
@@ -22,12 +22,12 @@ namespace PuppetMaster
 
         [SerializeField] private Transform lookTargetObject;
 
-        private Vector3 upOffset;
+        [SerializeField] private float weaponPickupRange = 3;
 
-        /// <summary>
-        /// TO BE MOVED TO WEAPON SCRIPT!
-        /// </summary>
-        public GameObject bulletPrefab;
+        private Vector3 verticalOffset;
+
+        private Collider[] inRangeColliders;
+        private HashSet<BaseWeapon> inRangeWeapons = new HashSet<BaseWeapon>();
 
         private void Start()
         {
@@ -35,7 +35,7 @@ namespace PuppetMaster
             if (rigidBody == null) rigidBody = GetComponent<Rigidbody>();
             _transform = transform;
 
-            upOffset = Vector3.up * 0.25f;
+            verticalOffset = Vector3.up * 0.25f;
 
             // Equip the starter weapon if one exists
             if (startWeapon != null) SwapWeapon(startWeapon);
@@ -47,26 +47,88 @@ namespace PuppetMaster
             if (Time.frameCount % 3 == 0)
             {
                 LookAtCursor();
+
+                // Update nearby objects
+                inRangeColliders = Physics.OverlapSphere(_transform.position, weaponPickupRange);
+
+                inRangeWeapons.Clear();
+
+                foreach (var item in inRangeColliders)
+                {
+                    var _weapon = item.GetComponent<BaseWeapon>();
+
+                    if (_weapon != null)
+                    {
+                        inRangeWeapons.Add(_weapon);
+                    }
+                }
+
+                if (weapon == null)
+                {
+                    EquipClosestWeapon();
+                }
             }
+        }
+
+        private void EquipClosestWeapon()
+        {
+            if (inRangeColliders == null || inRangeColliders.Length < 1) return;
+
+            var closest = weaponPickupRange;
+
+            BaseWeapon inRange = null;
+
+            foreach (var baseWeapon in inRangeWeapons)
+            {
+                if (baseWeapon)
+                {
+                    var dist = Vector3.Distance(_transform.position, baseWeapon.transform.position);
+
+                    if (dist < closest)
+                    {
+                        closest = dist;
+                        inRange = baseWeapon;
+                    }
+                }
+            }
+
+            if (inRange != null) EquipWeapon(inRange);
         }
 
         public void SwapWeapon(BaseWeapon weaponObject)
         {
-            // Remove any existing children
-            // FIXME: Drop the weapon
+            // Drop the current weapon
+            DropWeapon();
 
             // Add the weapon to the slot
-            var go = Instantiate(weaponObject.gameObject, weaponParentObject);
-            go.name = weaponObject.gameObject.name;
+            EquipWeapon(weaponObject);
+        }
 
-            weapon = go.GetComponent<BaseWeapon>();
+        public void EquipWeapon(BaseWeapon weaponObject)
+        {
+            weaponObject.transform.SetParent(weaponParentObject);
+            weaponObject.transform.position = weaponParentObject.position;
+            weaponObject.transform.rotation = weaponParentObject.rotation;
+
+            weapon = weaponObject;
+        }
+
+        public void DropWeapon()
+        {
+            if (weapon != null)
+            {
+                weapon.transform.position = transform.position + Vector3.up;
+                weapon.transform.SetParent(null);
+
+                weapon = null;
+            }
         }
 
         private void LookAtCursor()
         {
             lookDirection = Utility.Utilities.GetMouseOffsetFromObject(_transform, 1.1f);
 
-            lookTargetObject.position = _transform.position + lookDirection + upOffset;
+            lookTargetObject.position = _transform.position + lookDirection + verticalOffset;
 
             UpdateLookRotation();
         }
@@ -104,6 +166,8 @@ namespace PuppetMaster
 
         public void OnFire2()
         {
+            // Pickup the closest weapon
+            EquipClosestWeapon();
         }
 
         public void OnFire2Up()

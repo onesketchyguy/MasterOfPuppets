@@ -96,12 +96,19 @@ namespace PuppetMaster
         public float HorizontalInput { get; set; }
         public float VerticalInput { get; set; }
 
+        [SerializeField] private bool freezeY = true;
+        private RigidbodyConstraints constraints;
+
         private Camera cameraManager;
 
         private void Start()
         {
             //Set the usingGlobalMovement variable.
             cameraManager = Camera.main;
+
+            constraints = rigidbody.constraints;
+
+            SetFreezeY(freezeY);
         }
 
         private void FixedUpdate()
@@ -114,6 +121,18 @@ namespace PuppetMaster
             if (updateRotation) UpdateGlobalRotation(speed);
 
             rigidbody.angularVelocity = Vector3.zero;
+        }
+
+        public void SetFreezeY(bool freeze)
+        {
+            if (freeze)
+            {
+                rigidbody.constraints = constraints | RigidbodyConstraints.FreezePositionY;
+            }
+            else
+            {
+                rigidbody.constraints = constraints;
+            }
         }
 
         private void UpdateGlobalPosition(float speed)

@@ -377,6 +377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8997638316182519338}
   - component: {fileID: 1481426110614721791}
+  - component: {fileID: 7278136938184175702}
   m_Layer: 0
   m_Name: ShotGun_0
   m_TagString: Untagged
@@ -416,3 +417,17 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 4a6497b4f49ef214cada6a5a2ee7b74b, type: 2}
   firePoint: {fileID: 7184480870076505747}
   audioSource: {fileID: 7914047867870871626}
+--- !u!114 &7278136938184175702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8997638316182519339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 426a4ae76e7a3704cbcb1ee1613d33be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapon: {fileID: 1481426110614721791}
+  turnSpeed: 30

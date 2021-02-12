@@ -4,7 +4,19 @@ namespace PuppetMaster
 {
     public class Follower : MonoBehaviour
     {
+        [Tooltip("Leave empty to just follow the player.")]
         [SerializeField] private Transform objectToFollow;
+
+        private Transform GetFollowObject()
+        {
+            if (objectToFollow == null)
+            {
+                return CharacterInput.playerControlled.transform;
+            }
+
+            return objectToFollow;
+        }
+
         private Transform _transform;
 
         [Range(0, 1f)]
@@ -20,8 +32,8 @@ namespace PuppetMaster
 
         private void FixedUpdate()
         {
-            var dist = (Vector3.Distance(_transform.position, objectToFollow.position)) * distanceWeight;
-            _transform.position = Vector3.Slerp(_transform.position, objectToFollow.position, (dist + baseSpeed) * Time.deltaTime);
+            var dist = (Vector3.Distance(_transform.position, GetFollowObject().position)) * distanceWeight;
+            _transform.position = Vector3.Lerp(_transform.position, GetFollowObject().position, (dist + baseSpeed) * Time.deltaTime);
         }
     }
 }
