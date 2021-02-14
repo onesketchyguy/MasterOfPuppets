@@ -8,19 +8,18 @@ namespace PuppetMaster
     public class CombatManager : MonoBehaviour, IActionInputReceiver
     {
         [SerializeField] private Rigidbody rigidBody;
-        private Transform _transform;
-
-        public BaseWeapon startWeapon;
-
-        private BaseWeapon weapon;
+        [SerializeField] private BaseWeapon startWeapon;
 
         [SerializeField] private Transform weaponParentObject;
 
         [SerializeField] private float weaponPickupRange = 3;
+        public BaseWeapon weapon { get; private set; }
 
         private Collider[] inRangeColliders;
         private HashSet<BaseWeapon> inRangeWeapons = new HashSet<BaseWeapon>();
+
         internal bool armed => weapon != null;
+        private Transform _transform;
 
         private void Start()
         {
@@ -54,6 +53,7 @@ namespace PuppetMaster
             // On the second of every 3 frames update the objects with a foreach loop
             if (Time.frameCount % 3 == 1)
             {
+                // Clear the list before beginning the search
                 inRangeWeapons.Clear();
 
                 // Do not attempt to continue if there is nothing to work with
@@ -64,7 +64,14 @@ namespace PuppetMaster
                 {
                     // If this item is a weapon add it to the weapon list
                     var _weapon = item.GetComponent<BaseWeapon>();
-                    if (_weapon != null) inRangeWeapons.Add(_weapon);
+                    if (_weapon != null)
+                    {
+                        // If this weapon is already being held then fuck right off, bud
+                        if (_weapon.beingHeld) continue;
+
+                        // Add this weapon to our list of local weapons
+                        inRangeWeapons.Add(_weapon);
+                    }
                 }
 
                 // If not holding a weapon try to equip one
@@ -94,9 +101,13 @@ namespace PuppetMaster
                 }
             }
 
-            if (inRange != null) EquipWeapon(inRange);
+            if (inRange != null) SwapWeapon(inRange);
         }
 
+        /// <summary>
+        /// Drops any existing weapon, and equips a designated one.
+        /// </summary>
+        /// <param name="weaponObject"></param>
         public void SwapWeapon(BaseWeapon weaponObject)
         {
             // Drop the current weapon
@@ -106,24 +117,40 @@ namespace PuppetMaster
             EquipWeapon(weaponObject);
         }
 
+        /// <summary>
+        /// Equip a weapon to the weapon slot.
+        /// </summary>
+        /// <param name="weaponObject"></param>
         public void EquipWeapon(BaseWeapon weaponObject)
         {
-            Debug.Log($"Equipping weapon: {weaponObject.name}");
-
+            // Set the object to the pivot spot
             weaponObject.transform.SetParent(weaponParentObject);
             weaponObject.transform.position = weaponParentObject.position;
             weaponObject.transform.rotation = weaponParentObject.rotation;
 
+            // Set the local data
             weapon = weaponObject;
+
+            // Let this little honey know who's boss
+            weapon.SetHolder(transform);
         }
 
+        /// <summary>
+        /// Drops the current weapon if one exists.
+        /// </summary>
         public void DropWeapon()
         {
             if (weapon != null)
             {
-                weapon.transform.position = transform.position + Vector3.up;
+                // Drop the current weapon on the ground where we are standing
+                weapon.transform.position = transform.position;
                 weapon.transform.SetParent(null);
 
+                // Clear the rotation at to reset the object
+                weapon.transform.rotation = Quaternion.identity;
+
+                // Let the weapon know we don't need it any more, sexually or otherwise
+                weapon.SetHolder(null);
                 weapon = null;
             }
         }
@@ -149,6 +176,7 @@ namespace PuppetMaster
 
         public void OnFire2()
         {
+            // Not being used
         }
 
         public void OnFire2Up()
@@ -157,19 +185,21 @@ namespace PuppetMaster
             EquipClosestWeapon();
         }
 
+        /// <summary>
+        /// Iterativly call the use function of the weapon.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator UseWeapon()
         {
             while (true)
             {
-                if (weapon == null) break;
+                if (weapon == null) yield break;
 
                 // Use this weapon
                 weapon.Use();
 
                 yield return new WaitForEndOfFrame();
             }
-
-            yield return new WaitForEndOfFrame();
         }
     }
 }
