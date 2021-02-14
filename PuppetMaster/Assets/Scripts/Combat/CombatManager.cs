@@ -7,18 +7,41 @@ namespace PuppetMaster
 {
     public class CombatManager : MonoBehaviour, IActionInputReceiver
     {
+        [Header("Setup fields")]
         [SerializeField] private Rigidbody rigidBody;
+
+        [Tooltip("Weapon to have on start. Leave empty to start unarmed.")]
         [SerializeField] private BaseWeapon startWeapon;
 
+        [Tooltip("Object to use to hold onto the weapon.")]
         [SerializeField] private Transform weaponParentObject;
 
+        [Tooltip("How close this transform can be before it can be picked up.")]
         [SerializeField] private float weaponPickupRange = 3;
+
+        /// <summary>
+        /// Returns the currently equipped weapon.
+        /// </summary>
         public BaseWeapon weapon { get; private set; }
 
+        /// <summary>
+        /// Stores all objects within range.
+        /// </summary>
         private Collider[] inRangeColliders;
+
+        /// <summary>
+        /// Stores all weapons in range.
+        /// </summary>
         private HashSet<BaseWeapon> inRangeWeapons = new HashSet<BaseWeapon>();
 
+        /// <summary>
+        /// Returns whether or not this character is armed.
+        /// </summary>
         internal bool armed => weapon != null;
+
+        /// <summary>
+        /// A cached transform.
+        /// </summary>
         private Transform _transform;
 
         private void Start()
@@ -31,7 +54,7 @@ namespace PuppetMaster
             if (startWeapon != null) SwapWeapon(startWeapon);
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             // Update nearby objects
             UpdateLocalObjects();
@@ -79,28 +102,38 @@ namespace PuppetMaster
             }
         }
 
+        /// <summary>
+        /// Finds the closest weapon to this object, and equips it.
+        /// </summary>
         private void EquipClosestWeapon()
         {
+            // If no weapons are in range don't continue.
             if (inRangeWeapons == null || inRangeWeapons.Count < 1) return;
 
-            var closest = weaponPickupRange;
-
+            // Store some information on which object is closest.
             BaseWeapon inRange = null;
+            float closest = weaponPickupRange;
 
+            // Iterate through each object to find the closest one.
             foreach (var baseWeapon in inRangeWeapons)
             {
+                // Continue if the current weapon is the weapon currently being held.
                 if (baseWeapon != weapon)
                 {
+                    // Store the distance to the current iteration object
                     var dist = Vector3.Distance(_transform.position, baseWeapon.transform.position);
 
+                    // If this object is this closest one...
                     if (dist < closest)
                     {
+                        // Go ahead and update the closest object to be this object.
                         closest = dist;
                         inRange = baseWeapon;
                     }
                 }
             }
 
+            // If there is a weapon in range equip it.
             if (inRange != null) SwapWeapon(inRange);
         }
 
