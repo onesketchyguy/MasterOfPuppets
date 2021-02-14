@@ -5,14 +5,10 @@ using System.Collections.Generic;
 
 namespace PuppetMaster
 {
-    public class CombatManager : MonoBehaviour, IActionInputReciever
+    public class CombatManager : MonoBehaviour, IActionInputReceiver
     {
         [SerializeField] private Rigidbody rigidBody;
         private Transform _transform;
-
-        [SerializeField] private float turnSpeed = 30;
-
-        private Vector3 lookDirection;
 
         public BaseWeapon startWeapon;
 
@@ -20,14 +16,11 @@ namespace PuppetMaster
 
         [SerializeField] private Transform weaponParentObject;
 
-        [SerializeField] private Transform lookTargetObject;
-
         [SerializeField] private float weaponPickupRange = 3;
-
-        private Vector3 verticalOffset;
 
         private Collider[] inRangeColliders;
         private HashSet<BaseWeapon> inRangeWeapons = new HashSet<BaseWeapon>();
+        internal bool armed => weapon != null;
 
         private void Start()
         {
@@ -35,44 +28,53 @@ namespace PuppetMaster
             if (rigidBody == null) rigidBody = GetComponent<Rigidbody>();
             _transform = transform;
 
-            verticalOffset = Vector3.up * 0.25f;
-
             // Equip the starter weapon if one exists
             if (startWeapon != null) SwapWeapon(startWeapon);
         }
 
         private void FixedUpdate()
         {
-            // Look at cursor
+            // Update nearby objects
+            UpdateLocalObjects();
+        }
+
+        /// <summary>
+        /// Updates the objects within range
+        /// NOTE: This could be inside a dedicated interaction script
+        /// </summary>
+        private void UpdateLocalObjects()
+        {
+            // On the first of every 3 frames update the local objects with a physics update
             if (Time.frameCount % 3 == 0)
             {
-                LookAtCursor();
-
-                // Update nearby objects
+                // Setup all the in range objects
                 inRangeColliders = Physics.OverlapSphere(_transform.position, weaponPickupRange);
+            }
 
+            // On the second of every 3 frames update the objects with a foreach loop
+            if (Time.frameCount % 3 == 1)
+            {
                 inRangeWeapons.Clear();
 
+                // Do not attempt to continue if there is nothing to work with
+                if (inRangeColliders == null || inRangeColliders.Length < 1) return;
+
+                // Go through each item in the nearby objects
                 foreach (var item in inRangeColliders)
                 {
+                    // If this item is a weapon add it to the weapon list
                     var _weapon = item.GetComponent<BaseWeapon>();
-
-                    if (_weapon != null)
-                    {
-                        inRangeWeapons.Add(_weapon);
-                    }
+                    if (_weapon != null) inRangeWeapons.Add(_weapon);
                 }
 
-                if (weapon == null)
-                {
-                    EquipClosestWeapon();
-                }
+                // If not holding a weapon try to equip one
+                if (weapon == null) EquipClosestWeapon();
             }
         }
 
         private void EquipClosestWeapon()
         {
-            if (inRangeColliders == null || inRangeColliders.Length < 1) return;
+            if (inRangeWeapons == null || inRangeWeapons.Count < 1) return;
 
             var closest = weaponPickupRange;
 
@@ -80,7 +82,7 @@ namespace PuppetMaster
 
             foreach (var baseWeapon in inRangeWeapons)
             {
-                if (baseWeapon)
+                if (baseWeapon != weapon)
                 {
                     var dist = Vector3.Distance(_transform.position, baseWeapon.transform.position);
 
@@ -106,6 +108,8 @@ namespace PuppetMaster
 
         public void EquipWeapon(BaseWeapon weaponObject)
         {
+            Debug.Log($"Equipping weapon: {weaponObject.name}");
+
             weaponObject.transform.SetParent(weaponParentObject);
             weaponObject.transform.position = weaponParentObject.position;
             weaponObject.transform.rotation = weaponParentObject.rotation;
@@ -122,27 +126,6 @@ namespace PuppetMaster
 
                 weapon = null;
             }
-        }
-
-        private void LookAtCursor()
-        {
-            lookDirection = Utility.Utilities.GetMouseOffsetFromObject(_transform, 1.1f);
-
-            lookTargetObject.position = _transform.position + lookDirection + verticalOffset;
-
-            UpdateLookRotation();
-        }
-
-        private void UpdateLookRotation()
-        {
-            var targetDir = lookDirection + _transform.position;
-            var localTarget = _transform.InverseTransformPoint(targetDir);
-
-            var angle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
-
-            var eulerAngleVelocity = new Vector3(0, angle, 0);
-            var deltaRotation = Quaternion.Euler(eulerAngleVelocity * turnSpeed * Time.fixedDeltaTime);
-            rigidBody.MoveRotation(rigidBody.rotation * deltaRotation);
         }
 
         public void OnFire1()
@@ -166,12 +149,12 @@ namespace PuppetMaster
 
         public void OnFire2()
         {
-            // Pickup the closest weapon
-            EquipClosestWeapon();
         }
 
         public void OnFire2Up()
         {
+            // Pickup the closest weapon
+            EquipClosestWeapon();
         }
 
         private IEnumerator UseWeapon()

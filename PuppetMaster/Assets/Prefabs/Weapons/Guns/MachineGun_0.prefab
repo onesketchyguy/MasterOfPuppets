@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6001608720903691413}
   - component: {fileID: 247486773217080337}
   - component: {fileID: 5904365506658214048}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AudioSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 6741891012735043784}
   - component: {fileID: 4714738768201626537}
   - component: {fileID: 6435631514612391956}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MachineGunClip_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,7 +235,8 @@ GameObject:
   - component: {fileID: 2994804460288034028}
   - component: {fileID: -1171994903542233367}
   - component: {fileID: -4683347863129905993}
-  m_Layer: 0
+  - component: {fileID: 1960404986875041834}
+  m_Layer: 6
   m_Name: MachineGun_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,6 +289,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: -1171994903542233367}
   turnSpeed: 30
+--- !u!65 &1960404986875041834
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2994804460288034029}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2994804460992406331
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,7 +311,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2994804460992406330}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -328,7 +342,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7454566818580056444}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -360,7 +374,7 @@ GameObject:
   - component: {fileID: 7909053621520329119}
   - component: {fileID: 5903307210249957640}
   - component: {fileID: 5400893077767010884}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MachineGun_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}

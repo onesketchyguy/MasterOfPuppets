@@ -5,6 +5,7 @@ namespace Player.Input
 {
     public class PlayerInputManager : MonoBehaviour
     {
+        private const float MAX_MOUSE_OFFSET = 1;
         private InputControls inputControls;
 
         /// <summary>
@@ -26,6 +27,9 @@ namespace Player.Input
 
             inputControls.InWorld.Fire2.performed += Fire2_performed;
             inputControls.InWorld.Fire2.canceled += Fire2_canceled;
+
+            inputControls.InWorld.Look.performed += HandleLook;
+            inputControls.InWorld.Look.canceled += HandleLook;
 
             // Enable the input system
             SetPlayerControlEnabled(true);
@@ -61,6 +65,16 @@ namespace Player.Input
             {
                 var move = obj.ReadValue<Vector2>();
                 CharacterInput.playerControlled.HandleMovement(move);
+            }
+        }
+
+        private void HandleLook(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+        {
+            if (CharacterInput.playerControlled != null)
+            {
+                var screenSpace = obj.ReadValue<Vector2>();
+
+                CharacterInput.playerControlled.HandleLook(screenSpace);
             }
         }
 

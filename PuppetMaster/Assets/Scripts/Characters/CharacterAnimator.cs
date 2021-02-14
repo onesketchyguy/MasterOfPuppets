@@ -1,8 +1,9 @@
+using RootMotion.FinalIK;
 using UnityEngine;
 
 namespace PuppetMaster
 {
-    public class CharacterAnimator : MonoBehaviour
+    public class CharacterAnimator : MonoBehaviour, ILookInputReceiver
     {
         [Header("Component Setup")]
         [SerializeField] private Rigidbody rigidBody = null;
@@ -10,10 +11,18 @@ namespace PuppetMaster
         [SerializeField] private Animator animator = null;
         [SerializeField] private new Renderer renderer = null;
 
+        [SerializeField] private CombatManager combatManager = null;
+        [SerializeField] private AimController aimController = null;
+
         [Header("Field setup")]
+        [SerializeField] private int aimLayerIndex = 1;
+
         [SerializeField] private string horizontalMotionField = "MotionX";
 
         [SerializeField] private string verticalMotionField = "MotionY";
+
+        [SerializeField] private Transform lookObject;
+        public Vector3 lookDirection { get; set; }
 
         private bool isSeen
         {
@@ -60,11 +69,27 @@ namespace PuppetMaster
         {
             if (isSeen)
             {
-                var motion = GetMotion();
-
-                animator.SetFloat(horizontalMotionField, motion.x);
-                animator.SetFloat(verticalMotionField, motion.z);
+                UpdateMovement();
+                UpdateLookIK();
             }
+        }
+
+        private void UpdateMovement()
+        {
+            var motion = GetMotion();
+
+            animator.SetFloat(horizontalMotionField, motion.x);
+            animator.SetFloat(verticalMotionField, motion.z);
+        }
+
+        private void UpdateLookIK()
+        {
+            lookObject.position = transform.position + (lookDirection * 10);
+
+            float armedWeight = combatManager.armed ? 1 : 0;
+            animator.SetLayerWeight(aimLayerIndex, armedWeight);
+
+            aimController.weight = armedWeight;
         }
     }
 }

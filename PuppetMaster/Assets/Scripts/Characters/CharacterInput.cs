@@ -6,9 +6,10 @@ namespace PuppetMaster
     public class CharacterInput : MonoBehaviour
     {
         // An array of objects than can recieve input from this
-        private IMoveInputReciever[] moveInputRecievers;
 
-        private IActionInputReciever[] actionInputRecievers;
+        private IMoveInputReceiver[] moveInputReceivers;
+        private IActionInputReceiver[] actionInputReceivers;
+        private ILookInputReceiver[] lookInputReceivers;
 
         public static CharacterInput playerControlled;
 
@@ -32,8 +33,9 @@ namespace PuppetMaster
         {
             // Retrieve all the input recievers on start
             // NOTE: This could become rather performance intensive if not kept under check
-            moveInputRecievers = GetComponents<IMoveInputReciever>();
-            actionInputRecievers = GetComponents<IActionInputReciever>();
+            moveInputReceivers = GetComponents<IMoveInputReceiver>();
+            actionInputReceivers = GetComponents<IActionInputReceiver>();
+            lookInputReceivers = GetComponents<ILookInputReceiver>();
 
             // DEBUG set this as player
             if (isPlayerOnStart)
@@ -44,7 +46,7 @@ namespace PuppetMaster
 
         public void Fire1_performed()
         {
-            foreach (var item in actionInputRecievers)
+            foreach (var item in actionInputReceivers)
             {
                 item.OnFire1();
             }
@@ -52,7 +54,7 @@ namespace PuppetMaster
 
         public void Fire1_canceled()
         {
-            foreach (var item in actionInputRecievers)
+            foreach (var item in actionInputReceivers)
             {
                 item.OnFire1Up();
             }
@@ -60,7 +62,7 @@ namespace PuppetMaster
 
         public void Fire2_performed()
         {
-            foreach (var item in actionInputRecievers)
+            foreach (var item in actionInputReceivers)
             {
                 item.OnFire2();
             }
@@ -68,7 +70,7 @@ namespace PuppetMaster
 
         public void Fire2_canceled()
         {
-            foreach (var item in actionInputRecievers)
+            foreach (var item in actionInputReceivers)
             {
                 item.OnFire2Up();
             }
@@ -76,10 +78,22 @@ namespace PuppetMaster
 
         public void HandleMovement(Vector2 move)
         {
-            foreach (var item in moveInputRecievers)
+            foreach (var item in moveInputReceivers)
             {
                 item.HorizontalInput = move.x;
                 item.VerticalInput = move.y;
+            }
+        }
+
+        public void HandleLook(Vector2 look)
+        {
+            foreach (var item in lookInputReceivers)
+            {
+                // Old, didn't feel like fingering this one out there, bud
+                //item.lookDirection = new Vector3(look.x, 0, look.y);
+
+                // This works... For now.
+                item.lookDirection = Utility.Utilities.GetScreenSpaceOffsetFromObject(transform, look);
             }
         }
     }

@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 3033490562498374084}
   - component: {fileID: 4882819769724474561}
   - component: {fileID: 2630392775425583656}
+  - component: {fileID: 8570563497597913049}
   m_Layer: 3
   m_Name: BaseCharacter
   m_TagString: Player
@@ -51,7 +52,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 722108464565729115}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 11f2d11e5774f4c7e87f5d8568a243f1, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
@@ -87,10 +88,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 722108464565729118}
-  turnSpeed: 30
   startWeapon: {fileID: 0}
   weaponParentObject: {fileID: 8100356580762284819}
-  lookTargetObject: {fileID: 722108465233637549}
   weaponPickupRange: 3
 --- !u!114 &722108464565729116
 MonoBehaviour:
@@ -104,19 +103,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad2f8e4e9ba2bd64db4755d8f3bacd42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateRotation: 0
-  Speed: 12
+  updateRotation: 1
+  speed: 5
   runSpeedModifier: 1.5
+  accelerationSpeed: 24
+  turnSpeed: 30
   airSpeedMultiplier: 0.5
   airControlMultiplier: 0.5
   VerticalForce: 8
-  accelerationSpeed: 24
   groundedRequired: 1
   notGround:
     serializedVersion: 2
     m_Bits: 54
   characterFeetPosition: 0.5
-  freezeY: 1
+  freezeY: 0
 --- !u!114 &722108464565729113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,8 +132,12 @@ MonoBehaviour:
   rigidBody: {fileID: 722108464565729118}
   animator: {fileID: 8076616906457093788}
   renderer: {fileID: 722108465653204449}
+  combatManager: {fileID: 722108464565729117}
+  aimController: {fileID: 722108464565729091}
+  aimLayerIndex: 1
   horizontalMotionField: MotionX
   verticalMotionField: MotionY
+  lookObject: {fileID: 722108465233637549}
 --- !u!114 &722108464565729112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,10 +166,10 @@ MonoBehaviour:
   fixTransforms: 1
   solver:
     executedInEditor: 0
-    IKPosition: {x: 3.647138, y: 0.24473801, z: 0.83564353}
+    IKPosition: {x: 3.64714, y: 0.24474339, z: 0.8356401}
     IKPositionWeight: 0
     root: {fileID: 722108464565729119}
-    target: {fileID: 0}
+    target: {fileID: 722108465233637549}
     tolerance: 0
     maxIterations: 2
     useRotationLimits: 1
@@ -208,9 +212,9 @@ MonoBehaviour:
       sqrMag: 0
       axis: {x: 0, y: 0, z: 0}
     transform: {fileID: 8100356580762284819}
-    axis: {x: 0, y: 1, z: 0}
+    axis: {x: -1, y: 0, z: 0}
     poleAxis: {x: 0, y: 0, z: 1}
-    polePosition: {x: 1.403999, y: -0.4574114, z: -2.6963997}
+    polePosition: {x: 1.4039998, y: -0.45740604, z: -2.6964035}
     poleWeight: 0
     poleTarget: {fileID: 0}
     clampWeight: 0.5
@@ -305,6 +309,110 @@ MonoBehaviour:
     MaxValue: 100
   armor:
     MaxValue: 0
+--- !u!114 &8570563497597913049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722108464565729115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776adaaacdc5c4e8ab0395120a6e972b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fixTransforms: 1
+  solver:
+    executedInEditor: 0
+    IKPosition: {x: -3.9413395e-10, y: 0.57816756, z: 2.9583416}
+    IKPositionWeight: 1
+    root: {fileID: 722108464565729119}
+    target: {fileID: 722108465233637549}
+    spine:
+    - transform: {fileID: 8097065620390470221}
+      weight: 0
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 0}
+      defaultLocalPosition: {x: -1.6237012e-15, y: 0.10742404, z: 2.7755576e-17}
+      defaultLocalRotation: {x: -0.10453802, y: -0.00000035489796, z: 0.000000013269084, w: 0.9945209}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0.00000047419073, y: -0.09691805, z: 0.99529237}
+      baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
+    - transform: {fileID: 5056982165124758943}
+      weight: 0
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 0}
+      defaultLocalPosition: {x: -6.793177e-15, y: 0.17183542, z: 0.0000000018626451}
+      defaultLocalRotation: {x: -0.054206867, y: 4.849722e-10, z: 0.000000026360437, w: 0.99852973}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0.00000046528544, y: -0.20409325, z: 0.97895145}
+      baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
+    - transform: {fileID: 2945414261061549069}
+      weight: 0
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 0}
+      defaultLocalPosition: {x: 4.385381e-15, y: 0.17949717, z: -0.000000009313226}
+      defaultLocalRotation: {x: 0.03287791, y: -1.8089728e-10, z: -0.00000001584917, w: 0.9994594}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0.00000047108742, y: -0.139315, z: 0.99024814}
+      baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
+    - transform: {fileID: 5540774127395152863}
+      weight: 0
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 0}
+      defaultLocalPosition: {x: -0, y: 0.14787345, z: 0.0000000037252903}
+      defaultLocalRotation: {x: 0.24706379, y: -0.000000115624054, z: -0.00000014711384, w: 0.9689992}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0.0000006686765, y: 0.35183263, z: 0.93606293}
+      baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
+    head:
+      transform: {fileID: 5700122575790793294}
+      weight: 1
+      solverPosition: {x: 0, y: 0, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0, w: 1}
+      defaultLocalPosition: {x: -3.4083847e-14, y: 0.08705419, z: 0.00000004004687}
+      defaultLocalRotation: {x: -0.14125372, y: 0.0000002330379, z: 0.0000000651565, w: 0.9899734}
+      length: 0
+      sqrMag: 0
+      axis: {x: 0.0000002417701, y: 0.07599933, z: 0.99710786}
+      baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
+    eyes: []
+    bodyWeight: 0.5
+    headWeight: 1
+    eyesWeight: 1
+    clampWeight: 0.5
+    clampWeightHead: 0.5
+    clampWeightEyes: 0.5
+    clampSmoothing: 2
+    spineWeightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.3
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    spineTargetOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &722108465233637550
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,13 +580,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5569029852929513558}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.032, y: 0.058, z: -0}
+  m_LocalRotation: {x: 0, y: 0, z: -0.8433915, w: 0.53729963}
+  m_LocalPosition: {x: -0.031993866, y: 0.05799943, z: 0.0000020004795}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7629161104631744931}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -115}
 --- !u!1 &8939415743928635808
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,7 +917,8 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2055512180100515103, guid: b51a98b12f2f4bb46973176b696bd211, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b51a98b12f2f4bb46973176b696bd211, type: 3}
 --- !u!4 &8097065620390470221 stripped
 Transform:
@@ -834,6 +943,11 @@ Transform:
 --- !u!4 &5540774127395152863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2923101349426999984, guid: b51a98b12f2f4bb46973176b696bd211, type: 3}
+  m_PrefabInstance: {fileID: 7238473752187474287}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5700122575790793294 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3129683771460055841, guid: b51a98b12f2f4bb46973176b696bd211, type: 3}
   m_PrefabInstance: {fileID: 7238473752187474287}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &972654740355751127 stripped

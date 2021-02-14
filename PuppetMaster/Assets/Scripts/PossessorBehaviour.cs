@@ -3,7 +3,7 @@ using Player.Input;
 
 namespace PuppetMaster
 {
-    public class PossessorBehaviour : MonoBehaviour, IActionInputReciever
+    public class PossessorBehaviour : MonoBehaviour, IActionInputReceiver
     {
         [SerializeField] private LayerMask possessableMask = 0;
         [SerializeField] private float overlapRadius = 3;
@@ -15,6 +15,9 @@ namespace PuppetMaster
         private Transform _possessed;
 
         [SerializeField] private UnityEngine.Events.UnityEvent onPossessionEvent;
+
+        [SerializeField] private Collider _collider;
+        [SerializeField] private Rigidbody rigidBody;
 
         private CharacterInput GetPossessing()
         {
@@ -35,12 +38,12 @@ namespace PuppetMaster
             if (GetPossessing() == null && display.activeSelf == false)
             {
                 // Set our visuals to active.
-                display.SetActive(true);
+                SetVisable(true);
             }
             else if (GetPossessing() != null && display.activeSelf == true)
             {
                 // Set our visuals to inactive.
-                display.SetActive(false);
+                SetVisable(false);
             }
             else if (GetPossessing() != null)
             {
@@ -74,7 +77,7 @@ namespace PuppetMaster
                 }
 
                 // Possess the closest character
-                Possess(closest.gameObject);
+                if (closest != null) Possess(closest.gameObject);
             }
         }
 
@@ -94,9 +97,18 @@ namespace PuppetMaster
         {
             onPossessionEvent?.Invoke();
 
+            SetVisable(false);
+
             // Set the object to recieve player input
             CharacterInput.playerControlled = obj.GetComponent<CharacterInput>();
             _possessed = obj.transform;
+        }
+
+        private void SetVisable(bool visable)
+        {
+            _collider.enabled = visable;
+            rigidBody.isKinematic = visable;
+            display.SetActive(visable);
         }
 
         private void OnDrawGizmosSelected()

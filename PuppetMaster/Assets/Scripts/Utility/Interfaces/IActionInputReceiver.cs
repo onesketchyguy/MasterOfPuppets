@@ -1,6 +1,6 @@
 namespace Player.Input
 {
-    public interface IActionInputReciever
+    public interface IActionInputReceiver
     {
         public void OnFire1();
 

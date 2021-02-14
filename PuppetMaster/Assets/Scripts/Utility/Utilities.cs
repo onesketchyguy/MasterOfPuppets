@@ -8,7 +8,7 @@ namespace Utility
     /// </summary>
     public static class Utilities
     {
-        private static Camera mainCamera
+        public static Camera mainCamera
         {
             get
             {
@@ -60,14 +60,8 @@ namespace Utility
         /// </summary>
         /// <param name="_transform"></param>
         /// <returns></returns>
-        public static Vector3 GetMouseOffsetFromObject(Transform _transform, float MAX_MOUSE_OFFSET = 1)
+        public static Vector3 GetScreenSpaceOffsetFromObject(Transform _transform, Vector2 screenSpace, float MAX_OFFSET = 1)
         {
-            // Get the direction of the attack
-            var screenSpace = mousePos;
-
-            screenSpace.x = mouse.position.x.ReadValue();
-            screenSpace.y = mouse.position.y.ReadValue();
-
             // Scale the space
             var objectPosition = (Vector2)mainCamera.WorldToScreenPoint(_transform.position);
 
@@ -77,16 +71,27 @@ namespace Utility
             var direction = Vector3.zero;
 
             // Set the X direction
-            if (screenSpace.x > MAX_MOUSE_OFFSET || screenSpace.x < -MAX_MOUSE_OFFSET)
-                direction.x = Mathf.Clamp(screenSpace.x, -MAX_MOUSE_OFFSET, MAX_MOUSE_OFFSET);
+            if (screenSpace.x > MAX_OFFSET || screenSpace.x < -MAX_OFFSET)
+                direction.x = Mathf.Clamp(screenSpace.x, -MAX_OFFSET, MAX_OFFSET);
             else direction.x = screenSpace.x;
 
             // Set the Z direction
-            if (screenSpace.y > MAX_MOUSE_OFFSET || screenSpace.y < -MAX_MOUSE_OFFSET)
-                direction.z = Mathf.Clamp(screenSpace.y, -MAX_MOUSE_OFFSET, MAX_MOUSE_OFFSET);
+            if (screenSpace.y > MAX_OFFSET || screenSpace.y < -MAX_OFFSET)
+                direction.z = Mathf.Clamp(screenSpace.y, -MAX_OFFSET, MAX_OFFSET);
             else direction.z = screenSpace.y;
 
             return direction;
+        }
+
+        /// <summary>
+        /// Get the mouse offset for an object
+        /// </summary>
+        /// <param name="_transform"></param>
+        /// <returns></returns>
+        public static Vector3 GetMouseOffsetFromObject(Transform _transform, float MAX_OFFSET = 1)
+        {
+            // Get the mouse
+            return GetScreenSpaceOffsetFromObject(_transform, mousePos, MAX_OFFSET);
         }
 
         /// <summary>

@@ -20,6 +20,8 @@ MonoBehaviour:
   onPossessionEvent:
     m_PersistentCalls:
       m_Calls: []
+  _collider: {fileID: 2431666788422407269}
+  rigidBody: {fileID: 2431666788422407265}
 --- !u!1001 &3150960481745134399
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -160,6 +162,16 @@ PrefabInstance:
 --- !u!1 &2431666788422407268 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 722108464565729115, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
+  m_PrefabInstance: {fileID: 3150960481745134399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &2431666788422407269 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 722108464565729114, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
+  m_PrefabInstance: {fileID: 3150960481745134399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &2431666788422407265 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 722108464565729118, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
   m_PrefabInstance: {fileID: 3150960481745134399}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2431666789539365100 stripped

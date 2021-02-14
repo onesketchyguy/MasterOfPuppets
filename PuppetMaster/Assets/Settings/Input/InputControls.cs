@@ -41,6 +41,14 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""9968c8ef-d1c4-42e2-986e-b90a9b16b4b8"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -120,6 +128,17 @@ public class @InputControls : IInputActionCollection, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ec61e89e-2bda-4230-8d4a-e9c39848e787"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -148,6 +167,7 @@ public class @InputControls : IInputActionCollection, IDisposable
         m_InWorld_Fire1 = m_InWorld.FindAction("Fire1", throwIfNotFound: true);
         m_InWorld_Fire2 = m_InWorld.FindAction("Fire2", throwIfNotFound: true);
         m_InWorld_Move = m_InWorld.FindAction("Move", throwIfNotFound: true);
+        m_InWorld_Look = m_InWorld.FindAction("Look", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -200,6 +220,7 @@ public class @InputControls : IInputActionCollection, IDisposable
     private readonly InputAction m_InWorld_Fire1;
     private readonly InputAction m_InWorld_Fire2;
     private readonly InputAction m_InWorld_Move;
+    private readonly InputAction m_InWorld_Look;
     public struct InWorldActions
     {
         private @InputControls m_Wrapper;
@@ -207,6 +228,7 @@ public class @InputControls : IInputActionCollection, IDisposable
         public InputAction @Fire1 => m_Wrapper.m_InWorld_Fire1;
         public InputAction @Fire2 => m_Wrapper.m_InWorld_Fire2;
         public InputAction @Move => m_Wrapper.m_InWorld_Move;
+        public InputAction @Look => m_Wrapper.m_InWorld_Look;
         public InputActionMap Get() { return m_Wrapper.m_InWorld; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -225,6 +247,9 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Move.started -= m_Wrapper.m_InWorldActionsCallbackInterface.OnMove;
                 @Move.performed -= m_Wrapper.m_InWorldActionsCallbackInterface.OnMove;
                 @Move.canceled -= m_Wrapper.m_InWorldActionsCallbackInterface.OnMove;
+                @Look.started -= m_Wrapper.m_InWorldActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_InWorldActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_InWorldActionsCallbackInterface.OnLook;
             }
             m_Wrapper.m_InWorldActionsCallbackInterface = instance;
             if (instance != null)
@@ -238,6 +263,9 @@ public class @InputControls : IInputActionCollection, IDisposable
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
             }
         }
     }
@@ -256,5 +284,6 @@ public class @InputControls : IInputActionCollection, IDisposable
         void OnFire1(InputAction.CallbackContext context);
         void OnFire2(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
     }
 }

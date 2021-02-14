@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Player.Input;
 
@@ -8,13 +6,13 @@ namespace PuppetMaster
     /// <summary>
     /// The third person movement controller for the user.
     /// </summary>
-    public class ThirdPersonController : MonoBehaviour, IMoveInputReciever
+    public class ThirdPersonController : MonoBehaviour, IMoveInputReceiver, ILookInputReceiver
     {
         public float maxSpeed
         {
             get
             {
-                return Speed * runSpeedModifier;
+                return speed * runSpeedModifier;
             }
         }
 
@@ -33,65 +31,50 @@ namespace PuppetMaster
         }
 
         [Header("Movement variables")]
-        public bool updateRotation = true;
+        [SerializeField] private bool updateRotation = true;
 
-        /// <summary>
-        /// How fast to move by default.
-        /// </summary>
-        public float Speed = 5;
+        [Tooltip("Base movement speed.")]
+        public float speed = 5;
 
-        /// <summary>
-        /// How much to multiply the base Speed variable by when running.
-        /// </summary>
+        [Tooltip("How much to multiply the base Speed variable by when running.")]
         public float runSpeedModifier = 1.5f;
 
-        /// <summary>
-        /// How much slower to move when in the air.
-        /// </summary>
-        public float airSpeedMultiplier = 0.5f;
-
-        /// <summary>
-        /// How much slower to move when in the air.
-        /// </summary>
-        public float airControlMultiplier = 0.5f;
-
-        /// <summary>
-        /// How much force to use when jumping.
-        /// </summary>
-        public float VerticalForce = 8;
-
-        /// <summary>
-        /// How fast the user will reach the Speed variable, and slow down.
-        /// </summary>
+        [Tooltip("How fast the user will reach the Speed variable, and slow down.")]
         public float accelerationSpeed = 24f;
 
-        /// <summary>
-        /// Weather or not ground is required to jump.
-        /// </summary>
-        public bool groundedRequired = true;
+        [Tooltip("Speed to turn the character.")]
+        [SerializeField] private float turnSpeed = 30;
+
+        [Tooltip("How much slower to move when in the air.")]
+        public float airSpeedMultiplier = 0.5f;
+
+        [Tooltip("How much slower to move when in the air.")]
+        public float airControlMultiplier = 0.5f;
+
+        [Tooltip("How much force to use when jumping.")]
+        public float VerticalForce = 8;
+
+        [Tooltip("Whether or not ground is required to jump.")]
+        [SerializeField] private bool groundedRequired = true;
+
+        [Tooltip("The layers that the user can't jump on.")]
+        [SerializeField] private LayerMask notGround = ~0;
+
+        [Tooltip("The absolute bottom of the character.")]
+        [SerializeField] private float characterFeetPosition = 0.5f;
+
+        private bool grounded;
+
+        private Transform _transform;
+
+        public Vector3 lookDirection { get; set; }
 
         /// <summary>
-        /// The layers that the user can't jump on.
+        /// The rigidbody for this object.
         /// </summary>
-        public LayerMask notGround;
+        private Rigidbody rigidBody;
 
-        /// <summary>
-        /// The absolute bottom of the character.
-        /// </summary>
-        public float characterFeetPosition = 0.5f;
-
-        //Send a line out from the character to check to see if ground exists.
-        private bool grounded => Physics.Linecast(transform.position + Vector3.down * characterFeetPosition, transform.position + Vector3.down * (characterFeetPosition + 0.7f), ~notGround);
-
-        private new Rigidbody rigidbody //The rigidbody for this object
-        {
-            get
-            {   //Get the Rigidbody component, if one exists, otherwise add it.
-                return GetComponent<Rigidbody>() ?? gameObject.AddComponent<Rigidbody>();
-            }
-        }
-
-        public Vector3 CurrentVelocity => rigidbody.velocity; // The current amount of velocity for this body.
+        public Vector3 CurrentVelocity => rigidBody.velocity; // The current amount of velocity for this body.
 
         public float HorizontalInput { get; set; }
         public float VerticalInput { get; set; }
@@ -103,35 +86,48 @@ namespace PuppetMaster
 
         private void Start()
         {
+            // Get the Rigidbody component
+            rigidBody = GetComponent<Rigidbody>();
+
+            // Cache the transform
+            _transform = transform;
+
             //Set the usingGlobalMovement variable.
             cameraManager = Camera.main;
 
-            constraints = rigidbody.constraints;
+            // Cache the rigidbody constraints for later
+            constraints = rigidBody.constraints;
 
+            // Set the freeze position y constraint
             SetFreezeY(freezeY);
         }
 
         private void FixedUpdate()
         {
+            // Send a line out from the character to check to see if ground exists.
+            grounded = Physics.Linecast(transform.position + Vector3.down * characterFeetPosition, transform.position + Vector3.down * (characterFeetPosition + 0.7f), ~notGround);
+
+            // Define the speed of movement based on weather or not the user is running.
             bool running = input.w > 0;
-            float speed = running ? Speed * runSpeedModifier : Speed; //Define the speed of movement based on weather or not the user is running.
+            float spd = running ? speed * runSpeedModifier : speed;
 
-            UpdateGlobalPosition(speed);
+            // Update the position of this character
+            UpdateGlobalPosition(spd);
 
-            if (updateRotation) UpdateGlobalRotation(speed);
-
-            rigidbody.angularVelocity = Vector3.zero;
+            // Update the rotation of this character
+            if (updateRotation) UpdateLookRotation(lookDirection);
+            rigidBody.angularVelocity = Vector3.zero;
         }
 
         public void SetFreezeY(bool freeze)
         {
             if (freeze)
             {
-                rigidbody.constraints = constraints | RigidbodyConstraints.FreezePositionY;
+                rigidBody.constraints = constraints | RigidbodyConstraints.FreezePositionY;
             }
             else
             {
-                rigidbody.constraints = constraints;
+                rigidBody.constraints = constraints;
             }
         }
 
@@ -139,7 +135,7 @@ namespace PuppetMaster
         {
             var i = input.normalized;
 
-            var velocity = rigidbody.velocity;
+            var velocity = rigidBody.velocity;
 
             speed = grounded ? speed : speed * airSpeedMultiplier;
 
@@ -169,28 +165,20 @@ namespace PuppetMaster
                 }
             }
 
-            rigidbody.velocity = velocity;
+            rigidBody.velocity = velocity;
             currentSpeed = velocity.magnitude;
         }
 
-        private void UpdateGlobalRotation(float speed)
+        private void UpdateLookRotation(Vector3 lookAt)
         {
-            Vector3 groundInput = new Vector3(input.x, 0, input.z);
+            var targetDir = lookAt + _transform.position;
+            var localTarget = _transform.InverseTransformPoint(targetDir);
 
-            Vector3 forwardInput = (cameraManager.transform.forward * groundInput.z);
-            Vector3 strafeInput = (cameraManager.transform.right * groundInput.x);
+            var angle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
 
-            var _input = new Vector3(forwardInput.x + strafeInput.x, 0, forwardInput.z + strafeInput.z);
-
-            speed = grounded ? speed : speed * airSpeedMultiplier;
-
-            Vector3 pointA = transform.position + transform.forward * speed;
-
-            Vector3 pointB = transform.position + (_input * (30));
-
-            Vector3 faceDir = Vector3.MoveTowards(pointA, pointB, (Vector3.Distance(pointA, pointB) * speed) * Time.deltaTime);
-
-            transform.LookAt(faceDir);
+            var eulerAngleVelocity = new Vector3(0, angle, 0);
+            var deltaRotation = Quaternion.Euler(eulerAngleVelocity * turnSpeed * Time.fixedDeltaTime);
+            rigidBody.MoveRotation(rigidBody.rotation * deltaRotation);
         }
     }
 }
