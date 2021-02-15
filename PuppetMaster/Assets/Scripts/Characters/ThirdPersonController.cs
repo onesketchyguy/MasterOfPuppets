@@ -19,6 +19,21 @@ namespace PuppetMaster
         public float currentSpeed { get; set; }
 
         /// <summary>
+        /// Look direction input.
+        /// </summary>
+        public Vector3 lookDirection { get; set; }
+
+        /// <summary>
+        /// Horizontal move input
+        /// </summary>
+        public float HorizontalInput { get; set; }
+
+        /// <summary>
+        /// Vertical, or forward and back, move input.
+        /// </summary>
+        public float VerticalInput { get; set; }
+
+        /// <summary>
         /// Where the user will feed in the movement.
         /// </summary>
         private Vector4 input
@@ -63,11 +78,15 @@ namespace PuppetMaster
         [Tooltip("The absolute bottom of the character.")]
         [SerializeField] private float characterFeetPosition = 0.5f;
 
+        /// <summary>
+        /// Whether or not the character is grounded.
+        /// </summary>
         private bool grounded;
 
+        /// <summary>
+        /// A cached value for the transform.
+        /// </summary>
         private Transform _transform;
-
-        public Vector3 lookDirection { get; set; }
 
         /// <summary>
         /// The rigidbody for this object.
@@ -76,12 +95,10 @@ namespace PuppetMaster
 
         public Vector3 CurrentVelocity => rigidBody.velocity; // The current amount of velocity for this body.
 
-        public float HorizontalInput { get; set; }
-        public float VerticalInput { get; set; }
-
+        [Tooltip("Blocks velocity going over '0'. NOTE: Does not block gravity.")]
         [SerializeField] private bool freezeY = true;
 
-        private Camera cameraManager;
+        private Transform mainCamera;
 
         private void Start()
         {
@@ -91,14 +108,14 @@ namespace PuppetMaster
             // Cache the transform
             _transform = transform;
 
-            //Set the usingGlobalMovement variable.
-            cameraManager = Camera.main;
+            // Store the camera's transform
+            mainCamera = Camera.main.transform;
         }
 
         private void FixedUpdate()
         {
             // Send a line out from the character to check to see if ground exists.
-            grounded = Physics.Linecast(transform.position + Vector3.down * characterFeetPosition, transform.position + Vector3.down * (characterFeetPosition + 0.7f), ~notGround);
+            grounded = Physics.Linecast(_transform.position + Vector3.down * characterFeetPosition, _transform.position + Vector3.down * (characterFeetPosition + 0.7f), ~notGround);
 
             // Define the speed of movement based on weather or not the user is running.
             bool running = input.w > 0;
@@ -119,30 +136,36 @@ namespace PuppetMaster
 
         private void UpdateGlobalPosition(float speed)
         {
-            var i = input.normalized;
-
+            // Store our velocity for manipulation
             var velocity = rigidBody.velocity;
 
-            if (velocity.y > 0 && freezeY)
-                velocity.y = 0;
+            // If freeze y prevent any y axis velocity gain.
+            if (velocity.y > 0 && freezeY) velocity.y = 0;
 
+            // Define the speed based off the air speed multiplier.
             speed = grounded ? speed : speed * airSpeedMultiplier;
 
-            var forwardInput = (cameraManager.transform.forward * i.z * speed);
-            var strafeInput = (cameraManager.transform.right * i.x * speed);
+            // Define some input variables
+            var forwardInput = (mainCamera.forward * input.z * speed);
+            var strafeInput = (mainCamera.right * input.x * speed);
 
             float xInput = forwardInput.x + strafeInput.x;
             float zInput = forwardInput.z + strafeInput.z;
 
+            // Define how quickly to move between variables
             var lerpSpeed = grounded ? accelerationSpeed : accelerationSpeed * airControlMultiplier;
 
+            // Move the velocity in the desired direction
             velocity.x = Mathf.MoveTowards(velocity.x, xInput, lerpSpeed * Time.deltaTime);
             velocity.z = Mathf.MoveTowards(velocity.z, zInput, lerpSpeed * Time.deltaTime);
 
-            if (input.y > 0)
+            // Handle jumping
+            if (input.y > 0 && freezeY == false)
             {
+                // Check if we need the ground to jump
                 if (groundedRequired)
                 {
+                    // Jump if grounded
                     if (grounded)
                     {
                         velocity.y = input.y * VerticalForce;
@@ -150,21 +173,30 @@ namespace PuppetMaster
                 }
                 else
                 {
+                    // Just jump
                     velocity.y = input.y * VerticalForce;
                 }
             }
 
+            // Apply the new velocity values
             rigidBody.velocity = velocity;
             currentSpeed = velocity.magnitude;
         }
 
+        /// <summary>
+        /// Looks towards a vector3 position using the RigidBody.
+        /// </summary>
+        /// <param name="lookAt"></param>
         private void UpdateLookRotation(Vector3 lookAt)
         {
+            // Find the position in local space
             var targetDir = lookAt + _transform.position;
             var localTarget = _transform.InverseTransformPoint(targetDir);
 
+            // Find the angle based off the local space
             var angle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
 
+            // Move towards that angle
             var eulerAngleVelocity = new Vector3(0, angle, 0);
             var deltaRotation = Quaternion.Euler(eulerAngleVelocity * turnSpeed * Time.fixedDeltaTime);
             rigidBody.MoveRotation(rigidBody.rotation * deltaRotation);
