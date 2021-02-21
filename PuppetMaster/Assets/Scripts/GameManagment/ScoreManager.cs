@@ -1,54 +1,95 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using Utility;
 
 namespace PuppetMaster
 {
     public class ScoreManager : MonoBehaviour
     {
-        [SerializeField] private Text scoreDisplay;
+        [Tooltip("Text object to use to display the score.")]
+        [SerializeField] private Text scoreDisplay = null;
+
+        [Tooltip("Text to appear before the score itself.")]
         [SerializeField] private string scorePrefix = "";
+
+        [Tooltip("Text to appear after the score itself.")]
         [SerializeField] private string scoreSuffix = "";
 
-        private int score;
-
+        /// <summary>
+        /// The current value being used to modify the score.
+        /// </summary>
         private int changeAmount;
+
+        /// <summary>
+        /// The current value being displayed.
+        /// </summary>
         private long displayScore;
 
-        private void Start()
+        private void OnEnable()
         {
             ResetScore();
         }
 
+        /// <summary>
+        /// Sets the displayed score to zero.
+        /// </summary>
         public void ResetScore()
         {
-            ModifyScore(-score);
-        }
+            // Reset the score value
+            displayScore = 0;
+            changeAmount = 0;
 
-        public void ModifyScore(int changeAmount)
-        {
-            this.changeAmount += changeAmount;
-
+            // Start displaying the score to the user.
             StopAllCoroutines();
             StartCoroutine(ShowScore());
         }
 
+        /// <summary>
+        /// Returns the current score value.
+        /// </summary>
+        /// <returns></returns>
+        public long GetScore()
+        {
+            return displayScore + changeAmount;
+        }
+
+        /// <summary>
+        /// Modifies the score value with a given modifier.
+        /// </summary>
+        /// <param name="changeAmount"></param>
+        public void ModifyScore(int changeAmount)
+        {
+            // Add the change to the change amount value.
+            this.changeAmount += changeAmount;
+
+            // Start displaying the score to the user.
+            StopAllCoroutines();
+            StartCoroutine(ShowScore());
+        }
+
+        /// <summary>
+        /// Starts the process of showing the score.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator ShowScore()
         {
             while (true)
             {
+                // Yield a frame as though this were running on the main thread.
                 yield return new WaitForEndOfFrame();
 
-                // Show score
-                var add = Mathf.CeilToInt(Mathf.Clamp(displayScore + changeAmount, -10, 10));
+                // Find out how much to move this frame.
+                var moveAmount = Mathf.CeilToInt(changeAmount * 0.1f);
 
-                changeAmount -= add;
-                displayScore += add;
+                // Reflect the movement.
+                changeAmount -= moveAmount;
+                displayScore += moveAmount;
 
+                // Display the new score value.
                 scoreDisplay.text = $"{scorePrefix}{displayScore}{scoreSuffix}";
 
-                if (changeAmount <= 0) break;
+                // If the change amount has emptied then we finished.
+                if (changeAmount == 0) break;
             }
         }
     }
