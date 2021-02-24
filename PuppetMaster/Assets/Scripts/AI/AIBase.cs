@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,39 +15,51 @@ namespace PuppetMaster.AI
     {
         internal static ScoreManager scoreManager;
 
-        [SerializeField] private int scoreToGiveOnDeath = 100;
-
-        [Space]
-        [SerializeField] private NavMeshAgent agent = null;
-
-        [SerializeField] private CharacterInput inputManager = null;
-        [SerializeField] private CharacterStats stats = null;
-
-        // TO BE REMOVED BY A CHECK FOR IF WE ARE ARMED
-        public bool isArmed = false;
-
         public AI_State state;
 
-        private int updateFrame = 0;
-        private const int UPDATE_FRAME_LIMIT = 3;
+        [SerializeField] private int scoreToGiveOnDeath = 100;
 
-        private Transform _trans;
-
-        private NavMeshPath movementPath;
-        private int pathIndex = 0;
-
-        private Transform target;
-        private Vector3 moveTo;
-        private float timeInPosition;
+        [SerializeField] private CombatManager combatManager = null;
+        [SerializeField] private CharacterInput inputManager = null;
+        [SerializeField] private CharacterStats stats = null;
+        [SerializeField] private NavMeshAgent agent = null;
 
         [Tooltip("How long to wait in seconds before moving again.")]
         [SerializeField] private float movementFrequency = 3;
+
+        [Tooltip("How far away from a point this agent can stop.")]
+        [SerializeField] private float stoppingDistance = 2;
 
         [SerializeField] private float walkRadius = 5;
 
         [SerializeField] private AudioClipPlayer audioSource = null;
 
         [SerializeField] private float visabilityRange = 10;
+
+        private int updateFrame = 0;
+        private const int UPDATE_FRAME_LIMIT = 3;
+
+        /// <summary>
+        /// Cached local transform
+        /// </summary>
+        private Transform _transform;
+
+        private NavMeshPath movementPath;
+        private int pathIndex = 0;
+
+        private Transform target;
+        private Vector3 targetPosition;
+        private float timeInPosition;
+
+        /// <summary>
+        /// A flag to let us know if we are already calculating a path.
+        /// </summary>
+        private bool calulatingPath = false;
+
+        /// <summary>
+        /// The direction the character is moving.
+        /// </summary>
+        private Vector3 inputDirection;
 
         private void OnValidate()
         {
@@ -70,12 +83,23 @@ namespace PuppetMaster.AI
 
         private void Start()
         {
-            _trans = transform;
+            // Chache the transform
+            _transform = transform;
+
+            // Reset the moveTo position to our point for later
+            targetPosition = _transform.position;
+
+            // Initialize the nav mesh path
+            movementPath = new NavMeshPath();
+
+            // Keep the AI a little bit random
+            timeInPosition = Random.Range(0, movementFrequency);
 
             // By choosing a random fram to choose to update on each AI
             // won't (necessarilly) be updating on the same frame.
             updateFrame = Random.Range(0, UPDATE_FRAME_LIMIT);
 
+            // Make sure we know when we've died
             stats.onDiedCallback += OnDeath;
         }
 
@@ -87,22 +111,18 @@ namespace PuppetMaster.AI
             // Updating every frame
             if (Time.frameCount % UPDATE_FRAME_LIMIT != updateFrame) return;
 
-            if (isArmed) SwapState(AI_State.fighting);
-
             if (inputManager.isPlayer == false)
             {
                 // Do AI stuff
-                if (agent.enabled == false)
-                    agent.enabled = true;
-
                 HandleStateMachine();
                 HandleMovement();
+
+                if (agent.enabled == false) agent.enabled = true;
             }
             else
             {
-                // Dont do AI stuff
-                if (agent.enabled == true)
-                    agent.enabled = false;
+                // Don't do AI stuff
+                if (agent.enabled == true) agent.enabled = false;
             }
         }
 
@@ -129,15 +149,26 @@ namespace PuppetMaster.AI
 
         private void HandleMovement()
         {
-            if (movementPath != null)
+            // Stop the current input direction
+            inputDirection *= 0.0f;
+
+            // Try to calculate a new input direction
+            if (movementPath.corners != null && movementPath.corners.Length > 0)
             {
-                moveTo = movementPath.corners[pathIndex];
+                if (pathIndex >= movementPath.corners.Length || pathIndex < 0)
+                {
+                    // Clear the nav path
+                    movementPath.ClearCorners();
+                    pathIndex = 0;
 
-                var inputDirection = moveTo - transform.position;
+                    return;
+                }
 
-                inputManager.HandleMovement(inputDirection);
+                targetPosition = movementPath.corners[pathIndex];
 
-                if (Vector3.Distance(_trans.position, moveTo) <= agent.stoppingDistance)
+                inputDirection = targetPosition - _transform.position;
+
+                if (Vector3.Distance(_transform.position, targetPosition) <= stoppingDistance)
                 {
                     pathIndex++;
 
@@ -148,6 +179,9 @@ namespace PuppetMaster.AI
                     }
                 }
             }
+
+            // Feed the input to the input manager.
+            inputManager.HandleMovement(inputDirection);
         }
 
         private void HandleStateMachine()
@@ -157,19 +191,27 @@ namespace PuppetMaster.AI
                 case AI_State.idle:
                     // Wander around and such
                     HandleIdleState();
+
+                    // If we are just chilling, let's get some action
+                    if (combatManager.isArmed && state != AI_State.fighting)
+                        SwapState(AI_State.fighting);
+
                     break;
 
                 case AI_State.scared:
                     // Flee
                     HandleScaredState();
+
                     break;
 
                 case AI_State.fighting:
                     // Fight
                     HandleFightingState();
+
                     break;
 
                 default:
+                    SwapState(AI_State.idle);
                     break;
             }
         }
@@ -178,7 +220,7 @@ namespace PuppetMaster.AI
         {
             // Find a wander point and move there
 
-            if (Vector3.Distance(_trans.position, moveTo) <= agent.stoppingDistance)
+            if (Vector3.Distance(_transform.position, targetPosition) <= stoppingDistance)
             {
                 if (timeInPosition > movementFrequency)
                 {
@@ -187,23 +229,24 @@ namespace PuppetMaster.AI
                     // pick a random position within range that is on the navmesh
                     Vector3 moveTo;
 
+                    // Commit to a loop where we look for a point on the navmesh
                     do
                     {
                         var wanderDirection = Random.insideUnitSphere * walkRadius;
 
-                        wanderDirection += _trans.position;
-                        wanderDirection.y = _trans.position.y;
+                        wanderDirection += _transform.position;
+                        wanderDirection.y = _transform.position.y;
 
                         moveTo = GetNavMeshPosition(wanderDirection);
                     }
                     while (moveTo == Vector3.zero);
 
-                    // Store the calculated path and move following that path
-                    agent.CalculatePath(moveTo, movementPath);
-                    timeInPosition = 0;
+                    // Generate a path to the point
+                    CalculatePath(moveTo);
                 }
                 else
                 {
+                    // Increment the amount of time we have spent in this position.
                     timeInPosition += Time.deltaTime;
                 }
             }
@@ -221,17 +264,16 @@ namespace PuppetMaster.AI
             {
                 var runDist = Random.Range(10, 30);
 
-                if (Vector3.Distance(_trans.position, target.position) < runDist)
+                if (Vector3.Distance(_transform.position, target.position) < runDist)
                 {
                     var direction = Random.insideUnitSphere * runDist;
-                    direction.y = _trans.position.y;
-                    direction += _trans.position;
+                    direction.y = _transform.position.y;
+                    direction += _transform.position;
 
                     var moveTo = GetNavMeshPosition(direction);
 
-                    // Store the calculated path and move following that path
-                    agent.CalculatePath(moveTo, movementPath);
-                    timeInPosition = 0;
+                    // Generate a path to the point
+                    CalculatePath(moveTo);
                 }
             }
         }
@@ -259,14 +301,13 @@ namespace PuppetMaster.AI
                     var point = target.position;
 
                     // Clamp the position to our range
-                    point.x = Mathf.Clamp(_trans.position.x, point.x - visabilityRange, point.x + visabilityRange);
-                    point.z = Mathf.Clamp(_trans.position.z, point.z - visabilityRange, point.z + visabilityRange);
+                    point.x = Mathf.Clamp(_transform.position.x, point.x - visabilityRange, point.x + visabilityRange);
+                    point.z = Mathf.Clamp(_transform.position.z, point.z - visabilityRange, point.z + visabilityRange);
 
                     var moveTo = GetNavMeshPosition(point);
 
-                    // Store the calculated path and move following that path
-                    agent.CalculatePath(moveTo, movementPath);
-                    timeInPosition = 0;
+                    // Generate a path to the point
+                    CalculatePath(moveTo);
                 }
             }
         }
@@ -274,29 +315,34 @@ namespace PuppetMaster.AI
         public bool CanSeeObject(Transform obj)
         {
             // Check if the object is even within visability range
-            if (Vector3.Distance(_trans.position, obj.position) > visabilityRange)
+            if (Vector3.Distance(_transform.position, obj.position) > visabilityRange)
             {
                 return false;
             }
             else
             {
-                // launch a ray out and check if it hits the target object
+                /*
+                 * NOTE: This does not support field of view!
+                 * This only supports seeing what is DIRECTLY in front of this object
+                 */
+
+                // Launch a ray out and check if it hits the target object
                 RaycastHit hit;
 
                 // Does the ray intersect any objects
-                if (Physics.Raycast(_trans.position,
-                    _trans.TransformDirection(Vector3.forward),
+                if (Physics.Raycast(_transform.position,
+                    _transform.TransformDirection(Vector3.forward),
                     out hit, visabilityRange, obj.gameObject.layer))
                 {
-                    Debug.DrawRay(_trans.position,
-                        _trans.TransformDirection(Vector3.forward) * hit.distance,
+                    Debug.DrawRay(_transform.position,
+                        _transform.TransformDirection(Vector3.forward) * hit.distance,
                         Color.yellow);
                     return true;
                 }
                 else
                 {
                     Debug.DrawRay(transform.position,
-                        _trans.TransformDirection(Vector3.forward) * 1000,
+                        _transform.TransformDirection(Vector3.forward) * 1000,
                         Color.white);
                     return false;
                 }
@@ -310,5 +356,65 @@ namespace PuppetMaster.AI
 
             return hit.position;
         }
+
+        /// <summary>
+        /// Creates a path for the character to follow.
+        /// </summary>
+        /// <param name="point"></param>
+        private void CalculatePath(Vector3 point)
+        {
+            if (movementPath.corners == null || movementPath.corners.Length == 0 ||
+                pathIndex == movementPath.corners.Length - 1)
+            {
+                StartCoroutine(CalculatePathAsync(point));
+            }
+        }
+
+        /// <summary>
+        /// Creates a path for the character to follow.
+        /// </summary>
+        /// <param name="point"></param>
+        private IEnumerator CalculatePathAsync(Vector3 point)
+        {
+            if (calulatingPath) yield break;
+            calulatingPath = true;
+
+            //Debug.Log("Recalulating path...");
+
+            yield return null;
+
+            // Store the calculated path and move following that path
+            if (agent.CalculatePath(point, movementPath))
+            {
+                timeInPosition = 0;
+                pathIndex = 0;
+
+                //Debug.Log("Successfully generated path.");
+            }
+            else
+            {
+                Debug.LogWarning($"{gameObject.name}: Could not create path to: {point}");
+            }
+
+            calulatingPath = false;
+        }
+
+#if UNITY_EDITOR // Don't include this in the build
+
+        /// <summary>
+        /// Draws some debug information for this object.
+        /// </summary>
+        private void OnDrawGizmos()
+        {
+            if (Application.isPlaying && inputManager.isPlayer == false)
+            {
+                Gizmos.color = Color.blue;
+
+                Gizmos.DrawLine(_transform.position, targetPosition);
+                Gizmos.DrawWireSphere(targetPosition, 1);
+            }
+        }
+
+#endif
     }
 }

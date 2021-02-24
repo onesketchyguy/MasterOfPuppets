@@ -37,7 +37,7 @@ namespace PuppetMaster
         /// <summary>
         /// Returns whether or not this character is armed.
         /// </summary>
-        internal bool armed => weapon != null;
+        internal bool isArmed => weapon != null;
 
         /// <summary>
         /// A cached transform.

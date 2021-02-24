@@ -86,7 +86,7 @@ namespace PuppetMaster
         {
             lookObject.position = transform.position + (lookDirection * 10);
 
-            float armedWeight = combatManager.armed ? 1 : 0;
+            float armedWeight = combatManager.isArmed ? 1 : 0;
             animator.SetLayerWeight(aimLayerIndex, armedWeight);
 
             aimController.weight = armedWeight;
