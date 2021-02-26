@@ -1,8 +1,10 @@
+using Player.Input;
 using RootMotion.FinalIK;
 using UnityEngine;
 
 namespace PuppetMaster
 {
+    // NEEDS CODE REVIEW
     public class CharacterAnimator : MonoBehaviour, ILookInputReceiver
     {
         [Header("Component Setup")]
@@ -17,12 +19,14 @@ namespace PuppetMaster
         [Header("Field setup")]
         [SerializeField] private int aimLayerIndex = 1;
 
-        [SerializeField] private string horizontalMotionField = "MotionX";
+        [SerializeField] private string strafeMotionField = "MotionX";
 
-        [SerializeField] private string verticalMotionField = "MotionY";
+        [SerializeField] private string forwardMotionField = "MotionY";
 
         [SerializeField] private Transform lookObject;
         public Vector3 lookDirection { get; set; }
+
+        private Transform _transform;
 
         private bool isSeen
         {
@@ -40,7 +44,7 @@ namespace PuppetMaster
             var velocity = rigidBody.velocity;
 
             // Return the motion in local space
-            return animator.transform.TransformVector(velocity);
+            return _transform.InverseTransformDirection(velocity);
         }
 
         private void Start()
@@ -63,6 +67,8 @@ namespace PuppetMaster
                 Debug.LogError($"{gameObject.name} cannot use {nameof(CharacterAnimator)}, reason: Rigidbody not setup.");
                 Destroy(this); // Removes this component
             }
+
+            _transform = transform;
         }
 
         private void Update()
@@ -78,13 +84,13 @@ namespace PuppetMaster
         {
             var motion = GetMotion();
 
-            animator.SetFloat(horizontalMotionField, motion.x);
-            animator.SetFloat(verticalMotionField, motion.z);
+            animator.SetFloat(strafeMotionField, -motion.x);
+            animator.SetFloat(forwardMotionField, motion.z);
         }
 
         private void UpdateLookIK()
         {
-            lookObject.position = transform.position + (lookDirection * 10);
+            lookObject.position = _transform.position + (lookDirection * 10);
 
             float armedWeight = combatManager.isArmed ? 1 : 0;
             animator.SetLayerWeight(aimLayerIndex, armedWeight);

@@ -39,7 +39,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 722108464565729115, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
       propertyPath: m_Name
-      value: Demon Variant
+      value: Demon
       objectReference: {fileID: 0}
     - target: {fileID: 722108464565729115, guid: 9dfc15c168ff56447860351458e62dab, type: 3}
       propertyPath: m_Layer

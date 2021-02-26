@@ -122,6 +122,11 @@ namespace PuppetMaster.AI
         /// </summary>
         private Vector3 inputDirection;
 
+        /// <summary>
+        /// The point this character is looking at.
+        /// </summary>
+        private Vector3 lookAt;
+
 #if UNITY_EDITOR // Don't include this stuff in the build
 
         /// <summary>
@@ -131,10 +136,15 @@ namespace PuppetMaster.AI
         {
             if (Application.isPlaying && inputManager.isPlayer == false)
             {
-                Gizmos.color = Color.blue;
+                Gizmos.color = Color.cyan;
 
                 Gizmos.DrawLine(_transform.position, targetPosition);
                 Gizmos.DrawWireSphere(targetPosition, 1);
+
+                Gizmos.color = Color.green;
+
+                Gizmos.DrawLine(_transform.position, lookAt);
+                Gizmos.DrawWireSphere(lookAt, 0.1f);
             }
         }
 
@@ -195,9 +205,6 @@ namespace PuppetMaster.AI
             {
                 // Do AI stuff
 
-                // Enable the navigation system
-                if (agent.enabled == false) agent.enabled = true;
-
                 // Handle the state machine
                 switch (state)
                 {
@@ -233,7 +240,7 @@ namespace PuppetMaster.AI
                 // Don't do AI stuff
 
                 // Disable the navigation system
-                if (agent.enabled == true) agent.enabled = false;
+                SetNavAgentEnabled(false);
             }
         }
 
@@ -299,6 +306,18 @@ namespace PuppetMaster.AI
 
                     // Get the direction from the position
                     inputDirection = targetPosition - _transform.position;
+
+                    // Look in the direction we are moving.
+                    lookAt = new Vector3(targetPosition.x, _transform.position.y, targetPosition.z);
+
+                    if (pathIndex == movementPath.corners.Length - 1)
+                    {
+                        lookAt += _transform.forward * 10;
+                    }
+
+                    lookAt = Utility.Utilities.mainCamera.WorldToScreenPoint(lookAt);
+
+                    inputManager.HandleLook(lookAt);
 
                     // Check if we are close enough to stop or move on
                     if (Vector3.Distance(_transform.position, targetPosition) <= stoppingDistance)
@@ -537,6 +556,12 @@ namespace PuppetMaster.AI
             }
         }
 
+        private void SetNavAgentEnabled(bool value)
+        {
+            if (agent.enabled != value)
+                agent.enabled = value;
+        }
+
         /// <summary>
         /// Creates a path for the character to follow.
         /// </summary>
@@ -545,6 +570,8 @@ namespace PuppetMaster.AI
         {
             if (calulatingPath) yield break;
             calulatingPath = true;
+
+            SetNavAgentEnabled(true);
 
             //Debug.Log("Recalulating path...");
 
@@ -562,6 +589,8 @@ namespace PuppetMaster.AI
             {
                 Debug.LogWarning($"{gameObject.name}: Could not create path to: {point}");
             }
+
+            SetNavAgentEnabled(false);
 
             calulatingPath = false;
         }

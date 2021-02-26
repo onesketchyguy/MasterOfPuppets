@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PuppetMaster
+namespace Player.Input
 {
     public interface ILookInputReceiver
     {
