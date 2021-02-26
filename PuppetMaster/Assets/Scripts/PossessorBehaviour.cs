@@ -93,7 +93,7 @@ namespace PuppetMaster
             _possessed = character.transform;
 
             // Create the possession effect
-            ObjectPool.Get(onPossessionEffect, _transform.position, Quaternion.identity);
+            ObjectPool.Get(onPossessionEffect, _possessed.position, Quaternion.identity);
         }
 
         /// <summary>

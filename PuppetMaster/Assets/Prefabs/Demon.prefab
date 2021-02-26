@@ -17,9 +17,7 @@ MonoBehaviour:
     m_Bits: 8
   overlapRadius: 3
   display: {fileID: 2431666789539365100}
-  onPossessionEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  onPossessionEffect: {fileID: 6109770295691448293, guid: 8db08e1449b16af41b9ee4f347f3cfee, type: 3}
   _collider: {fileID: 2431666788422407269}
   rigidBody: {fileID: 2431666788422407265}
 --- !u!1001 &3150960481745134399
