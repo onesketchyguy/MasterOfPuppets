@@ -14,35 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   List:
     array:
-    - SceneName: LoadExample
-      SceneAsset: {fileID: 102900000, guid: 511f544c1ae32b3448425de6b65acff2, type: 3}
-      DisplayName: This Example Name
-      Description: Prompta noluisse verterem sed eu, mundi graece eum in. Vis ut
-        alia euismod tincidunt, per no ubique euismod. Indoctum qualisque vituperata
-        an his. Timeam feugait id mel, vis in iuvaret fabulas. Quis veri diceret
-        vix in, numquam praesent elaboraret eum ne.
-      SkipType: 0
-      LoadingType: 1
-      FakeLoadingTime: 7
-      Backgrounds:
-      - {fileID: 21300000, guid: 2650407d6311724489f3256696e75bb0, type: 3}
-      - {fileID: 21300000, guid: af238b260179c884b93aa3248768f90b, type: 3}
-      - {fileID: 21300000, guid: d693da8ebc165674b9509bab6391e358, type: 3}
-    - SceneName: demo
-      SceneAsset: {fileID: 102900000, guid: c34f5b9761f1c134c9b57f319ee6a287, type: 3}
-      DisplayName: demo
+    - SceneName: MainMenu
+      SceneAsset: {fileID: 102900000, guid: 209f5d2993b5bef418333dc3bfb93e29, type: 3}
+      DisplayName: MainMenu
       Description: 
       SkipType: 3
       LoadingType: 0
-      FakeLoadingTime: 2
+      FakeLoadingTime: 0.1
       Backgrounds: []
-    - SceneName: SampleScene
-      SceneAsset: {fileID: 102900000, guid: d1c3109bdb54ad54c8a2b2838528e640, type: 3}
-      DisplayName: SampleScene
-      Description: 
-      SkipType: 3
+    - SceneName: Escape
+      SceneAsset: {fileID: 102900000, guid: b4e0b6decd7b5c649bff80eb898630b3, type: 3}
+      DisplayName: MainMenu
+      Description: Escape from hell.
+      SkipType: 4
       LoadingType: 0
-      FakeLoadingTime: 2
+      FakeLoadingTime: 0.1
       Backgrounds: []
   TipList:
     array:

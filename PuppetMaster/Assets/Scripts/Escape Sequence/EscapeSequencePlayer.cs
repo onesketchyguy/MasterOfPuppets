@@ -10,6 +10,7 @@ namespace PuppetMaster.EscapeSequence
         public float HorizontalInput { get; set; }
         public float VerticalInput { get; set; }
 
+        [SerializeField] private EscapeSequenceGameManager gameManager;
         [SerializeField] private float speed = 5;
 
         [Range(0, 100)]
@@ -21,8 +22,20 @@ namespace PuppetMaster.EscapeSequence
         [SerializeField] private Rigidbody rigidBody;
 
         [SerializeField] private float targetY = 8;
+        private float _targetY;
 
         private Transform _transform;
+
+        [Tooltip("Minimum distance to target before loading.")]
+        [SerializeField] private float minDist = 0.31f;
+
+        private float dist;
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(Vector3.zero + Vector3.up * targetY, 0.1f);
+        }
 
         private void Start()
         {
@@ -31,7 +44,18 @@ namespace PuppetMaster.EscapeSequence
 
         private void Update()
         {
-            VerticalInput = Mathf.Clamp(targetY - _transform.position.y, -1, 1);
+            _targetY = targetY * gameManager.progress;
+
+            dist = Vector2.Distance(_transform.position, new Vector2(_transform.position.x, targetY));
+
+            // 0.31f found through play testing
+            if (dist <= minDist)
+            {
+                // Finished level
+                gameManager.FinishLoad();
+            }
+
+            VerticalInput = Mathf.Clamp(_targetY - _transform.position.y, -1, 1);
         }
 
         private void FixedUpdate()

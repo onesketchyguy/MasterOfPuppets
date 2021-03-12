@@ -6,29 +6,32 @@ namespace Lovatto.SceneLoader
 {
     public class bl_SceneLoaderManager : ScriptableObject
     {
-
         [Header("Scene Manager")]
 #if !ODIN_INSPECTOR
         [ReorderableLovatto(elementNameProperty = "myString")]
 #endif
         public TheSceneList List;
+
 #if !ODIN_INSPECTOR
+
         [Header("Tips"), ReorderableLovatto("Tips")]
 #endif
         public TheTipList TipList;
 
         public bl_SceneLoaderInfo GetSceneInfo(string scene)
         {
-            foreach(bl_SceneLoaderInfo info in List)
+            foreach (bl_SceneLoaderInfo info in List)
             {
-                if(info.SceneName == scene)
+                Debug.Log(info.SceneName);
+
+                if (info.SceneName == scene)
                 {
                     return info;
                 }
             }
-            
+
             Debug.Log("Not found any scene with this name: " + scene);
-            return null;           
+            return null;
         }
 
         public bool HasTips
@@ -55,6 +58,7 @@ namespace Lovatto.SceneLoader
         }
 
         public static bl_SceneLoaderManager _instance;
+
         public static bl_SceneLoaderManager Instance
         {
             get
@@ -68,16 +72,18 @@ namespace Lovatto.SceneLoader
         }
 
 #if UNITY_EDITOR
+
         private void OnValidate()
         {
             for (int i = 0; i < List.Count; i++)
             {
-                if(List[i].SceneAsset != null)
+                if (List[i].SceneAsset != null)
                 {
                     List[i].SceneName = List[i].SceneAsset.name;
                 }
             }
         }
+
 #endif
     }
 }

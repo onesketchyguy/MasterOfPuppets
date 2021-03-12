@@ -770,11 +770,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5027ef8462dcaa4bb3f54cd5fd1b9ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 1269730704}
   speed: 10
   accelleration: 50
   deccelleration: 30
   rigidBody: {fileID: 1106023300}
-  targetY: 1
+  targetY: 3
+  minDist: 0.35
 --- !u!54 &1106023300
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -815,6 +817,7 @@ GameObject:
   - component: {fileID: 1269730702}
   - component: {fileID: 1269730701}
   - component: {fileID: 1269730703}
+  - component: {fileID: 1269730704}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -860,9 +863,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a84ea97fe12e424a93e100375765125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstacleSpawnMinTime: 0.1
+  obstacleSpawnMinTime: 0.5
   obstacleSpawnMaxTime: 1
   obstaclePrefab: {fileID: 1548315319292569899, guid: 1b95d906d518b164ba1b5e2b50278854, type: 3}
+  obstacleCount: 5
+--- !u!114 &1269730704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269730700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8fe1ca38622e824e98df748d7ddfa2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelToLoadIndex: 2
+  progress: 0
 --- !u!1 &1743578669
 GameObject:
   m_ObjectHideFlags: 0

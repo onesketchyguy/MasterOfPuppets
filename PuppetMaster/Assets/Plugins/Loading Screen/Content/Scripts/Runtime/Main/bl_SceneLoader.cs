@@ -2,19 +2,24 @@
 using Lovatto.SceneLoader;
 using System.Collections;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(AudioSource))]
 public class bl_SceneLoader : MonoBehaviour
 {
     #region Public members
+
     [Header("Settings")]
     public SceneSkipType SkipType = SceneSkipType.Button;
+
     [Range(0.5f, 7)] public float SceneSmoothLoad = 3;
     [Range(0.5f, 7)] public float FadeInSpeed = 2;
     [Range(0.5f, 7)] public float FadeOutSpeed = 2;
     public bool useTimeScale = false;
+
     [Header("Background")]
     public bool useBackgrounds = true;
+
     public bool ShowDescription = true;
     [Range(1, 60)] public float TimePerBackground = 5;
     [Range(0.5f, 7)] public float FadeBackgroundSpeed = 2;
@@ -23,51 +28,60 @@ public class bl_SceneLoader : MonoBehaviour
 
     [Header("Tips")]
     public bool RandomTips = false;
+
     [Range(1, 60)] public float TimePerTip = 5;
     [Range(0.5f, 5)] public float FadeTipsSpeed = 2;
+
     [Header("Loading")]
     public bool FadeLoadingBarOnFinish = false;
+
     public float RoundBarProgress = 0;
     [Range(50, 1000)] public float LoadingCircleSpeed = 300;
     [TextArea(2, 2)] public string LoadingTextFormat = "{0}";
 
     [Header("Audio")]
     [Range(0.1f, 1)] public float AudioVolume = 1f;
+
     [Range(0.5f, 5)] public float FadeAudioSpeed = 0.5f;
     [Range(0.1f, 1)] public float FinishSoundVolume = 0.5f;
     public AudioClip FinishSound = null;
     public AudioClip BackgroundAudio = null;
 
     [System.Serializable] public class OnLoaded : UnityEvent { }
+
     [SerializeField] public OnLoaded onLoaded;
 
     [Header("References")]
     public bl_LoadingScreenUI ScreenUI;
+
     public AsyncOperation sceneAsyncOp { get; set; }
-    #endregion
+
+    #endregion Public members
 
     #region Private members
+
     private bl_SceneLoaderManager Manager = null;
     private bool isOperationStarted = false;
     private bool FinishLoad = false;
     private float smoothValue = 0;
     private bool canSkipWithKey = false;
     private bl_SceneLoaderInfo CurrentLoadLevel = null;
-    #endregion
+
+    #endregion Private members
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    void Awake()
+    private void Awake()
     {
         StartCoroutine(AsynLoadData());
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <returns></returns>
-    IEnumerator AsynLoadData()
+    private IEnumerator AsynLoadData()
     {
         yield return bl_SceneLoaderManager.AsyncLoadData();
         yield return new WaitForEndOfFrame();
@@ -76,18 +90,18 @@ public class bl_SceneLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    void Init()
+    private void Init()
     {
         ScreenUI.Init(this);
         transform.SetAsLastSibling();
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    void Update()
+    private void Update()
     {
         if (!isOperationStarted)
             return;
@@ -100,9 +114,9 @@ public class bl_SceneLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    void UpdateProgress()
+    private void UpdateProgress()
     {
         //asynchronous loading
         if (CurrentLoadLevel.LoadingType == LoadingType.Async)
@@ -128,12 +142,12 @@ public class bl_SceneLoader : MonoBehaviour
         //round the progress value if's necessary
         float barValue = RoundBarProgress > 0 ? (Mathf.Round(smoothValue / RoundBarProgress) * RoundBarProgress) : smoothValue;
         ScreenUI.UpdateLoadProgress(barValue, smoothValue);
-    } 
+    }
 
     /// <summary>
     /// Called when the scene load finish
     /// </summary>
-    void OnFinish()
+    private void OnFinish()
     {
         FinishLoad = true;
         onLoaded?.Invoke();
@@ -142,10 +156,12 @@ public class bl_SceneLoader : MonoBehaviour
         {
             case SceneSkipType.Button:
                 break;
+
             case SceneSkipType.Instant:
             case SceneSkipType.InstantComplete:
                 TransitionToScene();
                 break;
+
             case SceneSkipType.AnyKey:
                 canSkipWithKey = true;
                 break;
@@ -178,27 +194,26 @@ public class bl_SceneLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public void TransitionToScene() => ScreenUI.TransitionToScene();
 
-
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    void SkipWithKey()
+    private void SkipWithKey()
     {
         if (!canSkipWithKey)
             return;
 
-        if (Input.anyKeyDown)
+        if (Keyboard.current.anyKey.wasPressedThisFrame || Gamepad.current.buttonSouth.wasPressedThisFrame)
         {
             TransitionToScene();
         }
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     private IEnumerator DoAsyncOperation(string level)
     {
@@ -225,10 +240,10 @@ public class bl_SceneLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <returns></returns>
-    IEnumerator StartFakeLoading()
+    private IEnumerator StartFakeLoading()
     {
         smoothValue = 0;
         while (smoothValue < 1)
@@ -236,10 +251,10 @@ public class bl_SceneLoader : MonoBehaviour
             smoothValue += Time.deltaTime / CurrentLoadLevel.FakeLoadingTime;
             yield return new WaitForEndOfFrame();
         }
-    }  
+    }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public SceneSkipType GetSkipType
     {
@@ -264,7 +279,7 @@ public class bl_SceneLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public float DeltaTime
     {

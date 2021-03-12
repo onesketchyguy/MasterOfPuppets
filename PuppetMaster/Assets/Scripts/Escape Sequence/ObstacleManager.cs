@@ -10,6 +10,8 @@ namespace PuppetMaster
         [SerializeField] private float obstacleSpawnMaxTime = 1.0f;
         [SerializeField] private GameObject obstaclePrefab;
 
+        [SerializeField] private int obstacleCount = 5;
+
         private float spawnTime;
 
         private GameObject[] obstacles;
@@ -81,7 +83,7 @@ namespace PuppetMaster
         {
             yield return new WaitForEndOfFrame();
 
-            obstacles = new GameObject[10];
+            obstacles = new GameObject[obstacleCount];
 
             for (int i = 0; i < obstacles.Length; i++)
             {
