@@ -27,6 +27,8 @@ namespace PuppetMaster.EscapeSequence
 
         private bool chasingPlayer = true;
 
+        private Vector3 startPosition;
+
         private void TrySetPlayer()
         {
             var go = GameObject.FindGameObjectWithTag(playerTag);
@@ -41,6 +43,12 @@ namespace PuppetMaster.EscapeSequence
             var dir = Vector3.right * 100;
 
             Gizmos.DrawLine(Vector3.up * attackPositionY - dir, Vector3.up * attackPositionY + dir);
+        }
+
+        private void OnEnable()
+        {
+            if (_transform == null) startPosition = transform.position;
+            else _transform.position = startPosition;
         }
 
         private void Start()

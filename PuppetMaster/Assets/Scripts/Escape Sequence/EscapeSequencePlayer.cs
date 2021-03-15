@@ -12,6 +12,7 @@ namespace PuppetMaster.EscapeSequence
 
         [SerializeField] private EscapeSequenceGameManager gameManager;
         [SerializeField] private float speed = 5;
+        [SerializeField] private float escapeSpeed = 10;
 
         [Range(0, 100)]
         [SerializeField] private float accelleration = 30f;
@@ -27,14 +28,28 @@ namespace PuppetMaster.EscapeSequence
         private Transform _transform;
 
         [Tooltip("Minimum distance to target before loading.")]
-        [SerializeField] private float minDist = 0.31f;
+        [SerializeField] private float minDist = 0.01f;
+
+        private Vector3 startPosition;
 
         private float dist;
+
+        private float escapeProgress;
 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(Vector3.zero + Vector3.up * targetY, 0.1f);
+        }
+
+        private void OnEnable()
+        {
+            if (_transform == null) startPosition = transform.position;
+            else
+            {
+                escapeProgress = 0;
+                _transform.position = startPosition;
+            }
         }
 
         private void Start()
@@ -44,11 +59,15 @@ namespace PuppetMaster.EscapeSequence
 
         private void Update()
         {
-            _targetY = targetY * gameManager.progress;
+            if (gameManager.progress >= 0.9f)
+            {
+                escapeProgress = Mathf.MoveTowards(escapeProgress, 1, escapeSpeed * Time.deltaTime);
+            }
+
+            _targetY = targetY * escapeProgress;
 
             dist = Vector2.Distance(_transform.position, new Vector2(_transform.position.x, targetY));
 
-            // 0.31f found through play testing
             if (dist <= minDist)
             {
                 // Finished level
@@ -76,7 +95,7 @@ namespace PuppetMaster.EscapeSequence
                     deccelleration * Time.deltaTime);
             }
 
-            velocity.y = Mathf.MoveTowards(velocity.y, VerticalInput, accelleration * Time.deltaTime);
+            velocity.y = Mathf.MoveTowards(velocity.y, VerticalInput, speed * Time.deltaTime);
 
             rigidBody.velocity = velocity;
         }
