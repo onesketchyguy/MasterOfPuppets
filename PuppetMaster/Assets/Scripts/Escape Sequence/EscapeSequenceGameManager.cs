@@ -13,8 +13,7 @@ namespace PuppetMaster.EscapeSequence
         public GameObject player;
         public GameObject hand;
 
-        public bool gameOver = false;
-        private bool restarting = false;
+        private bool gameOver = false;
 
         public int levelToLoadIndex;
 
@@ -33,43 +32,35 @@ namespace PuppetMaster.EscapeSequence
             StartCoroutine(LoadScene());
         }
 
-        private void Update()
-        {
-            if (gameOver && !restarting)
-            {
-                StartCoroutine(HandleGameOverState());
-            }
-        }
-
         public void FinishLoad()
         {
             loadScene.allowSceneActivation = true;
         }
 
-        public void SetGameOver(bool value)
+        public void TriggerGameOver()
         {
-            gameOver = value;
+            if (!gameOver)
+                StartCoroutine(HandleGameOverState());
         }
 
         private IEnumerator HandleGameOverState()
         {
-            if (restarting) yield break;
-            restarting = true;
+            if (gameOver) yield break;
+            gameOver = true;
 
-            yield return fadeController.FadeOut();
+            yield return fadeController.FadeIn(5f);
 
             player.SetActive(false);
             hand.SetActive(false);
 
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(1);
 
             player.SetActive(true);
             hand.SetActive(true);
 
-            yield return fadeController.FadeIn();
+            yield return fadeController.FadeOut(50f);
 
             gameOver = false;
-            restarting = false;
         }
 
         private IEnumerator LoadScene()

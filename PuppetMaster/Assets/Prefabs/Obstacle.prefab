@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 1548315319292569897}
   - component: {fileID: 1548315319292569896}
   m_Layer: 0
-  m_Name: Obstacle (0)
+  m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,8 +140,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e196241a273b14ab89d57f80f3d407, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerTag: Player
   spawnRange: 6
   spawnHeight: 10
+  setbackAmount: 2
   _renderer: {fileID: 1548315318009261525}
   rigidBody: {fileID: 1548315319292569896}
 --- !u!54 &1548315319292569896

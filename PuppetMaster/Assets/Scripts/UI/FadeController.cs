@@ -6,11 +6,12 @@ namespace UIEffects
 {
     public class FadeController : MonoBehaviour
     {
-        [SerializeField] private Gradient fadeGradient = null;
         [SerializeField] private Graphic graphic = null;
 
         [SerializeField] private bool fadeOnStart = false;
         [SerializeField] private float fadeTime = 1.0f;
+
+        [SerializeField] private Color color;
 
         private void OnValidate()
         {
@@ -20,12 +21,14 @@ namespace UIEffects
                 graphic = GetComponent<Graphic>();
             else
             {
-                graphic.color = fadeGradient.Evaluate(1);
+                graphic.color = Color.clear;
             }
         }
 
         private void Start()
         {
+            graphic.color = color;
+
             if (fadeOnStart) Fade();
         }
 
@@ -33,52 +36,44 @@ namespace UIEffects
         {
             if (fadeIn)
             {
-                StartCoroutine(FadeIn());
+                StartCoroutine(FadeIn(fadeTime));
             }
             else
             {
-                StartCoroutine(FadeOut());
+                StartCoroutine(FadeOut(fadeTime));
             }
         }
 
-        public IEnumerator FadeIn()
+        public IEnumerator FadeIn(float fadeTime)
         {
             yield return null;
 
-            float value = 1;
-            float time = 0;
-
             while (true)
             {
-                graphic.color = fadeGradient.Evaluate(value);
-
-                value *= time;
-                time = Mathf.Clamp(time + Time.deltaTime, 0, fadeTime);
+                graphic.color = Color.Lerp(graphic.color, color, fadeTime * Time.deltaTime);
 
                 yield return null;
 
-                if (value <= 0) break;
+                if (graphic.color.a >= color.a - 20) break;
             }
+
+            graphic.color = color;
         }
 
-        public IEnumerator FadeOut()
+        public IEnumerator FadeOut(float fadeTime)
         {
             yield return null;
 
-            float value = 1;
-            float time = fadeTime;
-
             while (true)
             {
-                graphic.color = fadeGradient.Evaluate(value);
-
-                value *= time;
-                time = Mathf.Clamp(time - Time.deltaTime, 0, fadeTime);
+                graphic.color = Color.Lerp(graphic.color, Color.clear, fadeTime * Time.deltaTime);
 
                 yield return null;
 
-                if (value <= 0) break;
+                if (graphic.color.a <= 10) break;
             }
+
+            graphic.color = Color.clear;
         }
     }
 }

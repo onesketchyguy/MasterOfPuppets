@@ -16,9 +16,9 @@ namespace PuppetMaster.EscapeSequence
 
         [SerializeField] private Rigidbody rigidBody;
 
-        [SerializeField] private UnityEngine.Events.UnityEvent onCaughtPlayer;
+        [SerializeField] private Transform player;
 
-        private Transform player;
+        [SerializeField] private UnityEngine.Events.UnityEvent onCaughtPlayer;
 
         private Transform _transform;
 
@@ -28,13 +28,6 @@ namespace PuppetMaster.EscapeSequence
         private bool chasingPlayer = true;
 
         private Vector3 startPosition;
-
-        private void TrySetPlayer()
-        {
-            var go = GameObject.FindGameObjectWithTag(playerTag);
-
-            if (go != null) player = go.transform;
-        }
 
         private void OnDrawGizmos()
         {
@@ -49,6 +42,8 @@ namespace PuppetMaster.EscapeSequence
         {
             if (_transform == null) startPosition = transform.position;
             else _transform.position = startPosition;
+
+            chasingPlayer = true;
         }
 
         private void Start()
@@ -59,16 +54,6 @@ namespace PuppetMaster.EscapeSequence
 
         private void Update()
         {
-            if (player == null)
-            {
-                TrySetPlayer();
-
-                if (player != null)
-                {
-                    chasingPlayer = true;
-                }
-            }
-
             // Set the default inputs
             verticalInput = (attackPositionY + offsetY) - _transform.position.y;
             horizontalInput = 0;

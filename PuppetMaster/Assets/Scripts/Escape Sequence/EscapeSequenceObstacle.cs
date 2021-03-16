@@ -11,6 +11,8 @@ namespace PuppetMaster
         [SerializeField] private float spawnRange = 5f;
         [SerializeField] private float spawnHeight = 10;
 
+        [SerializeField] private float setbackAmount = 1f;
+
         [SerializeField] private Renderer _renderer;
         [SerializeField] private Rigidbody rigidBody;
 
@@ -52,9 +54,9 @@ namespace PuppetMaster
             if (collision.gameObject.CompareTag(playerTag))
             {
                 var rigidBody = collision.gameObject.GetComponent<Rigidbody>();
-                rigidBody.transform.position -= Vector3.up;
+                rigidBody.transform.position -= Vector3.up * setbackAmount;
 
-                rigidBody.velocity = Vector3.zero;
+                rigidBody.velocity = Vector3.up * -setbackAmount;
 
                 gameObject.SetActive(false);
             }
