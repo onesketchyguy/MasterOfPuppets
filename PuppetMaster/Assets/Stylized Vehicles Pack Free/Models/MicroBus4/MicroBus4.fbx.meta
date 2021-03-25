@@ -9,20 +9,40 @@ ModelImporter:
     100006: FR
     100008: //RootNode
     100010: MicroBus4
-    100012: door_br
-    100014: door_fl
-    100016: door_fr
-    100018: steering_wheel
+    100012: MicroBus4.001
+    100014: MicroBus4.002
+    100016: door_br
+    100018: door_fl
+    100020: door_fr
+    100022: steering_wheel
+    100024: WindowB
+    100026: WindowB1
+    100028: WindowB2
+    100030: WindowB3
+    100032: WindowBR
+    100034: WindowF
+    100036: WindowFL
+    100038: WindowFR
     400000: BL
     400002: BR
     400004: FL
     400006: FR
     400008: //RootNode
     400010: MicroBus4
-    400012: door_br
-    400014: door_fl
-    400016: door_fr
-    400018: steering_wheel
+    400012: MicroBus4.001
+    400014: MicroBus4.002
+    400016: door_br
+    400018: door_fl
+    400020: door_fr
+    400022: steering_wheel
+    400024: WindowB
+    400026: WindowB1
+    400028: WindowB2
+    400030: WindowB3
+    400032: WindowBR
+    400034: WindowF
+    400036: WindowFL
+    400038: WindowFR
     2100000: No Name
     2100002: PixelColors
     2100004: Glass
@@ -32,28 +52,58 @@ ModelImporter:
     2300004: FL
     2300006: FR
     2300008: MicroBus4
-    2300010: door_br
-    2300012: door_fl
-    2300014: door_fr
-    2300016: steering_wheel
+    2300010: MicroBus4.001
+    2300012: MicroBus4.002
+    2300014: door_br
+    2300016: door_fl
+    2300018: door_fr
+    2300020: steering_wheel
+    2300022: WindowB
+    2300024: WindowB1
+    2300026: WindowB2
+    2300028: WindowB3
+    2300030: WindowBR
+    2300032: WindowF
+    2300034: WindowFL
+    2300036: WindowFR
     3300000: BL
     3300002: BR
     3300004: FL
     3300006: FR
     3300008: MicroBus4
-    3300010: door_br
-    3300012: door_fl
-    3300014: door_fr
-    3300016: steering_wheel
+    3300010: MicroBus4.001
+    3300012: MicroBus4.002
+    3300014: door_br
+    3300016: door_fl
+    3300018: door_fr
+    3300020: steering_wheel
+    3300022: WindowB
+    3300024: WindowB1
+    3300026: WindowB2
+    3300028: WindowB3
+    3300030: WindowBR
+    3300032: WindowF
+    3300034: WindowFL
+    3300036: WindowFR
     4300000: BR
     4300002: FR
     4300004: BL
     4300006: FL
     4300008: MicroBus4
-    4300010: door_fr
-    4300012: door_br
-    4300014: door_fl
-    4300016: steering_wheel
+    4300010: MicroBus4.001
+    4300012: MicroBus4.002
+    4300014: door_fr
+    4300016: door_br
+    4300018: door_fl
+    4300020: steering_wheel
+    4300022: WindowB1
+    4300024: WindowB2
+    4300026: WindowB
+    4300028: WindowB3
+    4300030: WindowBR
+    4300032: WindowFR
+    4300034: WindowFL
+    4300036: WindowF
   externalObjects:
   - first:
       type: UnityEngine:Material

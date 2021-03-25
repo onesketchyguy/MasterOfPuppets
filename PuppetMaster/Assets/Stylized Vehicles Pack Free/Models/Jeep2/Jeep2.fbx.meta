@@ -10,9 +10,17 @@ ModelImporter:
     100008: //RootNode
     100010: Plane
     100012: Jeep2
-    100014: door_fl
-    100016: door_fr
-    100018: steering_wheel
+    100014: Jeep2.001
+    100016: Jeep2.002
+    100018: door_fl
+    100020: door_fr
+    100022: steering_wheel
+    100024: WindowB
+    100026: WindowBL
+    100028: WindowBR
+    100030: WindowF
+    100032: WindowL
+    100034: WindowR
     400000: BL
     400002: BR
     400004: FL
@@ -20,9 +28,17 @@ ModelImporter:
     400008: //RootNode
     400010: Plane
     400012: Jeep2
-    400014: door_fl
-    400016: door_fr
-    400018: steering_wheel
+    400014: Jeep2.001
+    400016: Jeep2.002
+    400018: door_fl
+    400020: door_fr
+    400022: steering_wheel
+    400024: WindowB
+    400026: WindowBL
+    400028: WindowBR
+    400030: WindowF
+    400032: WindowL
+    400034: WindowR
     2100000: PixelColors
     2300000: BL
     2300002: BR
@@ -30,27 +46,51 @@ ModelImporter:
     2300006: FR
     2300008: Plane
     2300010: Jeep2
-    2300012: door_fl
-    2300014: door_fr
-    2300016: steering_wheel
+    2300012: Jeep2.001
+    2300014: Jeep2.002
+    2300016: door_fl
+    2300018: door_fr
+    2300020: steering_wheel
+    2300022: WindowB
+    2300024: WindowBL
+    2300026: WindowBR
+    2300028: WindowF
+    2300030: WindowL
+    2300032: WindowR
     3300000: BL
     3300002: BR
     3300004: FL
     3300006: FR
     3300008: Plane
     3300010: Jeep2
-    3300012: door_fl
-    3300014: door_fr
-    3300016: steering_wheel
+    3300012: Jeep2.001
+    3300014: Jeep2.002
+    3300016: door_fl
+    3300018: door_fr
+    3300020: steering_wheel
+    3300022: WindowB
+    3300024: WindowBL
+    3300026: WindowBR
+    3300028: WindowF
+    3300030: WindowL
+    3300032: WindowR
     4300000: FR
     4300002: BR
     4300004: FL
     4300006: BL
     4300008: Plane
     4300010: Jeep2
-    4300012: door_fr
-    4300014: door_fl
-    4300016: steering_wheel
+    4300012: Jeep2.002
+    4300014: Jeep2.001
+    4300016: door_fr
+    4300018: door_fl
+    4300020: steering_wheel
+    4300022: WindowBR
+    4300024: WindowB
+    4300026: WindowBL
+    4300028: WindowL
+    4300030: WindowR
+    4300032: WindowF
   externalObjects:
   - first:
       type: UnityEngine:Material

@@ -10,11 +10,18 @@ ModelImporter:
     100008: //RootNode
     100010: Sedan1
     100012: Sedan1.002
-    100014: door_bl
-    100016: door_br
-    100018: door_fl
-    100020: door_fr
-    100022: steering_wheel
+    100014: Sedan1.001
+    100016: door_bl
+    100018: door_br
+    100020: door_fl
+    100022: door_fr
+    100024: steering_wheel
+    100026: WindowB
+    100028: WindowBL
+    100030: WindowBR
+    100032: WindowF
+    100034: WindowFL
+    100036: WindowFR
     400000: BL
     400002: BR
     400004: FL
@@ -22,11 +29,18 @@ ModelImporter:
     400008: //RootNode
     400010: Sedan1
     400012: Sedan1.002
-    400014: door_bl
-    400016: door_br
-    400018: door_fl
-    400020: door_fr
-    400022: steering_wheel
+    400014: Sedan1.001
+    400016: door_bl
+    400018: door_br
+    400020: door_fl
+    400022: door_fr
+    400024: steering_wheel
+    400026: WindowB
+    400028: WindowBL
+    400030: WindowBR
+    400032: WindowF
+    400034: WindowFL
+    400036: WindowFR
     2100000: PixelColors
     2300000: BL
     2300002: BR
@@ -34,33 +48,54 @@ ModelImporter:
     2300006: FR
     2300008: Sedan1
     2300010: Sedan1.002
-    2300012: door_bl
-    2300014: door_br
-    2300016: door_fl
-    2300018: door_fr
-    2300020: steering_wheel
+    2300012: Sedan1.001
+    2300014: door_bl
+    2300016: door_br
+    2300018: door_fl
+    2300020: door_fr
+    2300022: steering_wheel
+    2300024: WindowB
+    2300026: WindowBL
+    2300028: WindowBR
+    2300030: WindowF
+    2300032: WindowFL
+    2300034: WindowFR
     3300000: BL
     3300002: BR
     3300004: FL
     3300006: FR
     3300008: Sedan1
     3300010: Sedan1.002
-    3300012: door_bl
-    3300014: door_br
-    3300016: door_fl
-    3300018: door_fr
-    3300020: steering_wheel
+    3300012: Sedan1.001
+    3300014: door_bl
+    3300016: door_br
+    3300018: door_fl
+    3300020: door_fr
+    3300022: steering_wheel
+    3300024: WindowB
+    3300026: WindowBL
+    3300028: WindowBR
+    3300030: WindowF
+    3300032: WindowFL
+    3300034: WindowFR
     4300000: BR
     4300002: FR
     4300004: BL
     4300006: FL
     4300008: Sedan1
     4300010: Sedan1.002
-    4300012: door_br
-    4300014: door_fr
-    4300016: door_fl
-    4300018: door_bl
-    4300020: steering_wheel
+    4300012: Sedan1.001
+    4300014: door_br
+    4300016: door_fr
+    4300018: door_fl
+    4300020: door_bl
+    4300022: steering_wheel
+    4300024: WindowBR
+    4300026: WindowFR
+    4300028: WindowBL
+    4300030: WindowFL
+    4300032: WindowB
+    4300034: WindowF
     2186277476908879412: ImportLogs
   externalObjects:
   - first:
