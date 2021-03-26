@@ -102,10 +102,6 @@ namespace Player.Input
                 // Read a vector2 from the input received
                 var screenSpace = obj.ReadValue<Vector2>();
 
-                var _transform = CharacterInput.playerControlled.transform;
-
-                var value = Utility.Utilities.GetScreenSpaceOffsetFromObject(_transform, screenSpace);
-
                 // Send that vector2 to our player object
                 CharacterInput.playerControlled.HandleLook(screenSpace);
             }
