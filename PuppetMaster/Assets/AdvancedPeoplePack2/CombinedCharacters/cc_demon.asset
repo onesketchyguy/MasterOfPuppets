@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c36c83b836f78b41ab40d39f5c57479, type: 3}
+  m_Name: cc_demon
+  m_EditorClassIdentifier: 
+  combinedMeshes:
+  - {fileID: 4300000, guid: a577521b529654b41a53b5bbd3f94b3a, type: 2}
+  materials:
+  - {fileID: 2100000, guid: f39043beba6bdac44b4543903f0b9d77, type: 2}
+  bodyMat: {fileID: 2100000, guid: 3f803a0b01aa66446ad8b187435cb40c, type: 2}
+  characterCustomizationSetup:
+    Hair: -1
+    Hat: -1
+    TShirt: -1
+    Pants: -1
+    Shoes: -1
+    Beard: -1
+    Accessory: -1
+    Fat: 0
+    Muscles: 100
+    Slimness: 100
+    Thin: 100
+    BreastSize: 0
+    Neck_Width: 0
+    Ear_Size: 100
+    Ear_Angle: 100
+    Jaw_Width: 100
+    Jaw_Shift: -33
+    Jaw_Offset: -12
+    Cheek_Size: -12
+    Chin_Offset: 0
+    Eye_Width: 0
+    Eye_Form: 0
+    Eye_InnerCorner: 0
+    Eye_Corner: 0
+    Eye_Rotation: 0
+    Eye_Offset: 0
+    Eye_ScaleX: 0
+    Eye_ScaleY: 0
+    Eye_Size: 0
+    Eye_Close: 0
+    Eye_Height: 0
+    Brow_Height: 0
+    Brow_Shape: 0
+    Brow_Thickness: 0
+    Brow_Length: 0
+    Nose_Length: 0
+    Nose_Size: 0
+    Nose_Angle: 0
+    Nose_Offset: 0
+    Nose_Bridge: 0
+    Nose_Hump: 0
+    Mouth_Offset: 0
+    Mouth_Width: 0
+    Mouth_Size: 0
+    Mouth_Open: 0
+    Mouth_Bulging: 0
+    LipsCorners_Offset: 0
+    Face_Form: 0
+    Chin_Width: 0
+    Chin_Form: 0
+    Head_Offset: 34
+    Height: -0.06
+    Smile: 37
+    Sadness: 0
+    Surprise: 0
+    Thoughtful: 0
+    Angry: 100
+    HeadSize: 0.118
+    SkinColor: {r: 1, g: 0, b: 0.009994984, a: 1}
+    EyeColor: {r: 0, g: 0, b: 0, a: 0}
+    HairColor: {r: 0, g: 0, b: 0, a: 0}
+    UnderpantsColor: {r: 0.33018857, g: 0.3286311, b: 0.3286311, a: 1}
+  animator: {fileID: 9100000, guid: 09eae6716591dd84fb1404e4cf0e38e6, type: 2}
+  avatar: {fileID: 9000000, guid: 1b8f3f34252d9ee44823ab05504b31a8, type: 3}
+  hipsScale: {x: 0.96, y: 0.94, z: 0.94}
+  headScale: {x: 1.118, y: 1.118, z: 1.118}
+  empty_rig: {fileID: 100048, guid: 0836940a0c3c807458e04c755397b1c9, type: 3}
+  prefab: {fileID: 0}
