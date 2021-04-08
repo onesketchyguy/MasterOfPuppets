@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PuppetMaster
@@ -22,6 +21,8 @@ namespace PuppetMaster
         private GameObject[] obstacles;
         private Renderer[] obstacleRenderers;
         private GameObject[] obstacleWarnings;
+
+        public bool canSpawn { get; private set; } = true;
 
         private void OnValidate()
         {
@@ -60,6 +61,8 @@ namespace PuppetMaster
 
         private void Update()
         {
+            if (canSpawn == false) return;
+
             if (spawnTime > 0)
             {
                 spawnTime -= Time.deltaTime;
@@ -108,6 +111,21 @@ namespace PuppetMaster
 
                 break;
             }
+        }
+
+        public void StopSpawning()
+        {
+            canSpawn = false;
+
+            foreach (var item in obstacles)
+            {
+                item.SetActive(false);
+            }
+        }
+
+        public void StartSpawning()
+        {
+            canSpawn = true;
         }
 
         private IEnumerator PopulateObstacleArray()

@@ -16,6 +16,8 @@ namespace PuppetMaster
         [SerializeField] private Renderer _renderer;
         [SerializeField] private Rigidbody rigidBody;
 
+        [SerializeField] private AudioClip onHitPlayerClip;
+
         private Transform _transform;
 
         private void OnDrawGizmosSelected()
@@ -43,6 +45,8 @@ namespace PuppetMaster
 
         private void Update()
         {
+            if (TrySetRenderer() == false) return;
+
             if (_renderer.isVisible == false)
             {
                 gameObject.SetActive(false);
@@ -58,8 +62,20 @@ namespace PuppetMaster
 
                 rigidBody.velocity = Vector3.up * -setbackAmount;
 
+                AudioSource.PlayClipAtPoint(onHitPlayerClip, Vector3.zero, 1);
+
                 gameObject.SetActive(false);
             }
+        }
+
+        private bool TrySetRenderer()
+        {
+            if (_renderer == null)
+            {
+                _renderer = GetComponentInChildren<Renderer>();
+            }
+
+            return _renderer == null;
         }
 
         private void OnCreation()

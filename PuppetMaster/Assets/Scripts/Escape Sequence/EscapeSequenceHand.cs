@@ -20,6 +20,9 @@ namespace PuppetMaster.EscapeSequence
 
         [SerializeField] private UnityEngine.Events.UnityEvent onCaughtPlayer;
 
+        [SerializeField] private Animator animator;
+        [SerializeField] private string GrabAnimationName = "FistClosed";
+
         private Transform _transform;
 
         private float horizontalInput;
@@ -57,6 +60,8 @@ namespace PuppetMaster.EscapeSequence
             // Set the default inputs
             verticalInput = (attackPositionY + offsetY) - _transform.position.y;
             horizontalInput = 0;
+
+            animator.SetBool(GrabAnimationName, chasingPlayer == false);
 
             if (chasingPlayer)
             {

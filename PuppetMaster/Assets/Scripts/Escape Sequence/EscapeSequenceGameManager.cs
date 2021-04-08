@@ -10,6 +10,8 @@ namespace PuppetMaster.EscapeSequence
     {
         public FadeController fadeController;
 
+        [SerializeField] private ObstacleManager obstacleManager;
+
         public GameObject player;
         public GameObject hand;
 
@@ -30,6 +32,8 @@ namespace PuppetMaster.EscapeSequence
 
             operations.Enqueue(loadScene);
             StartCoroutine(LoadScene());
+
+            obstacleManager.StartSpawning();
         }
 
         public void FinishLoad()
@@ -50,6 +54,8 @@ namespace PuppetMaster.EscapeSequence
 
             yield return fadeController.FadeIn(5f);
 
+            obstacleManager.StopSpawning();
+
             player.SetActive(false);
             hand.SetActive(false);
 
@@ -59,6 +65,8 @@ namespace PuppetMaster.EscapeSequence
             hand.SetActive(true);
 
             yield return fadeController.FadeOut(50f);
+
+            obstacleManager.StartSpawning();
 
             gameOver = false;
         }
