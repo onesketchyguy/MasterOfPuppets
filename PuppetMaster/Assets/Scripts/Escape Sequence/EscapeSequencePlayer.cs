@@ -14,6 +14,8 @@ namespace PuppetMaster.EscapeSequence
         [SerializeField] private float speed = 5;
         [SerializeField] private float escapeSpeed = 10;
 
+        [SerializeField] private UnityEngine.Events.UnityEvent onReachedEnd;
+
         [Range(0, 100)]
         [SerializeField] private float accelleration = 30f;
 
@@ -71,7 +73,8 @@ namespace PuppetMaster.EscapeSequence
             if (dist <= minDist)
             {
                 // Finished level
-                gameManager.FinishLoad();
+                // gameManager.FinishLoad();
+                onReachedEnd?.Invoke();
             }
 
             VerticalInput = Mathf.Clamp(_targetY - _transform.position.y, -1, 1);
