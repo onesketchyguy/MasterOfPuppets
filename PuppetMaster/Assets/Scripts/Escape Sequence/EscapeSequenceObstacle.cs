@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PuppetMaster
@@ -17,6 +15,8 @@ namespace PuppetMaster
         [SerializeField] private Rigidbody rigidBody;
 
         [SerializeField] private AudioClip onHitPlayerClip;
+
+        [SerializeField] private AudioClipPlayer audioClipPlayer;
 
         private Transform _transform;
 
@@ -62,7 +62,10 @@ namespace PuppetMaster
 
                 rigidBody.velocity = Vector3.up * -setbackAmount;
 
-                AudioSource.PlayClipAtPoint(onHitPlayerClip, Vector3.zero, 1);
+                audioClipPlayer.PlayClip(onHitPlayerClip);
+
+                // Try to send an event to the reciever
+                rigidBody.gameObject.SendMessage("OnHit", SendMessageOptions.DontRequireReceiver);
 
                 gameObject.SetActive(false);
             }
@@ -85,6 +88,11 @@ namespace PuppetMaster
 
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;
+        }
+
+        public void SetAudioClipPlayer(AudioClipPlayer audioClipPlayer)
+        {
+            this.audioClipPlayer = audioClipPlayer;
         }
     }
 }

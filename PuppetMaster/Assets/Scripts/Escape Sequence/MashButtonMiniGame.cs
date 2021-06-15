@@ -8,6 +8,12 @@ namespace PuppetMaster
         public string button = "Fire1";
 
         public UnityEngine.Events.UnityEvent onStart;
+
+        /// <summary>
+        /// FIXME: properly implement cancel
+        /// </summary>
+        public UnityEngine.Events.UnityEvent onCancel;
+
         public UnityEngine.Events.UnityEvent onButtonPress;
         public UnityEngine.Events.UnityEvent onFinish;
         public int buttonCount = 8;
@@ -65,6 +71,8 @@ namespace PuppetMaster
 
         public void StartGame()
         {
+            if (gameStarted == true) return;
+
             onStart?.Invoke();
 
             gameStarted = true;

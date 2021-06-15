@@ -1,0 +1,19 @@
+{
+    "name": "Master",
+    "rootNamespace": "",
+    "references": [
+        "RootMotion",
+        "Master.Input",
+        "Cinemachine",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

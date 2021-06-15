@@ -51,7 +51,8 @@ MonoBehaviour:
   setbackAmount: 2
   _renderer: {fileID: 0}
   rigidBody: {fileID: 1548315319292569896}
-  onHitPlayerClip: {fileID: 8300000, guid: b3dae086533c2a24c927ff6036269d0b, type: 3}
+  onHitPlayerClip: {fileID: 8300000, guid: da2bc5061945baf4cb7da24f409faa7f, type: 3}
+  audioClipPlayer: {fileID: 0}
 --- !u!54 &1548315319292569896
 Rigidbody:
   m_ObjectHideFlags: 0

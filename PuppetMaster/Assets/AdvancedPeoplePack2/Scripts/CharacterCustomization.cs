@@ -1525,13 +1525,21 @@ namespace AdvancedCustomizableSystem
             if (!_lodGroup)
                 _lodGroup = GetComponent<LODGroup>();
 
+            if (_lodGroup == null)
+            {
+                Debug.LogWarning($"No LOD component on {gameObject.name}");
+
+                return;
+            }
+
             LOD[] lods;
-            float[][] lods_p = new float[][] {
-            new float[] {0.5f, 0.2f, 0.05f, 0f },
-            new float[] {0.4f, 0.1f, 0f, 0f },
-            new float[] {0.3f,   0f,   0f, 0f },
-            new float[] {0f,   0f,   0f, 0f }
-        };
+            float[][] lods_p = new float[][]
+            {
+                new float[] {0.5f, 0.2f, 0.05f, 0f },
+                new float[] {0.4f, 0.1f, 0f, 0f },
+                new float[] {0.3f,   0f,   0f, 0f },
+                new float[] {0f,   0f,   0f, 0f }
+            };
 
             if (bakeGroup == null || !bakeGroup.activeSelf)
             {

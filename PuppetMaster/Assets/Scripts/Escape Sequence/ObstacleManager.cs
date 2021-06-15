@@ -12,6 +12,8 @@ namespace PuppetMaster
         [SerializeField] private float obstacleSpawnMaxTime = 1.0f;
         [SerializeField] private GameObject obstaclePrefab;
 
+        [SerializeField] private AudioClipPlayer onHitPlayerSource;
+
         [SerializeField] private int obstacleCount = 5;
 
         [SerializeField] private float warningOffset = 3.5f;
@@ -121,6 +123,11 @@ namespace PuppetMaster
             {
                 item.SetActive(false);
             }
+
+            foreach (var item in obstacleWarnings)
+            {
+                item.SetActive(false);
+            }
         }
 
         public void StartSpawning()
@@ -140,6 +147,13 @@ namespace PuppetMaster
             {
                 obstacles[i] = Instantiate(obstaclePrefab, transform);
                 obstacles[i].SetActive(false);
+
+                var escapeSequenceObstacle = obstacles[i].GetComponent<EscapeSequenceObstacle>();
+
+                if (escapeSequenceObstacle != null)
+                {
+                    escapeSequenceObstacle.SetAudioClipPlayer(onHitPlayerSource);
+                }
 
                 obstacleRenderers[i] = obstacles[i].GetComponent<Renderer>();
 

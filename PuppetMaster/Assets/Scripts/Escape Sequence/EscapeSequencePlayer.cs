@@ -14,6 +14,7 @@ namespace PuppetMaster.EscapeSequence
         [SerializeField] private float speed = 5;
         [SerializeField] private float escapeSpeed = 10;
 
+        [SerializeField] private UnityEngine.Events.UnityEvent onHit;
         [SerializeField] private UnityEngine.Events.UnityEvent onReachedEnd;
 
         [Range(0, 100)]
@@ -102,5 +103,8 @@ namespace PuppetMaster.EscapeSequence
 
             rigidBody.velocity = velocity;
         }
+
+        // Called by EscapeSequenceObstacle on hit
+        public void OnHit() => onHit?.Invoke();
     }
 }
