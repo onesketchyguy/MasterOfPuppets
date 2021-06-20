@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6410d9d555e4ef446baca08761367596, type: 3}
+  m_Name: Shoes_10
+  m_EditorClassIdentifier: 
+  itemType: 5
+  icon: {fileID: 0}
+  mesh:
+  - {fileID: 4300002, guid: 9e4b5822b6ef6e4489eae3b70f399e8c, type: 3}
+  - {fileID: 4300002, guid: de795950846695244bf3ae1c6cc9e9f7, type: 3}
+  - {fileID: 4300002, guid: d75e5df358b6f2c4b8b6b49174a2fe24, type: 3}
+  - {fileID: 4300002, guid: ba88b3dbc92b8c7418fb257c76ddbf86, type: 3}
+  hideParts:
+  - Foot
+  yOffset: 0
+  mats:
+  - {fileID: 2100000, guid: 3f3d17836a87ae942ac524d7020ac829, type: 2}

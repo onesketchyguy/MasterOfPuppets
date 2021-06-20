@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6410d9d555e4ef446baca08761367596, type: 3}
+  m_Name: PoliceShoes_2
+  m_EditorClassIdentifier: 
+  itemType: 5
+  icon: {fileID: 0}
+  mesh:
+  - {fileID: 4300012, guid: 81a33c90de2039840be4e0283123dc13, type: 3}
+  - {fileID: 4300000, guid: 140131c2d37744c4e927f3c5c0ec7f48, type: 3}
+  - {fileID: 4300000, guid: ff41bd31bdf849347874c076eaac9945, type: 3}
+  - {fileID: 4300000, guid: b8de65592ba274244a6e022fd4ed9908, type: 3}
+  hideParts:
+  - Shin_Lower
+  - Foot
+  yOffset: 0
+  mats:
+  - {fileID: 2100000, guid: 3f3d17836a87ae942ac524d7020ac829, type: 2}

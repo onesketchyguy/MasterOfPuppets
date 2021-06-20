@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace UIEffects
+namespace CustomUI
 {
     public class TransitionWithValue : MonoBehaviour
     {

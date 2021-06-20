@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6410d9d555e4ef446baca08761367596, type: 3}
+  m_Name: AccessoryPack_06
+  m_EditorClassIdentifier: 
+  itemType: 6
+  icon: {fileID: 0}
+  mesh:
+  - {fileID: 4300000, guid: 672b302dc6e0c854e8fb440188e239da, type: 3}
+  - {fileID: 4300000, guid: 0e7557c40045d2e4fb8d3acc20e24c77, type: 3}
+  - {fileID: 4300000, guid: 1aad0ce7073402c4ca3e06641b8ba86e, type: 3}
+  - {fileID: 4300000, guid: e5a8a0a46d6750b4cb4eee5c234f75ed, type: 3}
+  hideParts: []
+  yOffset: 0
+  mats:
+  - {fileID: 2100000, guid: 3f3d17836a87ae942ac524d7020ac829, type: 2}
+  - {fileID: 2100000, guid: a4d90c6a694253e4380dd8ad8aca9b32, type: 2}

@@ -5,7 +5,8 @@
         "RootMotion",
         "Master.Input",
         "Cinemachine",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "CustomUI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
