@@ -6,7 +6,6 @@ namespace PuppetMaster.CharacterCreation
 #if UNITY_EDITOR
 
     using UnityEditor;
-    using UnityEditorInternal;
 
     [CustomEditor(typeof(CharacterItem))]
     public class CharacterItemEditor : Editor

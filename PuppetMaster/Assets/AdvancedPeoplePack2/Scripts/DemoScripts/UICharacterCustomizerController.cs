@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using AdvancedCustomizableSystem;
+using UnityEngine.EventSystems;
 
 namespace PuppetMaster.CharacterCreation
 {
@@ -27,7 +28,6 @@ namespace PuppetMaster.CharacterCreation
 
         public Slider fatSlider;
         public Slider musclesSlider;
-        public Slider thinSlider;
 
         public Slider slimnessSlider;
         public Slider breastSlider;
@@ -42,21 +42,8 @@ namespace PuppetMaster.CharacterCreation
 
         public Slider[] faceShapeSliders;
 
-        public RectTransform HairPanel;
-        public RectTransform BeardPanel;
-        public RectTransform ShirtPanel;
-        public RectTransform PantsPanel;
-        public RectTransform ShoesPanel;
-        public RectTransform HatPanel;
-        public RectTransform AccessoryPanel;
-
         public RectTransform FaceEditPanel;
         public RectTransform BaseEditPanel;
-
-        public RectTransform SkinColorPanel;
-        public RectTransform EyeColorPanel;
-        public RectTransform HairColorPanel;
-        public RectTransform UnderpantsColorPanel;
 
         public RectTransform EmotionsPanel;
 
@@ -69,7 +56,7 @@ namespace PuppetMaster.CharacterCreation
         public Vector3[] CameraEulerForPanels;
         private int currentPanelIndex = 0;
 
-        public Camera Camera;
+        private Transform mainCam;
 
         #region ButtonEvents
 
@@ -77,7 +64,6 @@ namespace PuppetMaster.CharacterCreation
         {
             FaceEditPanel.gameObject.SetActive(true);
             BaseEditPanel.gameObject.SetActive(false);
-            currentPanelIndex = 1;
             panelNameText.text = "FACE CUSTOMIZER";
         }
 
@@ -85,7 +71,6 @@ namespace PuppetMaster.CharacterCreation
         {
             FaceEditPanel.gameObject.SetActive(false);
             BaseEditPanel.gameObject.SetActive(true);
-            currentPanelIndex = 0;
             panelNameText.text = "BASE CUSTOMIZER";
         }
 
@@ -94,47 +79,43 @@ namespace PuppetMaster.CharacterCreation
             characterCustomization.SetFaceShape((FaceShapeType)(index), faceShapeSliders[index].value);
         }
 
-        public void SetHeadOffset()
+        public void SetHeadOffset(float value)
         {
-            characterCustomization.SetHeadOffset(headOffsetSlider.value);
+            characterCustomization.SetHeadOffset(value);
         }
 
-        public void BodyFat()
+        public void SetBodyFat(float value)
         {
-            characterCustomization.SetBodyShape(BodyShapeType.Fat, fatSlider.value);
+            characterCustomization.SetBodyShape(BodyShapeType.Fat, value);
         }
 
-        public void BodyMuscles()
+        public void SetBodyMuscles(float value)
         {
-            characterCustomization.SetBodyShape(BodyShapeType.Muscles, musclesSlider.value);
+            characterCustomization.SetBodyShape(BodyShapeType.Muscles, value);
         }
 
-        public void BodyThin()
+        public void SetBodySlimness(float value)
         {
-            characterCustomization.SetBodyShape(BodyShapeType.Thin, thinSlider.value);
+            characterCustomization.SetBodyShape(BodyShapeType.Thin, value);
+            characterCustomization.SetBodyShape(BodyShapeType.Slimness, value);
         }
 
-        public void BodySlimness()
+        public void SetBodyBreast(float value)
         {
-            characterCustomization.SetBodyShape(BodyShapeType.Slimness, slimnessSlider.value);
-        }
-
-        public void BodyBreast()
-        {
-            characterCustomization.SetBodyShape(BodyShapeType.BreastSize, breastSlider.value,
+            characterCustomization.SetBodyShape(BodyShapeType.BreastSize, value,
                 new string[] { "Chest", "Stomach", "Head" },
                 new ClothesPartType[] { ClothesPartType.Shirt }
                 );
         }
 
-        public void SetHeight()
+        public void SetHeight(float value)
         {
-            characterCustomization.SetHeight(heightSlider.value);
+            characterCustomization.SetHeight(value);
         }
 
-        public void SetHeadSize()
+        public void SetHeadSize(float value)
         {
-            characterCustomization.SetHeadSize(headSizeSlider.value);
+            characterCustomization.SetHeadSize(value);
         }
 
         private int lodIndex;
@@ -176,109 +157,6 @@ namespace PuppetMaster.CharacterCreation
             characterCustomization.SetBodyColor(BodyColorPart.Underpants, color);
         }
 
-        public void VisibleSkinColorPanel(bool v)
-        {
-            HideAllPanels();
-            SkinColorPanel.gameObject.SetActive(v);
-        }
-
-        public void VisibleEyeColorPanel(bool v)
-        {
-            HideAllPanels();
-            EyeColorPanel.gameObject.SetActive(v);
-        }
-
-        public void VisibleHairColorPanel(bool v)
-        {
-            HideAllPanels();
-            HairColorPanel.gameObject.SetActive(v);
-        }
-
-        public void VisibleUnderpantsColorPanel(bool v)
-        {
-            HideAllPanels();
-            UnderpantsColorPanel.gameObject.SetActive(v);
-        }
-
-        public void ShirtPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                ShirtPanel.gameObject.SetActive(false);
-            else
-                ShirtPanel.gameObject.SetActive(true);
-        }
-
-        public void PantsPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                PantsPanel.gameObject.SetActive(false);
-            else
-                PantsPanel.gameObject.SetActive(true);
-        }
-
-        public void ShoesPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                ShoesPanel.gameObject.SetActive(false);
-            else
-                ShoesPanel.gameObject.SetActive(true);
-        }
-
-        public void HairPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                HairPanel.gameObject.SetActive(false);
-            else
-                HairPanel.gameObject.SetActive(true);
-
-            currentPanelIndex = (v) ? 1 : 0;
-        }
-
-        public void BeardPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                BeardPanel.gameObject.SetActive(false);
-            else
-                BeardPanel.gameObject.SetActive(true);
-
-            currentPanelIndex = (v) ? 1 : 0;
-        }
-
-        public void HatPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                HatPanel.gameObject.SetActive(false);
-            else
-                HatPanel.gameObject.SetActive(true);
-            currentPanelIndex = (v) ? 1 : 0;
-        }
-
-        public void EmotionsPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                EmotionsPanel.gameObject.SetActive(false);
-            else
-                EmotionsPanel.gameObject.SetActive(true);
-            currentPanelIndex = (v) ? 1 : 0;
-        }
-
-        public void AccessoryPanel_Select(bool v)
-        {
-            HideAllPanels();
-            if (!v)
-                AccessoryPanel.gameObject.SetActive(false);
-            else
-                AccessoryPanel.gameObject.SetActive(true);
-            currentPanelIndex = (v) ? 1 : 0;
-        }
-
         public void EmotionsChange_Event(int index)
         {
             var emotion = characterCustomization.emotionPresets[index];
@@ -286,60 +164,19 @@ namespace PuppetMaster.CharacterCreation
                 characterCustomization.PlayEmotion(emotion.name, 2f);
         }
 
-        public void HairChange_Event(int index)
-        {
-            characterCustomization.SetHairByIndex(index);
-        }
+        public void HairChange_Event(int index) => characterCustomization.SetHairByIndex(index);
 
-        public void BeardChange_Event(int index)
-        {
-            characterCustomization.SetBeardByIndex(index);
-        }
+        public void BeardChange_Event(int index) => characterCustomization.SetBeardByIndex(index);
 
-        public void ShirtChange_Event(int index)
-        {
-            characterCustomization.SetElementByIndex(ClothesPartType.Shirt, index);
-        }
+        public void ShirtChange_Event(int index) => characterCustomization.SetElementByIndex(ClothesPartType.Shirt, index);
 
-        public void PantsChange_Event(int index)
-        {
-            characterCustomization.SetElementByIndex(ClothesPartType.Pants, index);
-        }
+        public void PantsChange_Event(int index) => characterCustomization.SetElementByIndex(ClothesPartType.Pants, index);
 
-        public void ShoesChange_Event(int index)
-        {
-            characterCustomization.SetElementByIndex(ClothesPartType.Shoes, index);
-        }
+        public void ShoesChange_Event(int index) => characterCustomization.SetElementByIndex(ClothesPartType.Shoes, index);
 
-        public void HatChange_Event(int index)
-        {
-            characterCustomization.SetElementByIndex(ClothesPartType.Hat, index);
-        }
+        public void HatChange_Event(int index) => characterCustomization.SetElementByIndex(ClothesPartType.Hat, index);
 
-        public void AccessoryChange_Event(int index)
-        {
-            characterCustomization.SetElementByIndex(ClothesPartType.Accessory, index);
-        }
-
-        public void HideAllPanels()
-        {
-            SkinColorPanel.gameObject.SetActive(false);
-            EyeColorPanel.gameObject.SetActive(false);
-            HairColorPanel.gameObject.SetActive(false);
-            UnderpantsColorPanel.gameObject.SetActive(false);
-            if (EmotionsPanel != null)
-                EmotionsPanel.gameObject.SetActive(false);
-            if (BeardPanel != null)
-                BeardPanel.gameObject.SetActive(false);
-            HairPanel.gameObject.SetActive(false);
-            ShirtPanel.gameObject.SetActive(false);
-            PantsPanel.gameObject.SetActive(false);
-            ShoesPanel.gameObject.SetActive(false);
-            HatPanel.gameObject.SetActive(false);
-            AccessoryPanel.gameObject.SetActive(false);
-
-            currentPanelIndex = 0;
-        }
+        public void AccessoryChange_Event(int index) => characterCustomization.SetElementByIndex(ClothesPartType.Accessory, index);
 
         public void SaveToFile()
         {
@@ -357,9 +194,10 @@ namespace PuppetMaster.CharacterCreation
             characterCustomization.ResetAll();
         }
 
-        public void Randimize()
+        public void Randomize()
         {
             characterCustomization.Randomize();
+            UpdateSliders();
         }
 
         private bool walk_active = false;
@@ -387,13 +225,41 @@ namespace PuppetMaster.CharacterCreation
                 GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>().enabled = canvasVisible;
             }
 
-            if (Camera == null)
+            if (mainCam == null)
             {
-                Camera = Camera.main;
+                mainCam = Camera.main.transform;
+            }
+            else
+            {
+                mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, CameraPositionForPanels[currentPanelIndex], Time.deltaTime * 5);
+                mainCam.transform.eulerAngles = Vector3.Lerp(mainCam.transform.eulerAngles, CameraEulerForPanels[currentPanelIndex], Time.deltaTime * 5);
             }
 
-            Camera.transform.position = Vector3.Lerp(Camera.transform.position, CameraPositionForPanels[currentPanelIndex], Time.deltaTime * 5);
-            Camera.transform.eulerAngles = Vector3.Lerp(Camera.transform.eulerAngles, CameraEulerForPanels[currentPanelIndex], Time.deltaTime * 5);
+            if (EventSystem.current.IsPointerOverGameObject() == true) return;
+
+            if (Mouse.current.scroll.ReadValue().y > 0)
+            {
+                currentPanelIndex = 1;
+            }
+            else if (Mouse.current.scroll.ReadValue().y < 0)
+            {
+                currentPanelIndex = 0;
+            }
+        }
+
+        public void UpdateSliders()
+        {
+            // FIXME: Update all the sliders and such
+
+            slimnessSlider.SetValueWithoutNotify(characterCustomization.GetBodyShapeWeight(BodyShapeType.Slimness.ToString()));
+            fatSlider.SetValueWithoutNotify(characterCustomization.GetBodyShapeWeight(BodyShapeType.Slimness.ToString()));
+            musclesSlider.SetValueWithoutNotify(characterCustomization.GetBodyShapeWeight(BodyShapeType.Muscles.ToString()));
+            breastSlider.SetValueWithoutNotify(characterCustomization.GetBodyShapeWeight(BodyShapeType.BreastSize.ToString()));
+
+            //heightSlider.SetValueWithoutNotify(characterCustomization.GetCharacterPart("Height");
+            //headSizeSlider.SetValueWithoutNotify(characterCustomization.GetBodyShapeWeight(BodyShapeType.Slimness.ToString()));
+            //headOffsetSlider.SetValueWithoutNotify(characterCustomization.GetBodyShapeWeight(BodyShapeType.Slimness.ToString()));
+            //legSlider;
         }
 
         public void ApplySettings(CharacterCustomizationSetup characterSettings)

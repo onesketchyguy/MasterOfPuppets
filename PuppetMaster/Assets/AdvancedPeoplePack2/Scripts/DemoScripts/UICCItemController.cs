@@ -1,6 +1,8 @@
 namespace PuppetMaster.CharacterCreation
 {
-    public class UICCItemController : UnityEngine.MonoBehaviour
+    using UnityEngine;
+
+    public class UICCItemController : MonoBehaviour
     {
         public System.Action<int> onUseEvent = null;
 
@@ -8,7 +10,7 @@ namespace PuppetMaster.CharacterCreation
 
         public int itemIndex;
 
-        public void SetupItem(System.Action<int> useEvent, UnityEngine.Sprite icon, int index)
+        public void SetupItem(System.Action<int> useEvent, Sprite icon, int index)
         {
             itemIndex = index;
 

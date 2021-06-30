@@ -3,6 +3,26 @@ using UnityEngine.UI;
 
 namespace CustomUI
 {
+#if UNITY_EDITOR
+
+    using UnityEditor;
+
+    [CustomEditor(typeof(ForceImmediateLayoutUpdate))]
+    public class ForceImmediateLayoutUpdateEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            if (GUILayout.Button("Force immediate"))
+            {
+                ((ForceImmediateLayoutUpdate)target).UpdateLayout();
+            }
+        }
+    }
+
+#endif
+
     public class ForceImmediateLayoutUpdate : MonoBehaviour
     {
         [SerializeField] private LayoutGroup layoutGroup;
@@ -30,6 +50,8 @@ namespace CustomUI
 
         private void Update()
         {
+            if (updatePeriodically == false) return;
+
             // In theory we should only update once every second
             if (Time.frameCount % 60 == 0)
             {
@@ -37,7 +59,7 @@ namespace CustomUI
             }
         }
 
-        private void UpdateLayout()
+        public void UpdateLayout()
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
         }

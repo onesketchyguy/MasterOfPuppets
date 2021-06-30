@@ -5,14 +5,13 @@ namespace PuppetMaster.CharacterCreation
 {
     public class CharacterGenderSelection : MonoBehaviour
     {
-        // FIXME: Keep track of male and female characters so that when the user switches
-        //        the sliders and such all update.
-
         [SerializeField] private GameObject[] maleUniqueItems = null;
         [SerializeField] private GameObject[] femaleUniqueItems = null;
 
-        [SerializeField] private GameObject maleRootObject = null;
-        [SerializeField] private GameObject femaleRootObject = null;
+        [SerializeField] private CharacterCustomization maleRootObject = null;
+        [SerializeField] private CharacterCustomization femaleRootObject = null;
+
+        [SerializeField] private UICharacterCustomizerController customizer = null;
 
         [SerializeField] private bool genderMale = true;
 
@@ -27,8 +26,11 @@ namespace PuppetMaster.CharacterCreation
         private void UpdateGenderRoots()
         {
             // Enable the appropriate root object
-            maleRootObject.SetActive(genderMale == true);
-            femaleRootObject.SetActive(genderMale == false);
+            maleRootObject.gameObject.SetActive(genderMale == true);
+            femaleRootObject.gameObject.SetActive(genderMale == false);
+
+            customizer.characterCustomization = genderMale ? maleRootObject : femaleRootObject;
+            customizer.UpdateSliders();
 
             if (maleUniqueItems != null && maleUniqueItems.Length > 0)
                 foreach (var item in maleUniqueItems)
