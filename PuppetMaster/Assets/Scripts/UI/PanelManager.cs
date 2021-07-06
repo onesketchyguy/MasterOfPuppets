@@ -115,5 +115,20 @@ namespace CustomUI
                 }
             }
         }
+
+        public void ClosePanel(GameObject panel)
+        {
+            panel.SetActive(false);
+            var oldPanels = activePanels;
+            activePanels.Clear();
+
+            foreach (var item in oldPanels)
+            {
+                if (item.gameObject != panel.gameObject)
+                {
+                    activePanels.Enqueue(item);
+                }
+            }
+        }
     }
 }

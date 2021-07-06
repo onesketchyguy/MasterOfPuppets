@@ -13,7 +13,7 @@ namespace PuppetMaster.CharacterCreation
 
         [SerializeField] private UICharacterCustomizerController customizer = null;
 
-        [SerializeField] private bool genderMale = true;
+        [SerializeField] internal bool genderMale = true;
 
         private void OnValidate()
         {

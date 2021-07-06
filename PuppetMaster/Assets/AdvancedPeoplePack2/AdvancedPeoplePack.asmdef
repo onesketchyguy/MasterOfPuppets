@@ -2,7 +2,8 @@
     "name": "AdvancedPeoplePack",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:18f2505ba4e8a2e4099e4b9082080b44"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

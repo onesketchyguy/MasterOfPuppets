@@ -7,6 +7,7 @@ namespace PuppetMaster.CharacterCreation
     using System.IO;
     using UnityEditor;
     using System.Collections.Generic;
+    using System.Linq;
 
     [CustomEditor(typeof(CharacterItemList))]
     public class CharacterItemListEditor : Editor
@@ -73,6 +74,111 @@ namespace PuppetMaster.CharacterCreation
             return items.ToArray();
         }
 
+        /// <summary>
+        /// Returns the number of steps required to transform the source string
+        /// into the target string.
+        /// </summary>
+        private int ComputeLevenshteinDistance(string source, string target)
+        {
+            if ((source == null) || (target == null)) return 0;
+            if ((source.Length == 0) || (target.Length == 0)) return 0;
+            if (source == target) return source.Length;
+
+            int sourceWordCount = source.Length;
+            int targetWordCount = target.Length;
+
+            // Step 1
+            if (sourceWordCount == 0)
+                return targetWordCount;
+
+            if (targetWordCount == 0)
+                return sourceWordCount;
+
+            int[,] distance = new int[sourceWordCount + 1, targetWordCount + 1];
+
+            // Step 2
+            for (int i = 0; i <= sourceWordCount; distance[i, 0] = i++) ;
+            for (int j = 0; j <= targetWordCount; distance[0, j] = j++) ;
+
+            for (int i = 1; i <= sourceWordCount; i++)
+            {
+                for (int j = 1; j <= targetWordCount; j++)
+                {
+                    // Step 3
+                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+
+                    // Step 4
+                    distance[i, j] = System.Math.Min(System.Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1), distance[i - 1, j - 1] + cost);
+                }
+            }
+
+            return distance[sourceWordCount, targetWordCount];
+        }
+
+        /// <summary>
+        /// Calculate percentage similarity of two strings
+        /// <param name="source">Source String to Compare with</param>
+        /// <param name="target">Targeted String to Compare</param>
+        /// <returns>Return Similarity between two strings from 0 to 1.0</returns>
+        /// </summary>
+        private double CalculateSimilarity(string source, string target)
+        {
+            if ((source == null) || (target == null)) return 0.0;
+            if ((source.Length == 0) || (target.Length == 0)) return 0.0;
+            if (source == target) return 1.0;
+
+            int stepsToSame = ComputeLevenshteinDistance(source, target);
+            return (1.0 - ((double)stepsToSame / (double)System.Math.Max(source.Length, target.Length)));
+        }
+
+        private void SetItemIcons(ref CharacterItemList characterItemList)
+        {
+            string path = EditorUtility.OpenFolderPanel("Load png Textures", "", "");
+            string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+
+            var sprites = new HashSet<Sprite>();
+
+            Sprite GetItemSprite(string name, bool isFemale)
+            {
+                double itemSimilarity = 0.0;
+                Sprite targetSprite = null;
+
+                foreach (var sprite in sprites)
+                {
+                    double similarity = CalculateSimilarity(name, sprite.name);
+
+                    if (similarity > itemSimilarity)
+                    {
+                        if (isFemale == false && sprite.name.ToLower().ToCharArray().LastOrDefault() == 'f') continue;
+                        if (isFemale == true && sprite.name.ToLower().ToCharArray().LastOrDefault() == 'm') continue;
+
+                        targetSprite = sprite;
+                        itemSimilarity = similarity;
+                    }
+                }
+
+                if (itemSimilarity < 0.5f)
+                {
+                    Debug.Log($"item:\"{name}\" set sprite to: null");
+                    return null;
+                }
+
+                Debug.Log($"item:\"{name}\" set sprite to: \"{targetSprite.name}\" with a confidence of: {itemSimilarity * 100.0}%");
+
+                return targetSprite;
+            }
+
+            foreach (string file in files)
+                if (file.EndsWith(".png"))
+                {
+                    var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(GetAssetDirectory(file));
+                    sprites.Add(sprite);
+                }
+
+            foreach (var item in characterItemList.maleCharacterItems) item.icon = GetItemSprite(item.name, false);
+            foreach (var item in characterItemList.femaleCharacterItems) item.icon = GetItemSprite(item.name, true);
+        }
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -109,71 +215,9 @@ namespace PuppetMaster.CharacterCreation
 
                 GUILayout.Space(20);
 
-                if (GUILayout.Button("Set sprites for items - DEMO"))
+                if (GUILayout.Button("Set item sprites"))
                 {
-                    string path = EditorUtility.OpenFolderPanel("Load png Textures", "", "");
-                    string[] files = Directory.GetFiles(path);
-
-                    var sprites = new HashSet<Sprite>();
-
-                    foreach (string file in files)
-                        if (file.EndsWith(".png"))
-                        {
-                            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(GetAssetDirectory(file));
-                            sprites.Add(sprite);
-                        }
-
-                    foreach (var item in myTarget.maleCharacterItems)
-                    {
-                        foreach (var sprite in sprites)
-                        {
-                            if (sprite.name.ToUpper().Contains("_M"))
-                            {
-                                int similarities = 0;
-                                var splits = sprite.name.Split('_');
-
-                                foreach (var split in splits)
-                                {
-                                    if (item.name.Contains(split))
-                                    {
-                                        similarities++;
-                                    }
-                                }
-
-                                if (similarities > 1 && splits.Length > 2 || similarities == 1 && splits.Length <= 2)
-                                {
-                                    item.icon = sprite;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (var item in myTarget.femaleCharacterItems)
-                    {
-                        foreach (var sprite in sprites)
-                        {
-                            if (sprite.name.ToUpper().Contains("_F"))
-                            {
-                                int similarities = 0;
-                                var splits = sprite.name.Split('_');
-
-                                foreach (var split in splits)
-                                {
-                                    if (item.name.Contains(split))
-                                    {
-                                        similarities++;
-                                    }
-                                }
-
-                                if (similarities > 1 && splits.Length > 2 || similarities == 1 && splits.Length <= 2)
-                                {
-                                    item.icon = sprite;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    SetItemIcons(ref myTarget);
                 }
             }
         }

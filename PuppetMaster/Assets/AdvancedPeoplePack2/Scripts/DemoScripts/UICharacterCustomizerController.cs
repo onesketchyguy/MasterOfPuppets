@@ -14,17 +14,17 @@ namespace PuppetMaster.CharacterCreation
     public class UICharacterCustomizerController : MonoBehaviour
     {
         [Space(5)]
-        [Header("I do not recommend using it in your projects")]
-        [Header("This script was created to demonstrate api")]
         public CharacterCustomization characterCustomization;
+
+        public GameObject canvasObject;
+        private bool canvasVisible = true;
+
+        private float keyDown = 0.0f;
 
         [Space(15)]
         public Text playbutton_text;
 
-        public Text bake_text;
         public Text lod_text;
-
-        public Text panelNameText;
 
         public Slider fatSlider;
         public Slider musclesSlider;
@@ -42,11 +42,6 @@ namespace PuppetMaster.CharacterCreation
 
         public Slider[] faceShapeSliders;
 
-        public RectTransform FaceEditPanel;
-        public RectTransform BaseEditPanel;
-
-        public RectTransform EmotionsPanel;
-
         public Image SkinColorButtonColor;
         public Image EyeColorButtonColor;
         public Image HairColorButtonColor;
@@ -59,20 +54,6 @@ namespace PuppetMaster.CharacterCreation
         private Transform mainCam;
 
         #region ButtonEvents
-
-        public void ShowFaceEdit()
-        {
-            FaceEditPanel.gameObject.SetActive(true);
-            BaseEditPanel.gameObject.SetActive(false);
-            panelNameText.text = "FACE CUSTOMIZER";
-        }
-
-        public void ShowBaseEdit()
-        {
-            FaceEditPanel.gameObject.SetActive(false);
-            BaseEditPanel.gameObject.SetActive(true);
-            panelNameText.text = "BASE CUSTOMIZER";
-        }
 
         public void SetFaceShape(int index)
         {
@@ -214,16 +195,23 @@ namespace PuppetMaster.CharacterCreation
 
         #endregion ButtonEvents
 
-        private bool canvasVisible = true;
-
         private void Update()
         {
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject() == true) return;
+
             if (Keyboard.current.hKey.isPressed)
             {
-                canvasVisible = !canvasVisible;
+                if (keyDown <= 0.0f)
+                {
+                    canvasVisible = !canvasVisible;
 
-                GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>().enabled = canvasVisible;
+                    canvasObject.SetActive(canvasVisible);
+                }
+
+                keyDown = 0.1f;
             }
+
+            keyDown -= Time.deltaTime;
 
             if (mainCam == null)
             {
@@ -235,16 +223,33 @@ namespace PuppetMaster.CharacterCreation
                 mainCam.transform.eulerAngles = Vector3.Lerp(mainCam.transform.eulerAngles, CameraEulerForPanels[currentPanelIndex], Time.deltaTime * 5);
             }
 
-            if (EventSystem.current.IsPointerOverGameObject() == true) return;
+            if (Keyboard.current.spaceKey.isPressed)
+            {
+                // Shift + space to zoom out
+                if (Keyboard.current.leftShiftKey.isPressed)
+                {
+                    UpdateCameraPosition(-1);
+                }
+                // Space to zoom in
+                else
+                {
+                    UpdateCameraPosition(1);
+                }
+            }
 
             if (Mouse.current.scroll.ReadValue().y > 0)
             {
-                currentPanelIndex = 1;
+                UpdateCameraPosition(1);
             }
             else if (Mouse.current.scroll.ReadValue().y < 0)
             {
-                currentPanelIndex = 0;
+                UpdateCameraPosition(-1);
             }
+        }
+
+        private void UpdateCameraPosition(int dir)
+        {
+            currentPanelIndex = Mathf.Clamp(currentPanelIndex + dir, 0, CameraPositionForPanels.Length - 1);
         }
 
         public void UpdateSliders()

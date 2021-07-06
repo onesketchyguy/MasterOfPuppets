@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6410d9d555e4ef446baca08761367596, type: 3}
+  m_Name: Hair_04
+  m_EditorClassIdentifier: 
+  itemType: 0
+  icon: {fileID: 0}
+  mesh:
+  - {fileID: 4300006, guid: 00a4f3c099914804db0fdf1b0491ada2, type: 3}
+  - {fileID: 4300006, guid: 554d464c58a758f498359956404c0713, type: 3}
+  - {fileID: 4300006, guid: 571265d788f32f245a3568f68fd2673e, type: 3}
+  - {fileID: 4300006, guid: 3580bdc512b6d3c4ea55d54025533721, type: 3}
+  hideParts: []
+  yOffset: 0
+  mats: []

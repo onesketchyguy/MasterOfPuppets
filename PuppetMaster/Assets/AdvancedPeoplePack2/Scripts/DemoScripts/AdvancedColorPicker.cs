@@ -1,20 +1,20 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using AdvancedCustomizableSystem;
 
-namespace AdvancedCustomizableSystem.DEMO
+namespace PuppetMaster.CharacterCreation
 {
-    public class ColorPicker : MonoBehaviour
+    public class AdvancedColorPicker : MonoBehaviour
     {
         private Image mainImage;
         public RectTransform pickerIcon;
         public Image colorPreview;
         private bool _activeCursor;
         public Vector2 offset;
-        public UIControllerDEMO UIControllerDEMO;
+        public UICharacterCustomizerController UIControllerDEMO;
         public Canvas Canvas;
 
         private Mouse currentMouse;
@@ -26,7 +26,9 @@ namespace AdvancedCustomizableSystem.DEMO
                 currentMouse = Mouse.current;
             }
 
-            return currentMouse.position.ReadDefaultValue();
+            var value = currentMouse.position.ReadValue();
+
+            return value;
         }
 
         private void Awake()
