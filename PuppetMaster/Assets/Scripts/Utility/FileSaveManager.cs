@@ -23,12 +23,13 @@ namespace FileSystem
         {
             get
             {
+                const string USER_DATA = "/user_data";
+
 #if UNITY_EDITOR
-                Debug.Log($"Returning data path from {nameof(Application.dataPath)}");
-                return Application.dataPath + "\\user_data";
+                return Application.dataPath + USER_DATA;
 #endif
 #if !UNITY_EDITOR
-                return Application.persistentDataPath + "\\user_data";
+                return Application.persistentDataPath + USER_DATA;
 #endif
             }
         }
@@ -125,6 +126,11 @@ namespace FileSystem
                 // Split the file directory into just the file name and extension
                 var file = fileDir.Split('\\').LastOrDefault();
 
+                if (file.Contains('/'))
+                {
+                    file = fileDir.Split('/').LastOrDefault();
+                }
+
                 // Grab the file name and extension
                 var fileName = file.Split('.').FirstOrDefault();
                 var fileExtension = file.Split('.').LastOrDefault();
@@ -212,6 +218,29 @@ namespace FileSystem
             file.Close();
 
             return save;
+        }
+
+        /// <summary>
+        /// Deletes a saved file.
+        /// </summary>
+        /// <param name="fileName">The file name to use.</param>
+        /// <param name="directory">The directory to access.</param>
+        /// <param name="extension">The extention to append to the file name.</param>
+        /// <returns>If the file existed before deletion.</returns>
+        public static bool DeleteFile(string fileName, Directories directory, Extensions extension)
+        {
+            // Validate the directory before trying to return the string
+            ValidateDirectory(directory);
+            var file = GetFileDirectory(fileName, directory, extension);
+
+            if (File.Exists(file) == false)
+            {
+                Debug.LogError($"Could not delete \"{file}\" because the file does not exist!");
+                return false;
+            }
+
+            File.Delete(file);
+            return true;
         }
 
         public static BinaryFormatter GetBinaryFormatter()

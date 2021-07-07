@@ -197,7 +197,26 @@ namespace PuppetMaster.CharacterCreation
 
         private void Update()
         {
+            if (mainCam == null)
+            {
+                mainCam = Camera.main.transform;
+            }
+            else
+            {
+                mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, CameraPositionForPanels[currentPanelIndex], Time.deltaTime * 5);
+                mainCam.transform.eulerAngles = Vector3.Lerp(mainCam.transform.eulerAngles, CameraEulerForPanels[currentPanelIndex], Time.deltaTime * 5);
+            }
+
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject() == true) return;
+
+            if (Mouse.current.scroll.ReadValue().y > 0)
+            {
+                UpdateCameraPosition(1);
+            }
+            else if (Mouse.current.scroll.ReadValue().y < 0)
+            {
+                UpdateCameraPosition(-1);
+            }
 
             if (Keyboard.current.hKey.isPressed)
             {
@@ -211,40 +230,26 @@ namespace PuppetMaster.CharacterCreation
                 keyDown = 0.1f;
             }
 
-            keyDown -= Time.deltaTime;
-
-            if (mainCam == null)
-            {
-                mainCam = Camera.main.transform;
-            }
-            else
-            {
-                mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, CameraPositionForPanels[currentPanelIndex], Time.deltaTime * 5);
-                mainCam.transform.eulerAngles = Vector3.Lerp(mainCam.transform.eulerAngles, CameraEulerForPanels[currentPanelIndex], Time.deltaTime * 5);
-            }
-
             if (Keyboard.current.spaceKey.isPressed)
             {
-                // Shift + space to zoom out
-                if (Keyboard.current.leftShiftKey.isPressed)
+                if (keyDown <= 0.0f)
                 {
-                    UpdateCameraPosition(-1);
+                    // Shift + space to zoom out
+                    if (Keyboard.current.leftShiftKey.isPressed)
+                    {
+                        UpdateCameraPosition(-1);
+                    }
+                    // Space to zoom in
+                    else
+                    {
+                        UpdateCameraPosition(1);
+                    }
                 }
-                // Space to zoom in
-                else
-                {
-                    UpdateCameraPosition(1);
-                }
+
+                keyDown = 0.1f;
             }
 
-            if (Mouse.current.scroll.ReadValue().y > 0)
-            {
-                UpdateCameraPosition(1);
-            }
-            else if (Mouse.current.scroll.ReadValue().y < 0)
-            {
-                UpdateCameraPosition(-1);
-            }
+            keyDown -= Time.deltaTime;
         }
 
         private void UpdateCameraPosition(int dir)

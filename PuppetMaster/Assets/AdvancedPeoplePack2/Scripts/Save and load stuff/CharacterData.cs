@@ -1,10 +1,8 @@
 using AdvancedCustomizableSystem;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace PuppetMaster.CharacterCreation
 {
+    [System.Serializable]
     public class CharacterData : CharacterCustomizationSetup
     {
         public bool male = false;

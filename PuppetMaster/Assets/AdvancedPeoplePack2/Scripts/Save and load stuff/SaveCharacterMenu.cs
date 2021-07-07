@@ -1,21 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-namespace PuppetMaster
-{
-    // FIXME: swap this out with a list of scriptable objects in the future
-    public enum CharacterType
-    {
-        Civilian,
-        Priest,
-        Police,
-        AdvancedPolice,
-        Fireman,
-        Doctor
-    }
-}
 
 namespace PuppetMaster.CharacterCreation.SaveAndLoad
 {
@@ -30,17 +15,21 @@ namespace PuppetMaster.CharacterCreation.SaveAndLoad
         [SerializeField] private UICharacterCustomizerController customCharacter = null;
         [SerializeField] private CharacterGenderSelection genderSelection = null;
 
+        [SerializeField] private CharacterTypeList characterList;
+
+        [SerializeField] private FileSystem.FileSaveManager.Directories fileLocation;
+        [SerializeField] private FileSystem.FileSaveManager.Extensions fileExtension;
+
         private void OnEnable()
         {
             tagDropdown.ClearOptions();
 
-            var items = System.Enum.GetNames(typeof(CharacterType));
             var options = new List<Dropdown.OptionData>();
 
-            foreach (var item in items)
+            foreach (var item in characterList.types)
             {
                 var dropdownOption = new Dropdown.OptionData();
-                dropdownOption.text = item;
+                dropdownOption.text = item.name;
 
                 options.Add(dropdownOption);
             }
@@ -61,12 +50,12 @@ namespace PuppetMaster.CharacterCreation.SaveAndLoad
         public void SaveItem()
         {
             Debug.Log($"Saving: {nameText.text}");
-            Debug.LogWarning($"WARNING! Tags not available yet! {nameText.text} will not be saved as a {(CharacterType)tagDropdown.value}");
+            Debug.LogWarning($"WARNING! Tags not available yet! {nameText.text} will not be saved as a {characterList.types[tagDropdown.value].name}");
             var data = new CharacterData(customCharacter.characterCustomization.GetSetup());
             data.male = genderSelection.genderMale;
-            data.characterTag = $"{(CharacterType)tagDropdown.value}";
+            data.characterTag = $"{characterList.types[tagDropdown.value].name}";
 
-            FileSystem.FileSaveManager.Save(data, nameText.text, FileSystem.FileSaveManager.Directories.global, FileSystem.FileSaveManager.Extensions.json);
+            FileSystem.FileSaveManager.Save(data, nameText.text, fileLocation, fileExtension);
         }
     }
 }

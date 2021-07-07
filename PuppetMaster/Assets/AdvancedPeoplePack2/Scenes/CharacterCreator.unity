@@ -33605,7 +33605,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 5.71434, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1060980688
@@ -53829,6 +53829,9 @@ MonoBehaviour:
   saveButton: {fileID: 32946682}
   customCharacter: {fileID: 180878013}
   genderSelection: {fileID: 144708819}
+  characterList: {fileID: 11400000, guid: 81b60ca4b84637948afa1c78af7a54f3, type: 2}
+  fileLocation: 0
+  fileExtension: 0
 --- !u!1 &1633277868
 GameObject:
   m_ObjectHideFlags: 0
@@ -56247,7 +56250,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 5.71434, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1685575649
@@ -62647,6 +62650,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadButton: {fileID: 4759919796924791515, guid: 64e547c0e805b4a4b966dd6f5d587f47, type: 3}
   saveRegionParent: {fileID: 1040257979}
+  directory: 0
+  extension: 0
+  genderSelection: {fileID: 144708819}
+  customCharacter: {fileID: 180878013}
 --- !u!1 &1920432080
 GameObject:
   m_ObjectHideFlags: 0
