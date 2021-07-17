@@ -134,9 +134,12 @@ namespace CustomUI
             }
         }
 
+#if UNITY_EDITOR
+
         protected override void OnValidate()
         {
             // FIXME: Allow the user to use navigation events
+
             // Remove navigation events
             var nonNav = navigation;
             nonNav.mode = Navigation.Mode.None;
@@ -147,6 +150,8 @@ namespace CustomUI
 
             OnValueModified();
         }
+
+#endif
 
         protected override void Start()
         {

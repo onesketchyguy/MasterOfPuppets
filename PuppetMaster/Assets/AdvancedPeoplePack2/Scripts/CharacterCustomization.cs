@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -18,16 +19,12 @@ namespace AdvancedCustomizableSystem
         /// All character mesh parts
         /// </summary>
         public List<CharacterPart> characterParts = new List<CharacterPart>();
-
         public Material bodyMaterial;
-
         [HideInInspector]
         [SerializeField]
         private Material _bodyMaterialInstance;
-
         [Header("Hips for change character height")]
         public List<Transform> originHips = new List<Transform>();
-
         [Header("Hips for change character head size")]
         public List<Transform> headHips = new List<Transform>();
 
@@ -40,8 +37,8 @@ namespace AdvancedCustomizableSystem
         [Header("Array with animators each lod level")]
         //Array with animators each lod level
         public List<Animator> animators = new List<Animator>();
-
         [Header("Transforms for change character offset by Y coordinate")]
+        //Transforms for apply Y offset;
         public List<Transform> transforms;
 
         [SerializeField]
@@ -55,14 +52,12 @@ namespace AdvancedCustomizableSystem
         { BodyColorPart.Teeth, new Color() },
     };
 
-        //Presets for character customization
+        //Presets for character customization      
         [Header("All character presets")]
         [Space(15)]
         public List<EmotionPreset> emotionPresets = new List<EmotionPreset>();
-
         [Space(15)]
         public List<HairPreset> hairPresets = new List<HairPreset>();
-
         public List<BeardPreset> beardPresets = new List<BeardPreset>();
         public List<ClothPreset> hatsPresets = new List<ClothPreset>();
         public List<ClothPreset> accessoryPresets = new List<ClothPreset>();
@@ -146,13 +141,10 @@ namespace AdvancedCustomizableSystem
         public EmotionCurrent currentEmotion;
 
         public GameObject defaultGroup;
-
         [HideInInspector]
         public GameObject bakeGroup;
-
         [HideInInspector]
         public List<SkinnedMeshRenderer> bakeSkinnedMeshRenderers = new List<SkinnedMeshRenderer>();
-
         [HideInInspector]
         public CombinedCharacter combinedCharacter;
 
@@ -171,20 +163,19 @@ namespace AdvancedCustomizableSystem
 
         [HideInInspector]
         public int MinLODLevels = 0;
-
         [HideInInspector]
         public int MaxLODLevels = 3;
 
+
         [HideInInspector]
         public int MinLODLevelsCombined;
-
         [HideInInspector]
         public int MaxLODLevelsCombined;
 
         [HideInInspector]
         public CombinedCharacter UsedCombinedCharacter;
 
-        private LODGroup _lodGroup;
+        LODGroup _lodGroup;
 
         public CombinedCharacter CombinedCharacterApply;
 
@@ -193,16 +184,11 @@ namespace AdvancedCustomizableSystem
 
         private void Awake()
         {
-            _transform = transform;
+            this._transform = transform;
             _lodGroup = GetComponent<LODGroup>();
             RecalculateLOD();
             InitColors();
             StartupSerializationApply();
-        }
-
-        private void Start()
-        {
-            LoadFromFile();
         }
 
         private void Update()
@@ -289,7 +275,6 @@ namespace AdvancedCustomizableSystem
                 }
             }
         }
-
         public void InitColors()
         {
             if (_bodyMaterialInstance != null)
@@ -314,7 +299,6 @@ namespace AdvancedCustomizableSystem
             SetBodyColor(BodyColorPart.Underpants, bodyMaterial.GetColor("_UnderpantsColor"));
             ResetBodyMaterial();
         }
-
         /// <summary>
         /// Set face shape (blend shapes)
         /// </summary>
@@ -344,13 +328,13 @@ namespace AdvancedCustomizableSystem
                 {
                     ca.skinnedMesh.ToList().ForEach((smr) =>
                {
-                   if (smr != null && smr.sharedMesh != null)
-                   {
-                       var index = smr.sharedMesh.GetBlendShapeIndex(faceShapeType.ToString());
-                       if (index != -1)
-                           smr.SetBlendShapeWeight(index, weight);
-                   }
-               });
+                       if (smr != null && smr.sharedMesh != null)
+                       {
+                           var index = smr.sharedMesh.GetBlendShapeIndex(faceShapeType.ToString());
+                           if (index != -1)
+                               smr.SetBlendShapeWeight(index, weight);
+                       }
+                   });
                 }
             });
 
@@ -369,7 +353,6 @@ namespace AdvancedCustomizableSystem
 
             bodyShapeWeight[faceShapeType.ToString()] = weight;
         }
-
         /// <summary>
         /// Set face shapes from array
         /// </summary>
@@ -429,6 +412,8 @@ namespace AdvancedCustomizableSystem
                 bodyShapeWeight[fst.Key.ToString()] = fst.Value;
             }
 
+
+
             if (shirt != null && faceShapeTypeArray.ContainsKey(FaceShapeType.Neck_Width)) //Set shirt blend shape weight
             {
                 shirt.skinnedMesh.ToList().ForEach((smr) =>
@@ -457,7 +442,6 @@ namespace AdvancedCustomizableSystem
 
             // bodyShapeWeight[faceShapeType.ToString()] = weight;
         }
-
         /// <summary>
         /// Set head offset
         /// </summary>
@@ -503,7 +487,6 @@ namespace AdvancedCustomizableSystem
             }
             bodyShapeWeight["Head_Offset"] = offset;
         }
-
         /// <summary>
         /// Set body shape (blend shapes)
         /// </summary>
@@ -573,7 +556,6 @@ namespace AdvancedCustomizableSystem
             }
             bodyShapeWeight[typeName] = weight;
         }
-
         /// <summary>
         /// Change LOD level
         /// </summary>
@@ -591,7 +573,6 @@ namespace AdvancedCustomizableSystem
                 _lodGroup.ForceLOD(-1);
             }
         }
-
         /// <summary>
         /// Set character clothes
         /// </summary>
@@ -661,7 +642,6 @@ namespace AdvancedCustomizableSystem
 
             clothesActiveIndexes[type] = index;
         }
-
         /// <summary>
         /// Set body height
         /// </summary>
@@ -675,7 +655,6 @@ namespace AdvancedCustomizableSystem
                     tr.localScale = new Vector3(1 + height / 1.5f, 1 + height, 1 + height);
             }
         }
-
         /// <summary>
         /// Set head size
         /// </summary>
@@ -689,7 +668,6 @@ namespace AdvancedCustomizableSystem
                     hh.localScale = Vector3.one + Vector3.one * size;
             });
         }
-
         public void SetFeetOffset(Vector3 feetOffset)
         {
             defaultGroup.transform.localPosition = feetOffset;
@@ -736,7 +714,6 @@ namespace AdvancedCustomizableSystem
             }
             hairActiveIndex = index;
         }
-
         /// <summary>
         /// Set beard by index
         /// </summary>
@@ -778,7 +755,6 @@ namespace AdvancedCustomizableSystem
             }
             beardActiveIndex = index;
         }
-
         /// <summary>
         /// Get clothes anchor by type
         /// </summary>
@@ -793,7 +769,6 @@ namespace AdvancedCustomizableSystem
             }
             return null;
         }
-
         /// <summary>
         /// Get character part by name
         /// </summary>
@@ -808,7 +783,6 @@ namespace AdvancedCustomizableSystem
             }
             return null;
         }
-
         /// <summary>
         /// Hide character parts
         /// </summary>
@@ -827,7 +801,6 @@ namespace AdvancedCustomizableSystem
                 }
             }
         }
-
         /// <summary>
         /// UnHide character parts
         /// </summary>
@@ -840,7 +813,6 @@ namespace AdvancedCustomizableSystem
                 bool ph_in_shirt = false, ph_in_pants = false, ph_in_shoes = false;
 
                 #region Code to exclude the UnHide parts of the character if are hidden in other presets
-
                 int shirt_i = clothesActiveIndexes[ClothesPartType.Shirt];
                 int pants_i = clothesActiveIndexes[ClothesPartType.Pants];
                 int shoes_i = clothesActiveIndexes[ClothesPartType.Shoes];
@@ -881,8 +853,7 @@ namespace AdvancedCustomizableSystem
 
                 if (ph_in_shirt || ph_in_pants || ph_in_shoes)
                     continue;
-
-                #endregion Code to exclude the UnHide parts of the character if are hidden in other presets
+                #endregion
 
                 foreach (CharacterPart cp in characterParts)
                 {
@@ -892,7 +863,6 @@ namespace AdvancedCustomizableSystem
                 }
             }
         }
-
         /// <summary>
         /// Set  body color by type
         /// </summary>
@@ -908,15 +878,12 @@ namespace AdvancedCustomizableSystem
                 case BodyColorPart.Skin:
                     _bodyMaterialInstance.SetColor("_SkinColor", color);
                     break;
-
                 case BodyColorPart.Eye:
                     _bodyMaterialInstance.SetColor("_EyeColor", color);
                     break;
-
                 case BodyColorPart.Hair:
                     _bodyMaterialInstance.SetColor("_HairColor", color);
                     break;
-
                 case BodyColorPart.Underpants:
                     _bodyMaterialInstance.SetColor("_UnderpantsColor", color);
                     break;
@@ -950,7 +917,6 @@ namespace AdvancedCustomizableSystem
             }
             bodyColors[bodyColorPart] = color;
         }
-
         /// <summary>
         /// Get the used color of a specific part of the body
         /// </summary>
@@ -960,7 +926,6 @@ namespace AdvancedCustomizableSystem
         {
             return bodyColors[bodyColorPart];
         }
-
         /// <summary>
         /// Get body color material instance
         /// </summary>
@@ -969,7 +934,6 @@ namespace AdvancedCustomizableSystem
         {
             return _bodyMaterialInstance;
         }
-
         /// <summary>
         /// Set character setup, use setup class
         /// </summary>
@@ -978,7 +942,6 @@ namespace AdvancedCustomizableSystem
         {
             characterCustomizationSetup.ApplyToCharacter(this);
         }
-
         /// <summary>
         /// Generate setup class current character
         /// </summary>
@@ -1055,7 +1018,6 @@ namespace AdvancedCustomizableSystem
 
             return ccs;
         }
-
         /// <summary>
         /// Get body shape value by shape name
         /// </summary>
@@ -1069,12 +1031,10 @@ namespace AdvancedCustomizableSystem
 
             return weight;
         }
-
         public void LoadFromCombinedCharacter(CombinedCharacter combinedCharacter)
         {
             SetCharacterSetup(combinedCharacter.characterCustomizationSetup);
         }
-
         /// <summary>
         /// Recalculate all blendshapes of character parts use current data
         /// </summary>
@@ -1133,13 +1093,13 @@ namespace AdvancedCustomizableSystem
             SetHeight(heightValue);
             SetHeadSize(headSizeValue);
         }
-
         /// <summary>
         /// Combine all character parts to single mesh (include all LODs)
         /// </summary>
         /// <param name="includeBlendShapes">Include blend shapes in combine mesh</param>
         public void BakeCharacter(bool includeBlendShapes = true, bool saveMeshes = false)
         {
+
             if (bakeGroup == null)
             {
                 bakeGroup = new GameObject();
@@ -1214,6 +1174,7 @@ namespace AdvancedCustomizableSystem
                 foreach (SkinnedMeshData skinnedMesh in skinnedMeshes)
                 {
                     bone_weights[skinnedMesh.mesh] = skinnedMesh.mesh.boneWeights;
+
 
                     // Prepare stuff for mesh combination with same materials
                     for (int i = 0; i < skinnedMesh.mesh.subMeshCount; i++)
@@ -1342,6 +1303,7 @@ namespace AdvancedCustomizableSystem
                                 {
                                     int index = combine.mesh.GetBlendShapeIndex(blendweight);
                                     combine.mesh.GetBlendShapeFrameVertices(index, combine.mesh.GetBlendShapeFrameCount(index) - 1, deltaVerts, deltaNormals, deltaTangents);
+
                                 }
 
                                 combWeights.deltaVerts.AddRange(deltaVerts);
@@ -1414,6 +1376,7 @@ namespace AdvancedCustomizableSystem
                 if (!AssetDatabase.IsValidFolder("Assets/AdvancedPeoplePack2/CombinedCharacters/Prefabs"))
                     AssetDatabase.CreateFolder("Assets/AdvancedPeoplePack2/CombinedCharacters", "Prefabs");
 
+
                 AssetDatabase.CreateAsset(savemat, string.Format("Assets/AdvancedPeoplePack2/CombinedCharacters/Materials/cc_{0}_mat.mat", gameObject.name));
 
                 cc.empty_rig = EmptyRig;
@@ -1459,7 +1422,6 @@ namespace AdvancedCustomizableSystem
 
             RecalculateLOD();
         }
-
         /// <summary>
         /// Clear all combine meshes, and enable customizable mode
         /// </summary>
@@ -1485,6 +1447,7 @@ namespace AdvancedCustomizableSystem
                     }
                     bakeGroup.SetActive(false);
                 }
+
             }
 
             if (bakeSkinnedMeshRenderers.Count != 0)
@@ -1516,7 +1479,6 @@ namespace AdvancedCustomizableSystem
                 combinedCharacter = null;
             }
         }
-
         /// <summary>
         /// Recalculate LODs
         /// </summary>
@@ -1525,21 +1487,13 @@ namespace AdvancedCustomizableSystem
             if (!_lodGroup)
                 _lodGroup = GetComponent<LODGroup>();
 
-            if (_lodGroup == null)
-            {
-                Debug.LogWarning($"No LOD component on {gameObject.name}");
-
-                return;
-            }
-
             LOD[] lods;
-            float[][] lods_p = new float[][]
-            {
-                new float[] {0.5f, 0.2f, 0.05f, 0f },
-                new float[] {0.4f, 0.1f, 0f, 0f },
-                new float[] {0.3f,   0f,   0f, 0f },
-                new float[] {0f,   0f,   0f, 0f }
-            };
+            float[][] lods_p = new float[][] {
+            new float[] {0.5f, 0.2f, 0.05f, 0f },
+            new float[] {0.4f, 0.1f, 0f, 0f },
+            new float[] {0.3f,   0f,   0f, 0f },
+            new float[] {0f,   0f,   0f, 0f }
+        };
 
             if (bakeGroup == null || !bakeGroup.activeSelf)
             {
@@ -1577,7 +1531,6 @@ namespace AdvancedCustomizableSystem
             _lodGroup.SetLODs(lods);
             _lodGroup.RecalculateBounds();
         }
-
         /// <summary>
         /// Change the number of LODs
         /// </summary>
@@ -1652,7 +1605,6 @@ namespace AdvancedCustomizableSystem
             }
             RecalculateLOD();
         }
-
         /// <summary>
         ///  Get combined state
         /// </summary>
@@ -1661,7 +1613,6 @@ namespace AdvancedCustomizableSystem
         {
             return bakeGroup != null && bakeGroup.activeSelf && bakeSkinnedMeshRenderers.Count > 0;
         }
-
         /// <summary>
         /// Creates a new character use combined meshes.
         /// Removes current instance and customization script.
@@ -1689,11 +1640,10 @@ namespace AdvancedCustomizableSystem
 
             return bakeGroup;
         }
-
         /// <summary>
         /// Get preset array by type
         /// </summary>
-        private List<ClothPreset> getPresetArray(ClothesPartType type)
+        List<ClothPreset> getPresetArray(ClothesPartType type)
         {
             switch (type)
             {
@@ -1711,19 +1661,17 @@ namespace AdvancedCustomizableSystem
 
                 case ClothesPartType.Accessory:
                     return accessoryPresets;
-
                 default:
                     return null;
             }
         }
-
         /// <summary>
         /// Get preset element
         /// </summary>
         /// <param name="type">Type of clothes</param>
         /// <param name="index">Index</param>
         /// <returns></returns>
-        private ClothPreset getPreset(ClothesPartType type, int index)
+        ClothPreset getPreset(ClothesPartType type, int index)
         {
             if (index == -1)
                 return null;
@@ -1744,12 +1692,10 @@ namespace AdvancedCustomizableSystem
 
                 case ClothesPartType.Accessory:
                     return (accessoryPresets.Count - 1 >= index) ? accessoryPresets[index] : null;
-
                 default:
                     return null;
             }
         }
-
         /// <summary>
         /// Play emotion
         /// </summary>
@@ -1780,7 +1726,6 @@ namespace AdvancedCustomizableSystem
             emotion.emotionPreset.weightPower = weightPower;
             currentEmotion = emotion;
         }
-
         /// <summary>
         /// Stop any emotion
         /// </summary>
@@ -1794,7 +1739,6 @@ namespace AdvancedCustomizableSystem
                 }
             }
         }
-
         public void SaveToFile(string custom_name = "")
         {
             var dataPath = Application.persistentDataPath;
@@ -1807,7 +1751,6 @@ namespace AdvancedCustomizableSystem
 
             File.WriteAllText(string.Format("{0}/characterData_{1}.json", folderPath, (custom_name == string.Empty) ? this.name : custom_name), json, System.Text.Encoding.UTF8);
         }
-
         public void LoadFromFile(string file_name = "")
         {
             var dataPath = Application.persistentDataPath;
@@ -1830,7 +1773,6 @@ namespace AdvancedCustomizableSystem
                 }
             }
         }
-
         public void ClearFromFile(string file_name = "")
         {
             var dataPath = Application.persistentDataPath;
@@ -1846,7 +1788,6 @@ namespace AdvancedCustomizableSystem
                     File.Delete(filePath);
             }
         }
-
         public void ResetAll()
         {
             StartupSerializationApplied = string.Empty;
@@ -1874,12 +1815,10 @@ namespace AdvancedCustomizableSystem
             SetElementByIndex(ClothesPartType.Shirt, -1);
             SetElementByIndex(ClothesPartType.Shoes, -1);
         }
-
         public void Randomize()
         {
             CharacterGenerator.Generate(this);
         }
-
         /// <summary>
         /// Get active animations
         /// </summary>
@@ -1900,12 +1839,9 @@ namespace AdvancedCustomizableSystem
             }
             return animators;
         }
-
-        #endregion Basic functions
+        #endregion 
     }
-
     #region Basic classes and enum
-
     public enum ClothesPartType : int
     {
         Hat,
@@ -1988,7 +1924,6 @@ namespace AdvancedCustomizableSystem
         public string name;
         public List<SkinnedMeshRenderer> skinnedMesh;
     }
-
     [System.Serializable]
     public class ClothesAnchor
     {
@@ -2002,14 +1937,12 @@ namespace AdvancedCustomizableSystem
         public string name;
         public Mesh[] mesh;
     }
-
     [System.Serializable]
     public class BeardPreset
     {
         public string name;
         public Mesh[] mesh;
     }
-
     [System.Serializable]
     public class ClothPreset
     {
@@ -2019,7 +1952,6 @@ namespace AdvancedCustomizableSystem
         public float yOffset = 0;
         public Material[] mats;
     }
-
     [System.Serializable]
     public class EmotionPreset
     {
@@ -2028,22 +1960,17 @@ namespace AdvancedCustomizableSystem
 
         public bool UseGlobalBlendCurve = true;
         public AnimationCurve BlendAnimationCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.5f, 1f), new Keyframe(1f, 0f));
-
         [HideInInspector]
         public float EmotionPlayDuration = 1.0f;
-
         [HideInInspector]
         public float weightPower = 1.0f;
     }
-
     [System.Serializable]
     public class FaceValue
     {
         public FaceShapeType BlendType;
-
         [Range(-100f, 100f)]
         public float BlendValue;
-
         public AnimationCurve BlendAnimationCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, 0f));
     }
 
@@ -2054,10 +1981,9 @@ namespace AdvancedCustomizableSystem
         public float timer = 0;
     }
 
-    #endregion Basic classes and enum
+    #endregion
 
     #region Combine mesh classes
-
     public struct SkinnedMeshData
     {
         public SkinnedMeshData(Mesh mesh, Material[] materials)
@@ -2075,13 +2001,11 @@ namespace AdvancedCustomizableSystem
         public Mesh mesh;
         public Material[] materials;
     }
-
     public struct BlendWeightData
     {
         public List<Vector3> deltaVerts;
         public List<Vector3> deltaNormals;
         public List<Vector3> deltaTangents;
     }
-
-    #endregion Combine mesh classes
+    #endregion
 }

@@ -283,6 +283,7 @@ ModelImporter:
     13700058: female_stomach_lod2
     13700060: female_shin_lower_lod2
     13700062: female_shin_upper_lod2
+    2186277476908879412: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material

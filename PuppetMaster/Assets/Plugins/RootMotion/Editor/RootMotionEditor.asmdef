@@ -1,0 +1,18 @@
+{
+    "name": "RootMotionEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8f8ba5e11c98fe24e84a2e8822715dfb"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

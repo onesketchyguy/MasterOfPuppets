@@ -120,19 +120,23 @@ namespace AdvancedCustomizableSystem
             EyeColorNew = bodyColors.GetColor("_EyeColor");
             UnderpantsColorNew = bodyColors.GetColor("_UnderpantsColor");
         }
+
+        void UpdateCallback()
+        {
+            if (cc.currentEmotion != null)
+                cc.EmotionTick();
+        }
+
         bool valid = true;
         void OnEnable()
         {
             cc = (CharacterCustomization)target;
             valid = cc.gameObject.scene.IsValid() && (cc.gameObject.scene.name != cc.gameObject.name) && cc.gameObject.scene.name != string.Empty;
 
-            void UpdateCallback()
-            {
-                if (cc.currentEmotion != null)
-                    cc.EmotionTick();
-            }
+            
+            EditorApplication.CallbackFunction callback = UpdateCallback;
+            EditorApplication.update = System.Delegate.Combine(EditorApplication.update, callback) as EditorApplication.CallbackFunction;
 
-            EditorApplication.update = UpdateCallback;
             if (valid && !Application.isPlaying)
             {
                 if (!bodyColors)
@@ -176,6 +180,11 @@ namespace AdvancedCustomizableSystem
                     faceShapeWeight[fsw] = cc.GetBodyShapeWeight(fsw.ToString());
                 }
             }
+        }
+        void OnDisable()
+        {
+            EditorApplication.CallbackFunction callback = UpdateCallback;
+            EditorApplication.update = System.Delegate.Remove(EditorApplication.update, callback) as EditorApplication.CallbackFunction;
         }
         public override void OnInspectorGUI()
         {

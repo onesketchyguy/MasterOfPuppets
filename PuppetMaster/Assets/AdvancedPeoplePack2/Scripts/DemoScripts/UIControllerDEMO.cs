@@ -2,7 +2,6 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using AdvancedCustomizableSystem;
-using UnityEngine.InputSystem;
 
 /// <summary>
 /// This script was created to demonstrate api, I do not recommend using it in your projects.
@@ -12,9 +11,10 @@ public class UIControllerDEMO : MonoBehaviour
     [Space(5)]
     [Header("I do not recommend using it in your projects")]
     [Header("This script was created to demonstrate api")]
-    public CharacterCustomization characterCustomization;
 
+    public CharacterCustomization CharacterCustomization;
     [Space(15)]
+
     public Text playbutton_text;
 
     public Text bake_text;
@@ -64,7 +64,7 @@ public class UIControllerDEMO : MonoBehaviour
 
     public Vector3[] CameraPositionForPanels;
     public Vector3[] CameraEulerForPanels;
-    private int currentPanelIndex = 0;
+    int currentPanelIndex = 0;
 
     public Camera Camera;
 
@@ -88,54 +88,47 @@ public class UIControllerDEMO : MonoBehaviour
 
     public void SetFaceShape(int index)
     {
-        characterCustomization.SetFaceShape((FaceShapeType)(index), faceShapeSliders[index].value);
+        CharacterCustomization.SetFaceShape((FaceShapeType)(index), faceShapeSliders[index].value);
     }
 
     public void SetHeadOffset()
     {
-        characterCustomization.SetHeadOffset(headOffsetSlider.value);
+        CharacterCustomization.SetHeadOffset(headOffsetSlider.value);
     }
 
     public void BodyFat()
     {
-        characterCustomization.SetBodyShape(BodyShapeType.Fat, fatSlider.value);
+        CharacterCustomization.SetBodyShape(BodyShapeType.Fat, fatSlider.value);
     }
-
     public void BodyMuscles()
     {
-        characterCustomization.SetBodyShape(BodyShapeType.Muscles, musclesSlider.value);
+        CharacterCustomization.SetBodyShape(BodyShapeType.Muscles, musclesSlider.value);
     }
-
     public void BodyThin()
     {
-        characterCustomization.SetBodyShape(BodyShapeType.Thin, thinSlider.value);
+        CharacterCustomization.SetBodyShape(BodyShapeType.Thin, thinSlider.value);
     }
 
     public void BodySlimness()
     {
-        characterCustomization.SetBodyShape(BodyShapeType.Slimness, slimnessSlider.value);
+        CharacterCustomization.SetBodyShape(BodyShapeType.Slimness, slimnessSlider.value);
     }
-
     public void BodyBreast()
     {
-        characterCustomization.SetBodyShape(BodyShapeType.BreastSize, breastSlider.value,
+        CharacterCustomization.SetBodyShape(BodyShapeType.BreastSize, breastSlider.value,
             new string[] { "Chest", "Stomach", "Head" },
             new ClothesPartType[] { ClothesPartType.Shirt }
             );
     }
-
     public void SetHeight()
     {
-        characterCustomization.SetHeight(heightSlider.value);
+        CharacterCustomization.SetHeight(heightSlider.value);
     }
-
     public void SetHeadSize()
     {
-        characterCustomization.SetHeadSize(headSizeSlider.value);
+        CharacterCustomization.SetHeadSize(headSizeSlider.value);
     }
-
-    private int lodIndex;
-
+    int lodIndex;
     public void Lod_Event(int next)
     {
         lodIndex += next;
@@ -146,57 +139,48 @@ public class UIControllerDEMO : MonoBehaviour
 
         lod_text.text = lodIndex.ToString();
 
-        characterCustomization.ForceLOD(lodIndex);
+        CharacterCustomization.ForceLOD(lodIndex);
     }
-
     public void SetNewSkinColor(Color color)
     {
         SkinColorButtonColor.color = color;
-        characterCustomization.SetBodyColor(BodyColorPart.Skin, color);
+        CharacterCustomization.SetBodyColor(BodyColorPart.Skin, color);
     }
-
     public void SetNewEyeColor(Color color)
     {
         EyeColorButtonColor.color = color;
-        characterCustomization.SetBodyColor(BodyColorPart.Eye, color);
+        CharacterCustomization.SetBodyColor(BodyColorPart.Eye, color);
     }
-
     public void SetNewHairColor(Color color)
     {
         HairColorButtonColor.color = color;
-        characterCustomization.SetBodyColor(BodyColorPart.Hair, color);
+        CharacterCustomization.SetBodyColor(BodyColorPart.Hair, color);
     }
-
     public void SetNewUnderpantsColor(Color color)
     {
         UnderpantsColorButtonColor.color = color;
-        characterCustomization.SetBodyColor(BodyColorPart.Underpants, color);
+        CharacterCustomization.SetBodyColor(BodyColorPart.Underpants, color);
     }
-
     public void VisibleSkinColorPanel(bool v)
     {
         HideAllPanels();
         SkinColorPanel.gameObject.SetActive(v);
     }
-
     public void VisibleEyeColorPanel(bool v)
     {
         HideAllPanels();
         EyeColorPanel.gameObject.SetActive(v);
     }
-
     public void VisibleHairColorPanel(bool v)
     {
         HideAllPanels();
         HairColorPanel.gameObject.SetActive(v);
     }
-
     public void VisibleUnderpantsColorPanel(bool v)
     {
         HideAllPanels();
         UnderpantsColorPanel.gameObject.SetActive(v);
     }
-
     public void ShirtPanel_Select(bool v)
     {
         HideAllPanels();
@@ -205,7 +189,6 @@ public class UIControllerDEMO : MonoBehaviour
         else
             ShirtPanel.gameObject.SetActive(true);
     }
-
     public void PantsPanel_Select(bool v)
     {
         HideAllPanels();
@@ -214,7 +197,6 @@ public class UIControllerDEMO : MonoBehaviour
         else
             PantsPanel.gameObject.SetActive(true);
     }
-
     public void ShoesPanel_Select(bool v)
     {
         HideAllPanels();
@@ -223,7 +205,6 @@ public class UIControllerDEMO : MonoBehaviour
         else
             ShoesPanel.gameObject.SetActive(true);
     }
-
     public void HairPanel_Select(bool v)
     {
         HideAllPanels();
@@ -234,7 +215,6 @@ public class UIControllerDEMO : MonoBehaviour
 
         currentPanelIndex = (v) ? 1 : 0;
     }
-
     public void BeardPanel_Select(bool v)
     {
         HideAllPanels();
@@ -245,7 +225,6 @@ public class UIControllerDEMO : MonoBehaviour
 
         currentPanelIndex = (v) ? 1 : 0;
     }
-
     public void HatPanel_Select(bool v)
     {
         HideAllPanels();
@@ -255,7 +234,6 @@ public class UIControllerDEMO : MonoBehaviour
             HatPanel.gameObject.SetActive(true);
         currentPanelIndex = (v) ? 1 : 0;
     }
-
     public void EmotionsPanel_Select(bool v)
     {
         HideAllPanels();
@@ -265,7 +243,6 @@ public class UIControllerDEMO : MonoBehaviour
             EmotionsPanel.gameObject.SetActive(true);
         currentPanelIndex = (v) ? 1 : 0;
     }
-
     public void AccessoryPanel_Select(bool v)
     {
         HideAllPanels();
@@ -275,49 +252,40 @@ public class UIControllerDEMO : MonoBehaviour
             AccessoryPanel.gameObject.SetActive(true);
         currentPanelIndex = (v) ? 1 : 0;
     }
-
     public void EmotionsChange_Event(int index)
     {
-        var emotion = characterCustomization.emotionPresets[index];
+        var emotion = CharacterCustomization.emotionPresets[index];
         if (emotion != null)
-            characterCustomization.PlayEmotion(emotion.name, 2f);
+            CharacterCustomization.PlayEmotion(emotion.name, 2f);
     }
-
     public void HairChange_Event(int index)
     {
-        characterCustomization.SetHairByIndex(index);
+        CharacterCustomization.SetHairByIndex(index);
     }
-
     public void BeardChange_Event(int index)
     {
-        characterCustomization.SetBeardByIndex(index);
+        CharacterCustomization.SetBeardByIndex(index);
     }
-
     public void ShirtChange_Event(int index)
     {
-        characterCustomization.SetElementByIndex(ClothesPartType.Shirt, index);
+        CharacterCustomization.SetElementByIndex(ClothesPartType.Shirt, index);
     }
-
     public void PantsChange_Event(int index)
     {
-        characterCustomization.SetElementByIndex(ClothesPartType.Pants, index);
+        CharacterCustomization.SetElementByIndex(ClothesPartType.Pants, index);
     }
-
     public void ShoesChange_Event(int index)
     {
-        characterCustomization.SetElementByIndex(ClothesPartType.Shoes, index);
+        CharacterCustomization.SetElementByIndex(ClothesPartType.Shoes, index);
     }
-
     public void HatChange_Event(int index)
     {
-        characterCustomization.SetElementByIndex(ClothesPartType.Hat, index);
+        CharacterCustomization.SetElementByIndex(ClothesPartType.Hat, index);
     }
-
     public void AccessoryChange_Event(int index)
     {
-        characterCustomization.SetElementByIndex(ClothesPartType.Accessory, index);
+        CharacterCustomization.SetElementByIndex(ClothesPartType.Accessory, index);
     }
-
     public void HideAllPanels()
     {
         SkinColorPanel.gameObject.SetActive(false);
@@ -337,58 +305,45 @@ public class UIControllerDEMO : MonoBehaviour
 
         currentPanelIndex = 0;
     }
-
     public void SaveToFile()
     {
-        characterCustomization.SaveToFile();
+        CharacterCustomization.SaveToFile();
     }
-
     public void LoadFromFile()
     {
-        characterCustomization.LoadFromFile();
+        CharacterCustomization.LoadFromFile();
     }
-
     public void ClearFromFile()
     {
-        characterCustomization.ClearFromFile();
-        characterCustomization.ResetAll();
+        CharacterCustomization.ClearFromFile();
+        CharacterCustomization.ResetAll();
     }
-
     public void Randimize()
     {
-        characterCustomization.Randomize();
+        CharacterCustomization.Randomize();
     }
-
-    private bool walk_active = false;
+    bool walk_active = false;
 
     public void PlayAnim()
     {
         walk_active = !walk_active;
 
-        foreach (Animator a in characterCustomization.GetAnimators())
+        foreach (Animator a in CharacterCustomization.GetAnimators())
             a.SetBool("walk", walk_active);
 
         playbutton_text.text = (walk_active) ? "STOP" : "PLAY";
     }
+    #endregion
 
-    #endregion ButtonEvents
-
-    private bool canvasVisible = true;
-
+    bool canvasVisible = true;
     private void Update()
     {
-        if (Keyboard.current.hKey.isPressed)
+        if (Input.GetKeyDown(KeyCode.H))
         {
             canvasVisible = !canvasVisible;
 
             GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>().enabled = canvasVisible;
         }
-
-        if (Camera == null)
-        {
-            Camera = Camera.main;
-        }
-
         Camera.transform.position = Vector3.Lerp(Camera.transform.position, CameraPositionForPanels[currentPanelIndex], Time.deltaTime * 5);
         Camera.transform.eulerAngles = Vector3.Lerp(Camera.transform.eulerAngles, CameraEulerForPanels[currentPanelIndex], Time.deltaTime * 5);
     }
