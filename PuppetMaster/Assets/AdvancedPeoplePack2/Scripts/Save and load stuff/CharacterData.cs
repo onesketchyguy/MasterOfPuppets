@@ -7,8 +7,9 @@ namespace PuppetMaster.CharacterCreation
     {
         public bool male = false;
         public string characterTag = "";
+        public string characterName = "";
 
-        // FIXME: There has to be a better wat
+        // FIXME: There has to be a better way
         public CharacterData(CharacterCustomizationSetup characterData)
         {
             Fat = characterData.Fat;

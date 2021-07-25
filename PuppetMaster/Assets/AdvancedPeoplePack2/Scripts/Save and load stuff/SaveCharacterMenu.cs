@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using FileSystem;
 
 namespace PuppetMaster.CharacterCreation.SaveAndLoad
 {
     public class SaveCharacterMenu : MonoBehaviour
     {
+        public const string SAVE_LOCATION = "CharacterData";
+
         [SerializeField] private Dropdown tagDropdown = null;
 
         [SerializeField] private InputField nameText = null;
@@ -17,8 +20,8 @@ namespace PuppetMaster.CharacterCreation.SaveAndLoad
 
         [SerializeField] private CharacterTypeList characterList;
 
-        [SerializeField] private FileSystem.FileSaveManager.Directories fileLocation;
-        [SerializeField] private FileSystem.FileSaveManager.Extensions fileExtension;
+        [SerializeField] private FileSaveManager.Directories fileLocation;
+        [SerializeField] private FileSaveManager.Extensions fileExtension;
 
         private void OnEnable()
         {
@@ -50,12 +53,54 @@ namespace PuppetMaster.CharacterCreation.SaveAndLoad
         public void SaveItem()
         {
             Debug.Log($"Saving: {nameText.text}");
-            Debug.LogWarning($"WARNING! Tags not available yet! {nameText.text} will not be saved as a {characterList.types[tagDropdown.value].name}");
             var data = new CharacterData(customCharacter.characterCustomization.GetSetup());
             data.male = genderSelection.genderMale;
             data.characterTag = $"{characterList.types[tagDropdown.value].name}";
+            data.characterName = nameText.text;
 
-            FileSystem.FileSaveManager.Save(data, nameText.text, fileLocation, fileExtension);
+            // ALT
+            //FileSystem.FileSaveManager.Save(data, nameText.text, fileLocation, fileExtension);
+            var serializedData = FileSaveManager.SerializeToString(data, FileSaveManager.Extensions.json) + "\n";
+
+            var fileDir = FileSaveManager.GetFileDirectory(SAVE_LOCATION, FileSaveManager.Directories.global, FileSaveManager.Extensions.json);
+            if (System.IO.File.Exists(fileDir))
+            {
+                var fileLines = System.IO.File.ReadAllLines(fileDir);
+                var totalLines = new List<string>();
+
+                bool createdSave = false;
+
+                for (int i = 0; i < fileLines.Length; i++)
+                {
+                    if (fileLines[i].Length <= 1) continue;
+
+                    // FIXME: This will only support JSON!
+                    var isMale = fileLines[i].Contains("\"male\":true");
+
+                    if (fileLines[i].Contains(data.characterName) && fileLines[i].Contains(data.characterTag) && isMale == data.male)
+                    {
+                        // FIXME: We should make sure that the user wants to overrite this file
+
+                        fileLines[i] = "";
+                        fileLines[i] = serializedData;
+
+                        createdSave = true;
+                    }
+
+                    totalLines.Add(fileLines[i]);
+                }
+
+                if (createdSave == false)
+                {
+                    totalLines.Add(serializedData);
+                }
+
+                System.IO.File.WriteAllLines(fileDir, totalLines.ToArray());
+            }
+            else
+            {
+                System.IO.File.WriteAllText(fileDir, serializedData);
+            }
         }
     }
 }

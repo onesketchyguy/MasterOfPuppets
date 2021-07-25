@@ -220,6 +220,30 @@ namespace FileSystem
             return save;
         }
 
+        public static string SerializeToString(object dataToSave, Extensions extension = Extensions.dat)
+        {
+            if (extension == Extensions.json || extension == Extensions.txt)
+            {
+                // Create a json file and save all our data to it
+                return JsonUtility.ToJson(dataToSave, false);
+            }
+            else
+            {
+                // Create a binary file and save all our date to it
+                Debug.LogError($"Unable to deserialize string, {extension} method not implemented!");
+                return default;
+            }
+        }
+
+        public static T DeserializeString<T>(string content, Extensions extension = Extensions.dat)
+        {
+            // If we are searching for a json file just go ahead and try to read that now
+            if (extension == Extensions.json || extension == Extensions.txt) return JsonUtility.FromJson<T>(content);
+
+            Debug.LogError($"Unable to deserialize string, {extension} method not implemented!");
+            return default;
+        }
+
         /// <summary>
         /// Deletes a saved file.
         /// </summary>

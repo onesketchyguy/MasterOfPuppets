@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using FileSystem;
 
 namespace PuppetMaster.CharacterCreation.SaveAndLoad
 {
@@ -10,29 +9,17 @@ namespace PuppetMaster.CharacterCreation.SaveAndLoad
 
         private LoadCharacterMenu menu;
         private CharacterData characterData;
-        private FileSaveManager.Directories dir;
-        private FileSaveManager.Extensions ext;
 
-        public void Initialize(string name, CharacterData characterData, LoadCharacterMenu menu, FileSaveManager.Directories dir, FileSaveManager.Extensions ext)
+        public void Initialize(CharacterData characterData, LoadCharacterMenu menu)
         {
-            nameText.text = name;
+            string gender = characterData.male ? "m_" : "f_";
+            nameText.text = $"{gender}{characterData.characterName}";
             this.characterData = characterData;
-            this.dir = dir;
-            this.ext = ext;
             this.menu = menu;
         }
 
-        public void Load()
-        {
-            menu.LoadCharacter(characterData);
-        }
+        public void Load() => menu.LoadCharacter(characterData);
 
-        public void Delete()
-        {
-            if (FileSaveManager.DeleteFile(nameText.text, dir, ext))
-            {
-                Destroy(gameObject);
-            }
-        }
+        public void Delete() => menu.DeleteCharacter(characterData);
     }
 }
