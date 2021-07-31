@@ -1,0 +1,18 @@
+Multiplayer may be something we would have to push to a post launch update.
+
+Players possession rules are the same as the single player rules.
+
+Modes:
+
+Team elimations
+	NPC's are still spawned as normal.
+	One player/team plays demons
+	Other player/team plays people.
+
+Free for all:
+	NPC's are still spawned as normal.
+	All players play a human until death then they switch to playing a demon
+	after death. One player wins after 'x' minutes with a certain score.
+
+MDK:
+	Co-op run with your friend and murder the town as demons
