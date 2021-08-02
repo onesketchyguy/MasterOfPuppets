@@ -12,8 +12,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Escape.unity
     guid: b4e0b6decd7b5c649bff80eb898630b3
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
+    path: Assets/Scenes/City.unity
+    guid: 3ba78e8dd5ad343448b51e0f74de2469
   - enabled: 1
     path: Assets/AdvancedPeoplePack2/Scenes/CharacterCreator.unity
     guid: 624efb5e2a67e53438edb8538bf39fae

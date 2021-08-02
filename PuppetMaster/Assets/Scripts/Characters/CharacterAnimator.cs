@@ -4,13 +4,17 @@ using UnityEngine;
 
 namespace PuppetMaster
 {
-    // NEEDS CODE REVIEW
+    // FIXME: NEEDS CODE REVIEW
     public class CharacterAnimator : MonoBehaviour, ILookInputReceiver
     {
         [Header("Component Setup")]
         [SerializeField] private Rigidbody rigidBody = null;
 
-        [SerializeField] private Animator animator = null;
+        [SerializeField] private RuntimeAnimatorController controller;
+
+        // NOTE: I don't think I even need this to be an array of animators, needs research.
+        private Animator[] animators = null;
+
         [SerializeField] private new Renderer renderer = null;
 
         [SerializeField] private CombatManager combatManager = null;
@@ -49,17 +53,22 @@ namespace PuppetMaster
 
         private void Start()
         {
-            if (animator == null)
+            if (animators == null)
             {
                 Debug.LogWarning($"{gameObject.name} Animator not setup. Trying to get the component from children...");
 
-                animator = GetComponentInChildren<Animator>();
+                animators = GetComponentsInChildren<Animator>();
 
-                if (animator == null)
+                if (animators == null)
                 {
-                    Debug.LogError($"{gameObject.name} cannot use {nameof(CharacterAnimator)}, reason: Animator not setup.");
+                    Debug.LogError($"{gameObject.name} cannot use {nameof(CharacterAnimator)}, reason: Animator not setup on children.");
                     Destroy(this); // Removes this component
                 }
+            }
+
+            foreach (var animator in animators)
+            {
+                animator.runtimeAnimatorController = controller;
             }
 
             if (rigidBody == null)
@@ -84,8 +93,11 @@ namespace PuppetMaster
         {
             var motion = GetMotion();
 
-            animator.SetFloat(strafeMotionField, -motion.x);
-            animator.SetFloat(forwardMotionField, motion.z);
+            foreach (var animator in animators)
+            {
+                animator.SetFloat(strafeMotionField, -motion.x);
+                animator.SetFloat(forwardMotionField, motion.z);
+            }
         }
 
         private void UpdateLookIK()
@@ -93,7 +105,8 @@ namespace PuppetMaster
             lookObject.position = _transform.position + (lookDirection * 10);
 
             float armedWeight = combatManager.isArmed ? 1 : 0;
-            animator.SetLayerWeight(aimLayerIndex, armedWeight);
+            foreach (var animator in animators)
+                animator.SetLayerWeight(aimLayerIndex, armedWeight);
 
             aimController.weight = armedWeight;
         }

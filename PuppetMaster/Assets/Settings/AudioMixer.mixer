@@ -62,6 +62,7 @@ AudioMixerGroupController:
   - {fileID: 5130745984069994334}
   - {fileID: -1937921462475885240}
   - {fileID: 5061008437286142121}
+  - {fileID: 8467096221254812539}
   m_Volume: a7ba8b5180e1eac49b5ec55407d2165b
   m_Pitch: d4fcaceb14e6766409fe7301efacfc30
   m_Send: 00000000000000000000000000000000
@@ -160,6 +161,7 @@ AudioMixerController:
     - 94613fecc7f2bfc42a6d154179b38f4e
     - a539e5445071e464a9f78821cae42594
     - 28cb8a08f9d2de344875f4adf6f8762b
+    - 2cac532bd3a663a478780cfb296f72ea
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -262,6 +264,20 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!244 &4205154756601650792
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 8385894d00f65a644a91917220748768
+  m_EffectName: Attenuation
+  m_MixLevel: 52ed494e7047ee4428a46f45d20a959c
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!243 &5061008437286142121
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
@@ -328,3 +344,22 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!243 &8467096221254812539
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Vehicle SFX
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 2cac532bd3a663a478780cfb296f72ea
+  m_Children: []
+  m_Volume: 10c1662db33f1b0459f1367bfb67db9a
+  m_Pitch: 6189d4e519015d74a989efacdb45c777
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 4205154756601650792}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
