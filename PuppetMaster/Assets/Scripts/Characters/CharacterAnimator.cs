@@ -102,7 +102,15 @@ namespace PuppetMaster
 
         private void UpdateLookIK()
         {
-            lookObject.position = _transform.position + (lookDirection * 10);
+            if (lookDirection == Vector3.zero)
+            {
+                lookDirection = _transform.forward;
+            }
+
+            // FIXME: this isn't working for fuck knows the reason
+            //lookObject.position = _transform.position + // Add our position to offset the object from us
+            //    (lookDirection * 10) + // Add our actual aim at position
+            //    Vector3.up * 0.5f; // Add a slight incline up as to try to aim at the target. FIXME: auto aim
 
             float armedWeight = combatManager.isArmed ? 1 : 0;
             foreach (var animator in animators)

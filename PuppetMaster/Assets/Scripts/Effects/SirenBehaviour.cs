@@ -19,7 +19,6 @@ namespace PuppetMaster.Effects
         private bool onLeft = false;
 
         private MeshRenderer[] renderersLeft = null, renderersRight = null;
-        private Material matLeft = null, matRight = null;
 
         [SerializeField] private AudioSource sirenSound = null;
 
@@ -38,9 +37,6 @@ namespace PuppetMaster.Effects
             renderersLeft = leftRens.ToArray();
             renderersRight = rightRens.ToArray();
 
-            matLeft = renderersLeft[0].material;
-            matRight = renderersRight[0].material;
-
             SetLightsEnabled(lightsOn);
             SetSoundEnabled(soundOn);
         }
@@ -49,13 +45,14 @@ namespace PuppetMaster.Effects
         {
             lightsOn = enabled;
 
-            if (lightsOn)
+            if (lightsOn == true)
             {
-                InvokeRepeating(nameof(Switch), alternateSpeed, alternateSpeed);
+                InvokeRepeating(nameof(AlternateLights), alternateSpeed, alternateSpeed);
             }
             else
             {
-                CancelInvoke(nameof(Switch));
+                CancelInvoke(nameof(AlternateLights));
+                SetLights();
             }
         }
 
@@ -67,15 +64,37 @@ namespace PuppetMaster.Effects
             sirenSound.enabled = enabled;
         }
 
-        private void Switch()
+        private void AlternateLights()
+        {
+            SetLights();
+            onLeft = !onLeft;
+        }
+
+        private void SetLights()
         {
             foreach (var ren in renderersLeft)
-                ren.material = onLeft ? matLeft : matRight;
+            {
+                if (onLeft == true && lightsOn == true)
+                {
+                    ren.material.EnableKeyword("_EMISSION");
+                }
+                else
+                {
+                    ren.material.DisableKeyword("_EMISSION");
+                }
+            }
 
             foreach (var ren in renderersRight)
-                ren.material = onLeft ? matRight : matLeft;
-
-            onLeft = !onLeft;
+            {
+                if (onLeft == false && lightsOn == true)
+                {
+                    ren.material.EnableKeyword("_EMISSION");
+                }
+                else
+                {
+                    ren.material.DisableKeyword("_EMISSION");
+                }
+            }
         }
     }
 }

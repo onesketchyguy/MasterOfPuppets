@@ -4,7 +4,7 @@ using Player.Input;
 namespace PuppetMaster
 {
     /// <summary>
-    /// The third person movement controller for the user.
+    /// Top down movement controller for the user.
     /// </summary>
     public class ThirdPersonController : MonoBehaviour, IMoveInputReceiver, ILookInputReceiver
     {
