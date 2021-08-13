@@ -80,7 +80,7 @@ namespace PuppetMaster.AI
         /// <summary>
         /// Cached local transform
         /// </summary>
-        private Transform _transform;
+        private Transform m_transform;
 
         /// <summary>
         /// A navmesh path to follow allong. The corners are specifically what we need.
@@ -138,12 +138,12 @@ namespace PuppetMaster.AI
             {
                 Gizmos.color = Color.cyan;
 
-                Gizmos.DrawLine(_transform.position, targetPosition);
+                Gizmos.DrawLine(m_transform.position, targetPosition);
                 Gizmos.DrawWireSphere(targetPosition, 1);
 
                 Gizmos.color = Color.green;
 
-                Gizmos.DrawLine(_transform.position, lookAt);
+                Gizmos.DrawLine(m_transform.position, lookAt);
                 Gizmos.DrawWireSphere(lookAt, 0.1f);
             }
         }
@@ -174,10 +174,10 @@ namespace PuppetMaster.AI
         private void Start()
         {
             // Chache the transform
-            _transform = transform;
+            m_transform = transform;
 
             // Reset the moveTo position to our point for later
-            targetPosition = _transform.position;
+            targetPosition = m_transform.position;
 
             // Initialize the nav mesh path
             movementPath = new NavMeshPath();
@@ -305,22 +305,29 @@ namespace PuppetMaster.AI
                     targetPosition = movementPath.corners[pathIndex];
 
                     // Get the direction from the position
-                    inputDirection = targetPosition - _transform.position;
+                    inputDirection = targetPosition - m_transform.position;
 
+                    /*
                     // Look in the direction we are moving.
-                    lookAt = new Vector3(targetPosition.x, _transform.position.y, targetPosition.z);
+                    lookAt = new Vector3(targetPosition.x, m_transform.position.y, targetPosition.z);
 
                     if (pathIndex == movementPath.corners.Length - 1)
                     {
-                        lookAt += _transform.forward * 10;
+                        lookAt += m_transform.forward * 10;
                     }
 
-                    lookAt = Utility.Utilities.mainCamera.WorldToScreenPoint(lookAt);
+                    lookAt = Utility.Utilities.mainCamera.WorldToScreenPoint(lookAt);*/
+
+                    //var targetDir = lookAt + m_transform.position;
+                    //var localTarget = m_transform.InverseTransformPoint(targetDir);
+                    //
+                    //// Find the angle based off the local space
+                    //var angle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
 
                     inputManager.HandleLook(lookAt);
 
                     // Check if we are close enough to stop or move on
-                    if (Vector3.Distance(_transform.position, targetPosition) <= stoppingDistance)
+                    if (Vector3.Distance(m_transform.position, targetPosition) <= stoppingDistance)
                     {
                         // Move to the next item in the array
                         pathIndex++;
@@ -351,9 +358,9 @@ namespace PuppetMaster.AI
                 var wanderDirection = Random.insideUnitSphere * walkRadius;
 
                 // Add our position to that direction to convert it into a world space
-                wanderDirection += _transform.position;
+                wanderDirection += m_transform.position;
                 // Set the Y to our position to reset it
-                wanderDirection.y = _transform.position.y;
+                wanderDirection.y = m_transform.position.y;
 
                 // Try to get a position from that point
                 wanderTo = GetNavMeshPosition(wanderDirection);
@@ -374,7 +381,7 @@ namespace PuppetMaster.AI
                 SwapState(AI_State.fighting);
 
             // Find a wander point and move there
-            if (Vector3.Distance(_transform.position, targetPosition) <= stoppingDistance)
+            if (Vector3.Distance(m_transform.position, targetPosition) <= stoppingDistance)
             {
                 if (timeInPosition > movementFrequency)
                 {
@@ -404,7 +411,7 @@ namespace PuppetMaster.AI
             else
             {
                 // Generate a distance to run
-                var distToTarget = Vector3.Distance(_transform.position, target.position);
+                var distToTarget = Vector3.Distance(m_transform.position, target.position);
                 var runDist = Random.Range(10, 30) + distToTarget;
 
                 // Create a point to flee to
@@ -416,9 +423,9 @@ namespace PuppetMaster.AI
                     var direction = Random.insideUnitSphere * runDist;
 
                     // Add our position to that direction
-                    direction += _transform.position;
+                    direction += m_transform.position;
                     // Reset the Y for calculations later
-                    direction.y = _transform.position.y;
+                    direction.y = m_transform.position.y;
 
                     // Try to set a point to navigate to
                     fleeTo = GetNavMeshPosition(direction);
@@ -467,8 +474,8 @@ namespace PuppetMaster.AI
                         var point = target.position;
 
                         // Clamp the position to our range
-                        point.x = Mathf.Clamp(_transform.position.x, point.x - visabilityRange, point.x + visabilityRange);
-                        point.z = Mathf.Clamp(_transform.position.z, point.z - visabilityRange, point.z + visabilityRange);
+                        point.x = Mathf.Clamp(m_transform.position.x, point.x - visabilityRange, point.x + visabilityRange);
+                        point.z = Mathf.Clamp(m_transform.position.z, point.z - visabilityRange, point.z + visabilityRange);
 
                         // Create a point that we can move to on the nav mesh
                         var moveTo = GetNavMeshPosition(point);
@@ -496,7 +503,7 @@ namespace PuppetMaster.AI
         public bool CanSeeObject(Transform obj)
         {
             // Check if the object is even within visability range
-            if (Vector3.Distance(_transform.position, obj.position) > visabilityRange)
+            if (Vector3.Distance(m_transform.position, obj.position) > visabilityRange)
             {
                 return false;
             }
@@ -511,19 +518,19 @@ namespace PuppetMaster.AI
                 RaycastHit hit;
 
                 // Does the ray intersect any objects
-                if (Physics.Raycast(_transform.position,
-                    _transform.TransformDirection(Vector3.forward),
+                if (Physics.Raycast(m_transform.position,
+                    m_transform.TransformDirection(Vector3.forward),
                     out hit, visabilityRange, obj.gameObject.layer))
                 {
-                    Debug.DrawRay(_transform.position,
-                        _transform.TransformDirection(Vector3.forward) * hit.distance,
+                    Debug.DrawRay(m_transform.position,
+                        m_transform.TransformDirection(Vector3.forward) * hit.distance,
                         Color.yellow);
                     return true;
                 }
                 else
                 {
                     Debug.DrawRay(transform.position,
-                        _transform.TransformDirection(Vector3.forward) * 1000,
+                        m_transform.TransformDirection(Vector3.forward) * 1000,
                         Color.white);
                     return false;
                 }

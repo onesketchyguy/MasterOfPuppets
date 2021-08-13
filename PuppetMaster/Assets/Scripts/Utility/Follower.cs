@@ -2,22 +2,29 @@ using UnityEngine;
 
 namespace PuppetMaster
 {
+    // FIXME: Needs code review
     public class Follower : MonoBehaviour
     {
         [Tooltip("Leave empty to just follow the player.")]
-        [SerializeField] private Transform objectToFollow;
+        [SerializeField] private Transform _objectToFollow;
+
+        [SerializeField] private bool copyRotation = true;
+
+        private bool followPlayer = false;
 
         private Transform GetFollowObject()
         {
-            if (objectToFollow == null)
+            if (_objectToFollow == null || _objectToFollow.gameObject.activeSelf == false ||
+                (_objectToFollow != null && followPlayer == true &&
+                _objectToFollow != CharacterInput.playerControlled.transform))
             {
-                return CharacterInput.playerControlled.transform;
+                _objectToFollow = CharacterInput.playerControlled.transform;
             }
 
-            return objectToFollow;
+            return _objectToFollow;
         }
 
-        private Transform _transform;
+        private Transform m_transform;
 
         [Range(0, 1f)]
         [Tooltip("Amount of speed weight to give based on distance. 0 is no speed increase 1 is full distance compensation.")]
@@ -27,13 +34,19 @@ namespace PuppetMaster
 
         private void Start()
         {
-            _transform = transform;
+            m_transform = transform;
+            followPlayer = _objectToFollow == null;
         }
 
         private void FixedUpdate()
         {
-            var dist = (Vector3.Distance(_transform.position, GetFollowObject().position)) * distanceWeight;
-            _transform.position = Vector3.Lerp(_transform.position, GetFollowObject().position, (dist + baseSpeed) * Time.deltaTime);
+            if (GetFollowObject() == null) return;
+
+            var dist = (Vector3.Distance(m_transform.position, GetFollowObject().position)) * distanceWeight;
+            m_transform.position = Vector3.Lerp(m_transform.position, GetFollowObject().position, (dist + baseSpeed) * Time.deltaTime);
+
+            if (copyRotation == true)
+                m_transform.rotation = Quaternion.Lerp(m_transform.rotation, GetFollowObject().rotation, (dist + baseSpeed) * Time.deltaTime);
         }
     }
 }

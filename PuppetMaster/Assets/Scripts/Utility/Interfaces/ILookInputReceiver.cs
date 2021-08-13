@@ -4,6 +4,6 @@ namespace Player.Input
 {
     public interface ILookInputReceiver
     {
-        public Vector3 lookDirection { get; set; }
+        public Vector3 lookInput { get; set; }
     }
 }

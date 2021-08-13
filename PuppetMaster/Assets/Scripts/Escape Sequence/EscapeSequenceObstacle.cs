@@ -18,7 +18,7 @@ namespace PuppetMaster
 
         [SerializeField] private AudioClipPlayer audioClipPlayer;
 
-        private Transform _transform;
+        private Transform m_transform;
 
         private void OnDrawGizmosSelected()
         {
@@ -29,7 +29,7 @@ namespace PuppetMaster
 
         private void OnEnable()
         {
-            if (_transform == null) _transform = transform;
+            if (m_transform == null) m_transform = transform;
 
             OnCreation();
         }
@@ -39,8 +39,8 @@ namespace PuppetMaster
             rigidBody.velocity = Vector3.zero;
             rigidBody.angularVelocity = Vector3.zero;
 
-            _transform.rotation = Quaternion.identity;
-            _transform.position = Vector3.zero;
+            m_transform.rotation = Quaternion.identity;
+            m_transform.position = Vector3.zero;
         }
 
         private void Update()
@@ -83,7 +83,7 @@ namespace PuppetMaster
 
         private void OnCreation()
         {
-            _transform.position = new Vector3(Random.Range(-spawnRange, spawnRange),
+            m_transform.position = new Vector3(Random.Range(-spawnRange, spawnRange),
                 spawnHeight);
 
             rigidBody.velocity = Vector3.zero;

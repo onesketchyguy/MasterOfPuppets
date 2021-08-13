@@ -28,9 +28,9 @@ namespace PuppetMaster
         [SerializeField] private string forwardMotionField = "MotionY";
 
         [SerializeField] private Transform lookObject;
-        public Vector3 lookDirection { get; set; }
+        public Vector3 lookInput { get; set; }
 
-        private Transform _transform;
+        private Transform m_transform;
 
         private bool isSeen
         {
@@ -48,7 +48,7 @@ namespace PuppetMaster
             var velocity = rigidBody.velocity;
 
             // Return the motion in local space
-            return _transform.InverseTransformDirection(velocity);
+            return m_transform.InverseTransformDirection(velocity);
         }
 
         private void Start()
@@ -77,7 +77,7 @@ namespace PuppetMaster
                 Destroy(this); // Removes this component
             }
 
-            _transform = transform;
+            m_transform = transform;
         }
 
         private void Update()
@@ -102,13 +102,13 @@ namespace PuppetMaster
 
         private void UpdateLookIK()
         {
-            if (lookDirection == Vector3.zero)
+            if (lookInput == Vector3.zero)
             {
-                lookDirection = _transform.forward;
+                //lookDirection = m_transform.forward;
             }
 
             // FIXME: this isn't working for fuck knows the reason
-            //lookObject.position = _transform.position + // Add our position to offset the object from us
+            //lookObject.position = m_transform.position + // Add our position to offset the object from us
             //    (lookDirection * 10) + // Add our actual aim at position
             //    Vector3.up * 0.5f; // Add a slight incline up as to try to aim at the target. FIXME: auto aim
 

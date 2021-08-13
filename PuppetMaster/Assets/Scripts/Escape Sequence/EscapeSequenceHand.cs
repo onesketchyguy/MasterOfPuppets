@@ -23,7 +23,7 @@ namespace PuppetMaster.EscapeSequence
         [SerializeField] private Animator animator;
         [SerializeField] private string GrabAnimationName = "FistClosed";
 
-        private Transform _transform;
+        private Transform m_transform;
 
         private float horizontalInput;
         private float verticalInput;
@@ -43,33 +43,33 @@ namespace PuppetMaster.EscapeSequence
 
         private void OnEnable()
         {
-            if (_transform == null) startPosition = transform.position;
-            else _transform.position = startPosition;
+            if (m_transform == null) startPosition = transform.position;
+            else m_transform.position = startPosition;
 
             chasingPlayer = true;
         }
 
         private void Start()
         {
-            _transform = transform;
-            _transform.position = new Vector3(0, offsetY);
+            m_transform = transform;
+            m_transform.position = new Vector3(0, offsetY);
         }
 
         private void Update()
         {
             // Set the default inputs
-            verticalInput = (attackPositionY + offsetY) - _transform.position.y;
+            verticalInput = (attackPositionY + offsetY) - m_transform.position.y;
             horizontalInput = 0;
 
             animator.SetBool(GrabAnimationName, chasingPlayer == false);
 
             if (chasingPlayer)
             {
-                horizontalInput = player.position.x - _transform.position.x;
+                horizontalInput = player.position.x - m_transform.position.x;
 
                 // Overrite the Y input if the player is in range
                 if (player.position.y < attackPositionY)
-                    verticalInput = player.position.y - _transform.position.y;
+                    verticalInput = player.position.y - m_transform.position.y;
             }
         }
 

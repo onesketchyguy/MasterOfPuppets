@@ -28,7 +28,7 @@ namespace PuppetMaster
         /// <summary>
         /// A cached transform.
         /// </summary>
-        private Transform _transform;
+        private Transform m_transform;
 
         /// <summary>
         /// A cache of who is currently possessed.
@@ -61,7 +61,7 @@ namespace PuppetMaster
         private void Start()
         {
             // Cache the transform.
-            _transform = transform;
+            m_transform = transform;
         }
 
         private void Update()
@@ -79,7 +79,7 @@ namespace PuppetMaster
             else if (GetPossessing() != null)
             {
                 // Move to the actively controlled character
-                _transform.position = _possessed.position;
+                m_transform.position = _possessed.position;
             }
         }
 
@@ -114,7 +114,7 @@ namespace PuppetMaster
         public void OnFire1()
         {
             // Posess a body
-            var collisions = Physics.OverlapSphere(_transform.position, overlapRadius, possessableMask);
+            var collisions = Physics.OverlapSphere(m_transform.position, overlapRadius, possessableMask);
 
             if (collisions != null)
             {
@@ -124,10 +124,10 @@ namespace PuppetMaster
 
                 foreach (var item in collisions)
                 {
-                    if (item == closest || item.transform == _transform) continue;
+                    if (item == closest || item.transform == m_transform) continue;
 
                     // Check if this object is closer than the stored closest object
-                    var dist = Vector3.Distance(item.transform.position, _transform.position);
+                    var dist = Vector3.Distance(item.transform.position, m_transform.position);
                     if (dist < distToClosest)
                     {
                         closest = item;

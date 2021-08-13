@@ -16,11 +16,11 @@ namespace CustomUI
         [Range(1, 10)]
         public int maxPanels = 1;
 
-        private bool CheckParentIsPanelParent(Transform _transform)
+        private bool CheckParentIsPanelParent(Transform m_transform)
         {
             if (panelParent == null) return false;
 
-            Transform parent = _transform.parent;
+            Transform parent = m_transform.parent;
             while (parent != null)
             {
                 if (panelParent == parent)

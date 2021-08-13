@@ -569,7 +569,6 @@ GameObject:
   m_Component:
   - component: {fileID: 560124779}
   - component: {fileID: 560124782}
-  - component: {fileID: 560124781}
   - component: {fileID: 560124780}
   m_Layer: 0
   m_Name: cm
@@ -605,27 +604,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damping: {x: 0.1, y: 0.5, z: 0.3}
-  ShoulderOffset: {x: 0, y: 1.06, z: -1.33}
-  VerticalArmLength: 0.4
+  ShoulderOffset: {x: 0, y: 1, z: 0}
+  VerticalArmLength: 0.25
   CameraSide: 1
-  CameraDistance: 2
+  CameraDistance: 4
   CameraCollisionFilter:
     serializedVersion: 2
     m_Bits: 1
   IgnoreTag: Player
   CameraRadius: 0.2
---- !u!114 &560124781
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 560124778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &560124782
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1283,6 +1270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d0088473179634f8b3990ebc0346d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraSensitivity: {x: 5, y: 5}
 --- !u!82 &1284822132
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1576,7 +1564,7 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 729367933}
+  m_LookAt: {fileID: 0}
   m_Follow: {fileID: 729367933}
   m_Lens:
     FieldOfView: 60
@@ -1800,8 +1788,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: 0.20513234, y: 0, z: 0, w: 0.97873425}
-  m_LocalPosition: {x: 0, y: 1.4599999, z: -3.33}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.25, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1576566159}
@@ -2288,7 +2276,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 0.9334993, b: 0.5990566, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30

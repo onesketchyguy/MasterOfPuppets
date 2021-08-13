@@ -16,7 +16,7 @@ namespace PuppetMaster
         /// <summary>
         /// A cached transform.
         /// </summary>
-        private Transform _transform;
+        private Transform m_transform;
 
         /// <summary>
         /// Returns true if this object has a parent.
@@ -24,7 +24,7 @@ namespace PuppetMaster
         /// <returns></returns>
         private bool GetBeingHeld()
         {
-            return _transform != null && _transform.parent != null;
+            return m_transform != null && m_transform.parent != null;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace PuppetMaster
         private void Start()
         {
             // Cache the transform.
-            _transform = transform;
+            m_transform = transform;
         }
 
         private void Update()
@@ -48,7 +48,7 @@ namespace PuppetMaster
             if (GetBeingHeld() == true) return;
 
             // Rotate around the 'z' axis based on the frame rate.
-            _transform.Rotate(Vector3.up, rotateSpeed * Time.deltaTime);
+            m_transform.Rotate(Vector3.up, rotateSpeed * Time.deltaTime);
         }
 
         /// <summary>

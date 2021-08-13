@@ -42,13 +42,13 @@ namespace PuppetMaster
         /// <summary>
         /// A cached transform.
         /// </summary>
-        private Transform _transform;
+        private Transform m_transform;
 
         private void Start()
         {
             // Cache some values
             if (rigidBody == null) rigidBody = GetComponent<Rigidbody>();
-            _transform = transform;
+            m_transform = transform;
 
             // Equip the starter weapon if one exists
             if (startWeapon != null) SwapWeapon(startWeapon);
@@ -70,7 +70,7 @@ namespace PuppetMaster
             if (Time.frameCount % 3 == 0)
             {
                 // Setup all the in range objects
-                inRangeColliders = Physics.OverlapSphere(_transform.position, weaponPickupRange);
+                inRangeColliders = Physics.OverlapSphere(m_transform.position, weaponPickupRange);
             }
 
             // On the second of every 3 frames update the objects with a foreach loop
@@ -121,7 +121,7 @@ namespace PuppetMaster
                 if (baseWeapon != weapon)
                 {
                     // Store the distance to the current iteration object
-                    var dist = Vector3.Distance(_transform.position, baseWeapon.transform.position);
+                    var dist = Vector3.Distance(m_transform.position, baseWeapon.transform.position);
 
                     // If this object is this closest one...
                     if (dist < closest)

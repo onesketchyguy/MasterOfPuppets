@@ -28,7 +28,7 @@ namespace PuppetMaster.EscapeSequence
         [SerializeField] private float targetY = 8;
         private float _targetY;
 
-        private Transform _transform;
+        private Transform m_transform;
 
         [Tooltip("Minimum distance to target before loading.")]
         [SerializeField] private float minDist = 0.01f;
@@ -47,17 +47,17 @@ namespace PuppetMaster.EscapeSequence
 
         private void OnEnable()
         {
-            if (_transform == null) startPosition = transform.position;
+            if (m_transform == null) startPosition = transform.position;
             else
             {
                 escapeProgress = 0;
-                _transform.position = startPosition;
+                m_transform.position = startPosition;
             }
         }
 
         private void Start()
         {
-            _transform = transform;
+            m_transform = transform;
         }
 
         private void Update()
@@ -69,7 +69,7 @@ namespace PuppetMaster.EscapeSequence
 
             _targetY = targetY * escapeProgress;
 
-            dist = Vector2.Distance(_transform.position, new Vector2(_transform.position.x, targetY));
+            dist = Vector2.Distance(m_transform.position, new Vector2(m_transform.position.x, targetY));
 
             if (dist <= minDist)
             {
@@ -78,7 +78,7 @@ namespace PuppetMaster.EscapeSequence
                 onReachedEnd?.Invoke();
             }
 
-            VerticalInput = Mathf.Clamp(_targetY - _transform.position.y, -1, 1);
+            VerticalInput = Mathf.Clamp(_targetY - m_transform.position.y, -1, 1);
         }
 
         private void FixedUpdate()

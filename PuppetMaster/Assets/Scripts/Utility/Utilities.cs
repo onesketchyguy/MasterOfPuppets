@@ -58,12 +58,12 @@ namespace Utility
         /// <summary>
         /// Get the screen offset for an object
         /// </summary>
-        /// <param name="_transform"></param>
+        /// <param name="m_transform"></param>
         /// <returns></returns>
-        public static Vector3 GetScreenSpaceOffsetFromObject(Transform _transform, Vector2 screenSpace, float MAX_OFFSET = 1)
+        public static Vector3 GetScreenSpaceOffsetFromObject(Transform m_transform, Vector2 screenSpace, float MAX_OFFSET = 1)
         {
             // Scale the space
-            var objectPosition = (Vector2)mainCamera.WorldToScreenPoint(_transform.position);
+            var objectPosition = (Vector2)mainCamera.WorldToScreenPoint(m_transform.position);
 
             screenSpace -= objectPosition;
             screenSpace *= Time.deltaTime;
@@ -86,12 +86,12 @@ namespace Utility
         /// <summary>
         /// Get the mouse offset for an object
         /// </summary>
-        /// <param name="_transform"></param>
+        /// <param name="m_transform"></param>
         /// <returns></returns>
-        public static Vector3 GetMouseOffsetFromObject(Transform _transform, float MAX_OFFSET = 1)
+        public static Vector3 GetMouseOffsetFromObject(Transform m_transform, float MAX_OFFSET = 1)
         {
             // Get the mouse
-            return GetScreenSpaceOffsetFromObject(_transform, mousePos, MAX_OFFSET);
+            return GetScreenSpaceOffsetFromObject(m_transform, mousePos, MAX_OFFSET);
         }
 
         /// <summary>

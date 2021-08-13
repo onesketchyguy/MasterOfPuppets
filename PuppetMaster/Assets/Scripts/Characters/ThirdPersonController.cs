@@ -21,7 +21,7 @@ namespace PuppetMaster
         /// <summary>
         /// Look direction input.
         /// </summary>
-        public Vector3 lookDirection { get; set; }
+        public Vector3 lookInput { get; set; }
 
         /// <summary>
         /// Horizontal move input
@@ -86,7 +86,7 @@ namespace PuppetMaster
         /// <summary>
         /// A cached value for the transform.
         /// </summary>
-        private Transform _transform;
+        private Transform m_transform;
 
         /// <summary>
         /// The rigidbody for this object.
@@ -106,7 +106,7 @@ namespace PuppetMaster
             rigidBody = GetComponent<Rigidbody>();
 
             // Cache the transform
-            _transform = transform;
+            m_transform = transform;
 
             // Store the camera's transform
             mainCamera = Camera.main.transform;
@@ -115,7 +115,7 @@ namespace PuppetMaster
         private void FixedUpdate()
         {
             // Send a line out from the character to check to see if ground exists.
-            grounded = Physics.Linecast(_transform.position + Vector3.down * characterFeetPosition, _transform.position + Vector3.down * (characterFeetPosition + 0.7f), ~notGround);
+            grounded = Physics.Linecast(m_transform.position + Vector3.down * characterFeetPosition, m_transform.position + Vector3.down * (characterFeetPosition + 0.7f), ~notGround);
 
             // Define the speed of movement based on weather or not the user is running.
             bool running = input.w > 0;
@@ -125,7 +125,7 @@ namespace PuppetMaster
             UpdateGlobalPosition(spd);
 
             // Update the rotation of this character
-            if (updateRotation) UpdateLookRotation(lookDirection);
+            if (updateRotation) UpdateLookRotation(lookInput);
             rigidBody.angularVelocity = Vector3.zero;
         }
 
@@ -184,22 +184,22 @@ namespace PuppetMaster
         }
 
         /// <summary>
-        /// Looks towards a vector3 position using the RigidBody.
+        /// Looks using the RigidBody.
         /// </summary>
-        /// <param name="lookAt"></param>
-        private void UpdateLookRotation(Vector3 lookAt)
+        /// <param name="lookInput"></param>
+        private void UpdateLookRotation(Vector3 lookInput)
         {
-            // Find the position in local space
-            var targetDir = lookAt + _transform.position;
-            var localTarget = _transform.InverseTransformPoint(targetDir);
-
-            // Find the angle based off the local space
-            var angle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
+            //// Find the position in local space
+            //var targetDir = lookAt + m_transform.position;
+            //var localTarget = m_transform.InverseTransformPoint(targetDir);
+            //
+            //// Find the angle based off the local space
+            //var angle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
 
             // Move towards that angle
-            var eulerAngleVelocity = new Vector3(0, angle, 0);
-            var deltaRotation = Quaternion.Euler(eulerAngleVelocity * turnSpeed * Time.fixedDeltaTime);
-            rigidBody.MoveRotation(rigidBody.rotation * deltaRotation);
+            var eulerAngleVelocity = rigidBody.rotation.eulerAngles + new Vector3(0, lookInput.x, 0);
+            var newRotation = Quaternion.Euler(eulerAngleVelocity);
+            rigidBody.MoveRotation(newRotation);
         }
     }
 }

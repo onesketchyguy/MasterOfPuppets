@@ -112,10 +112,10 @@ namespace PuppetMaster
             foreach (var item in lookInputReceivers)
             {
                 // Old, didn't feel like fingering this one out there, bud
-                //item.lookDirection = new Vector3(look.x, 0, look.y);
+                item.lookInput = (Vector3)look * Time.deltaTime;
 
                 // This works... For now.
-                item.lookDirection = Utility.Utilities.GetScreenSpaceOffsetFromObject(transform, look);
+                //item.lookDirection = Utility.Utilities.GetScreenSpaceOffsetFromObject(transform, look);
             }
         }
     }

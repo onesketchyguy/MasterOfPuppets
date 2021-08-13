@@ -5,6 +5,8 @@ namespace Player.Input
 {
     public class PlayerInputController : MonoBehaviour
     {
+        [SerializeField] private Vector2 cameraSensitivity = Vector2.one;
+
         private InputControls inputControls;
 
         /// <summary>
@@ -12,6 +14,10 @@ namespace Player.Input
         /// </summary>
         private void Start()
         {
+            // Lock the mouse
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
             // Generate the input system
             inputControls = new InputControls();
             inputControls.Enable();
@@ -100,10 +106,8 @@ namespace Player.Input
             if (CharacterInput.playerControlled != null)
             {
                 // Read a vector2 from the input received
-                var screenSpace = obj.ReadValue<Vector2>();
-
                 // Send that vector2 to our player object
-                CharacterInput.playerControlled.HandleLook(screenSpace);
+                CharacterInput.playerControlled.HandleLook(obj.ReadValue<Vector2>() * cameraSensitivity);
             }
         }
     }
